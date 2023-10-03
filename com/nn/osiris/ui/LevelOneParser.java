@@ -1237,13 +1237,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				setMargin();
 				break;
 			case 0x61:
-				if	(PortalConsts.is_debugging)
-					System.out.println("----------                                                          setForeColor()");
+//				if	(PortalConsts.is_debugging)
+//					System.out.println("----------                                                          setForeColor()");
 				setForeColor();
 				break;
 			case 0x62:
-				if	(PortalConsts.is_debugging)
-					System.out.println("----------                                                          setBackColor()");
+//				if	(PortalConsts.is_debugging)
+//					System.out.println("----------                                                          setBackColor()");
 				setBackColor();
 				break;
 			case 0x63:
@@ -2377,10 +2377,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 	}
 	
-/*	
-	int dump_until_control = 0;
-	int dumped = 0;
-*/
 	/**
 	 * Protocol interpreter for L1 mode operation.
 	 *
@@ -2394,26 +2390,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		
 	
 		
-		if	(PortalConsts.is_debugging)	System.out.println("Data="+ " 0x" + String.format("%x", c) + " : " + c + " : " + (char)c);
+		//if	(PortalConsts.is_debugging)	System.out.println("Data="+ " 0x" + String.format("%x", c) + " : " + c + " : " + (char)c);
 		
 		if (c >= 0x20 && is_quick_text_on)
 		{
-/*
-			if (dump_until_control == 1 )
-			{
-				if	(PortalConsts.is_debugging)	
-					System.out.println("DUMPING="+c + " : " + (char)c + " DUMPED:"+ ++dumped);
-				return;
-			}
-			
-			if (c==127)
-			{
-				dump_until_control = 1;
-				
-				return;
-			}
-*/
-
 			quick_text_data[quick_text_length++] = (byte) c;
 			XYAdjust( CHARWIDTH, 0);
 			
@@ -2429,9 +2409,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				FlushText();
 		}
 
-		//dump_until_control = 0;
-
-		
 		// parse commands
 		if (cmd_pending)
 		{
