@@ -1,0 +1,3 @@
+Main-Class: Portal
+Specification-Version: 15.0
+Implementation-Version: 15.0
