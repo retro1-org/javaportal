@@ -20,7 +20,7 @@ import netscape.javascript.*;
  *
  * @author John Hegarty
  */
-public class JPortal extends javax.swing.JApplet
+public class JPortal extends javax.swing.JFrame
 {
 	// Configuration file object
 	private static 	Properties	settings;
@@ -37,7 +37,7 @@ public class JPortal extends javax.swing.JApplet
 	public void init()
 	{
 		initializeConstants(true);
-
+/*
 		try
 		{
 		Class	cls = Class.forName("com.nn.ui.ScormImplementer");
@@ -59,12 +59,15 @@ public class JPortal extends javax.swing.JApplet
 			if	(null == scorminterface)
 				scorminterface = new ScormInterface();
 		}
+*/
 	}
 
 	/**
 	 * Applet startup function, creates the user interface
 	 * when portal is running as an applet.
 	 */
+	
+/*
 	public void start()
 	{
 		settings = new Properties();
@@ -126,7 +129,8 @@ public class JPortal extends javax.swing.JApplet
 		}
 
 	}
-
+*/
+	
 	/**
 	 * Applet stop function, called when the browser wants
 	 * portal to be stopped ... which depends on which browser is
