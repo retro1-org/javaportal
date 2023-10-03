@@ -2,7 +2,7 @@
 
 Use Eclipse as your IDE.
 
-Compile with JDK Version 8 otherwise you will get errors.
+Use JDK Version 21.
 
 You will need to find a use these JAR files:
 
