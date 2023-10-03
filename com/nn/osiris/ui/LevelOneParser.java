@@ -2146,7 +2146,65 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			b = buffer[offset + (i++)] & 0xff;
 			c = b & 0x7f;
 		
-			if (sub_type == 16)  // needed for PNI BS
+			// the following is needed only for Cybis/Cyber1.
+			// it is based on the following code from PTerm:
+			/*
+			 * 
+int PtermHostConnection::AssembleAsciiWord (void)
+{
+    int i;
+    
+    for (;;)
+    {
+        i = dtReado (m_fet);
+        if (i == -1)
+        {
+            if (dtConnected (m_fet))
+            {
+                return C_NODATA;
+            }
+            m_connActive = false;
+            dtClose (m_fet, TRUE);
+            m_fet = NULL;
+            return C_DISCONNECT;
+        }
+        else if (m_pending == 0 && i == 0377)
+        {
+            // 0377 is used by Telnet to introduce commands (IAC).
+            // We recognize only IAC IAC for now.
+            // Note that the check has to be made before the sign
+            // bit is stripped off.
+            m_pending = 0377;
+            continue;
+        }
+
+        i &= 0177;
+        if (i == 033)
+        {
+            m_pending = 033;
+            continue;
+        }
+        if (m_pending == 033)
+        {
+            m_pending = 0;
+            return (033 << 8) + i;
+        }
+        else
+        {
+            m_pending = 0;
+            if (i == 0)
+            {
+                // NUL is for -delay-
+                i = 1 << 19;
+            }
+            return i;
+        }
+    }
+}
+			 * 
+			 */
+			
+			if (sub_type == 16)  // needed only for Cybis/Cyber1.
 			{
 				if (m_pending == 0 && b == 0xff)
 				{
