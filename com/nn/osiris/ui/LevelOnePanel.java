@@ -604,7 +604,7 @@ public class LevelOnePanel
 		{
 			try
 			{
-			   sm.checkSystemClipboardAccess();
+			   //sm.checkSystemClipboardAccess();
 			}
 			catch (Exception e) {e.printStackTrace();}
 		}
