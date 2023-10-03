@@ -112,7 +112,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		initEngine(
   		   width,	// Terminal width.
   		   512,		// Terminal height.
-  		   stype,		// Terminal subtype.
+  		   stype,	// Terminal subtype.
   		   1,		// Color flag.
   		   14);		// Colors supported
   	}
