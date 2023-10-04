@@ -886,7 +886,7 @@ public class LevelOnePanel
 					Graphics.class, LevelOneNetwork.class, int.class};
 
 				// Grab the constructor we need through inflection.
-				Constructor parser_constructor = Class.forName(
+				Constructor<?> parser_constructor = Class.forName(
 					"com.nn.osiris.ui.LevelOneParser2").getConstructor(
 						parameter_classes);
 

@@ -352,7 +352,7 @@ public final class LevelOneKermit
 	/** Level one network to be used. */
 	private LevelOneNetwork levelone_network;
 	/** Original directory to open files in */
-	private String original_dir;
+	//private String original_dir;
 	/** Current directory to open files in */
 	private String current_dir;
 	private String temp_dir;
@@ -506,8 +506,8 @@ public final class LevelOneKermit
 	private static final int PACKET_TYPE_BREAK_TRANSMISSION = 66;
 	private static final int PACKET_TYPE_ERROR = 69;
 	private static final int PACKET_TYPE_RECEIVE_INITIATION = 82;
-	private static final int PACKET_TYPE_HOST_COMMAND = 67;
-	private static final int PACKET_TYPE_KERMIT_COMMAND = 75;
+	//private static final int PACKET_TYPE_HOST_COMMAND = 67;
+	//private static final int PACKET_TYPE_KERMIT_COMMAND = 75;
 	private static final int PACKET_TYPE_TIMEOUT = 84;
 	private static final int PACKET_TYPE_CORRUPT = 81;
 	private static final int PACKET_TYPE_GENERIC = 71;
@@ -526,13 +526,13 @@ public final class LevelOneKermit
 
 	/** FSA state definitions. */
 	private static final int SSERV=1;
-	private static final int SSGEN=2;
+	//private static final int SSGEN=2;
 	private static final int SSFIL=3;
 	private static final int SSDAT=4;
 	private static final int SSEOT=5;
 	private static final int SRFIL=6;
 	private static final int SRDAT=7;
-	private static final int XSTATE=8;
+	//private static final int XSTATE=8;
 	private static final int SRATT=9;
 
 	/**
