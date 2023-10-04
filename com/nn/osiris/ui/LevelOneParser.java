@@ -200,7 +200,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		text_right = base.text_right;
 		terminalWidth = base.terminalWidth;
 		terminalHeight = base.terminalHeight;
-//		terminalColors = base.terminalColors;
+//		terminalColors = base.terminalColors;		// never used drs 2023/10/3
 	}
 
 	/**
@@ -769,7 +769,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Height of virtual screen. */
 	private int terminalHeight;
 	/** Colors of screen. */
-	//private int terminalColors;
+	//private int terminalColors;		// never used drs 2023/10/3
 
 	/** Buffer for transmitting keys back to system. */
 	private byte[] transmit_buffer = new byte[12];
@@ -2115,7 +2115,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		terminalHeight = (height > 511 ? height : 512);
 		sub_type = sub;
 		colorAvail = true;
-//		terminalColors = 0;
+//		terminalColors = 0;		// never used drs 2023/10/3
 		initTTY();
 	}
 	
