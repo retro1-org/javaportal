@@ -64,6 +64,10 @@ public class PortalFrame
 	 * Gets configuration information from the registry
 	 * for a windows portal convert.
 	 */
+	
+	/* does not work drs 2023/10/3
+	 * 
+
 	Session convertRegistryConfiguration(String spec)
 	{
 	// registry keys:
@@ -122,7 +126,7 @@ public class PortalFrame
 		}
 		return null;
 	}
-
+*/
 	/**
 	 * Returns the screen height.
 	 */
@@ -1578,6 +1582,7 @@ public class PortalFrame
 		if	(!PortalConsts.is_applet)
 			readOptionsFile();
 
+		/*
 		if	(startup_properties.getProperty("winconfig") != null)
 		{
 		Session	s = convertRegistryConfiguration(startup_properties.getProperty("winconfig"));
@@ -1590,6 +1595,7 @@ public class PortalFrame
 				return;
 			}
 		}
+		*/
 
 		// make command line options overrule everything else --
 		if	(startup_properties.getProperty("network_host") != null)
