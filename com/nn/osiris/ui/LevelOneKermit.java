@@ -62,7 +62,7 @@ public final class LevelOneKermit
 		byte[] packet,
 		int packet_length)
 	{
-		int type,i,x;
+		int type,x;
 	 
 	 	rcvpkt = packet;
 	 

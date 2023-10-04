@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
 import java.util.Vector;
 import javax.swing.*;
 import java.awt.datatransfer.*;
-import java.awt.print.*;
+//import java.awt.print.*;
 
 /**
  * This class represents the panel that displays the level one protocol.
@@ -24,6 +24,11 @@ public class LevelOnePanel
 	extends JPanel
 	implements MouseListener, ActionListener, MouseMotionListener, ClipboardOwner
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** Level one panel height. */
 	public static final int PANEL_HEIGHT = 512;
 
@@ -32,7 +37,7 @@ public class LevelOnePanel
 	/** The level one parser. */
 	private LevelOneParser level_one_parser;
 	/** List of registered network listeners. */
-	private Vector network_listeners = new Vector();
+	private Vector<ONetworkListener> network_listeners = new Vector();
 	/** The level one network to use for connecting to novaNET. */
 	private LevelOneNetwork level_one_network;
 	/** Network timer. */
@@ -44,7 +49,7 @@ public class LevelOnePanel
 	/** Version of java this is running on. */
 	private String java_version = System.getProperty("java.version");
 	/** Vector to keep track of threads that need cleanup */
-	Vector thread_list = new Vector();
+	Vector<LevelOneNetwork> thread_list = new Vector();
 
 	/** Variables holding information about the current screen selection */
 	Rectangle lastMark = null;
@@ -249,7 +254,7 @@ public class LevelOnePanel
 		try
 		{
 			connectDialog = new ConnectDialog(parent_frame,"Network","Opening connection to NovaNET...");
-			connectDialog.show();
+			connectDialog.setVisible(true);
 
 			// Connect to remote host.
 			level_one_network.connect(session.host, session.port);
@@ -598,7 +603,7 @@ public class LevelOnePanel
 		x2=x1+lastMark.width;y2=y1+lastMark.height;
 
 	StringBuffer	sb = getParser().clipToMemory(y1>>4,y2>>4,x1>>3,x2>>3);
-
+/*
       SecurityManager sm = System.getSecurityManager();
 		if (sm != null)
 		{
@@ -608,7 +613,7 @@ public class LevelOnePanel
 			}
 			catch (Exception e) {e.printStackTrace();}
 		}
-
+*/
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	Clipboard cp = tk.getSystemClipboard();
 
@@ -784,9 +789,9 @@ public class LevelOnePanel
 		try
 		{
 		// Grab the constructor we need through reflection.
-		Class	cls = Class.forName("com.nn.osiris.ui.JMFImplementer");
+		Class<?>	cls = Class.forName("com.nn.osiris.ui.JMFImplementer");
 
-			jmf_player = (JMFInterface)	cls.newInstance();
+			jmf_player = (JMFInterface)	cls.getDeclaredConstructor().newInstance();
 
 			if	(PortalConsts.is_debugging)	System.out.println("Loaded Java Media Framework");
 		}
@@ -813,7 +818,7 @@ public class LevelOnePanel
 
 			try
 			{
-			Class	cls = Class.forName("quicktime.app.view.QTFactory");
+			Class<?>	cls = Class.forName("quicktime.app.view.QTFactory");
 	
 			}
 			catch (NoClassDefFoundError e1)
@@ -830,10 +835,10 @@ public class LevelOnePanel
 			try
 			{
 			// Grab the constructor we need through reflection.
-			Class	cls = Class.forName(our_qt);
+			Class<?>	cls = Class.forName(our_qt);
 
 				quicktime_player = (QuickTimeInterface)
-					cls.newInstance();
+					cls.getDeclaredConstructor().newInstance();
 
 				if	(PortalConsts.is_debugging)	System.out.println("Loaded Quicktime Framework");
 			}

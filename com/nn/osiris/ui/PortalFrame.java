@@ -8,14 +8,14 @@
 package com.nn.osiris.ui;
 
 import java.awt.*;
-import java.awt.image.*;
+//import java.awt.image.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 import java.awt.print.*;
 import java.io.*;
 import java.awt.datatransfer.*;
-import java.lang.reflect.*;
+//import java.lang.reflect.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
@@ -30,6 +30,10 @@ public class PortalFrame
 	implements Printable, ActionListener, ONetworkListener,
 		ComponentListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	MacGlueInterface	mgi = null;		// macintosh-specific goo
 	KeyBarDialog	key_bar_dialog;		// dialog to assist user with NovaNET fkeys
 	NovaKeysDialog	nova_keys_dialog;	// dialog that displays help on NovaNET keys
@@ -331,9 +335,9 @@ public class PortalFrame
 
 		try
 		{
-		Class osxAdapter = Class.forName("com.nn.osiris.ui.MacGlue");
+		Class<?> osxAdapter = Class.forName("com.nn.osiris.ui.MacGlue");
 
-			mgi = (MacGlueInterface) osxAdapter.newInstance();
+			mgi = (MacGlueInterface) osxAdapter.getDeclaredConstructor().newInstance();
 			mgi.init(this);
 			if	(PortalConsts.is_debugging)
 				System.out.println("Using EAWT extensions for finder; temp="+mgi.getTempFolder());
@@ -345,9 +349,9 @@ public class PortalFrame
 			System.err.println("This version of Mac OS X does not support the Apple EAWT.");
 			try
 			{
-			Class	cls = Class.forName("com.nn.osiris.ui.MacGlueMRJ");
+			Class<?>	cls = Class.forName("com.nn.osiris.ui.MacGlueMRJ");
 
-				mgi = (MacGlueInterface) cls.newInstance();
+				mgi = (MacGlueInterface) cls.getDeclaredConstructor().newInstance();
 				mgi.init(this);
 				if	(PortalConsts.is_debugging)
 					System.out.println("Using MRJ extensions for finder; temp="+mgi.getTempFolder());
@@ -415,14 +419,14 @@ public class PortalFrame
 		}
 	}
 
-
+/*
 	private void selfUpdate()
 	{
 	// java.library.path up to first : is directory javaportal.jar sits in
 	// java.class.path is path to jar on either system?
 		try
 		{
-/* -- to determine version info of a binary... */
+//  -- to determine version info of a binary... 
    Package p = this.getClass().getPackage();
    System.out.println("Hello Specification Version : " 
                          + p.getSpecificationVersion());
@@ -459,7 +463,7 @@ public class PortalFrame
 			}
 		}
 	}
-
+*/
 	/**
 	 * Method to create menu hierarchy.
 	 */
@@ -1079,7 +1083,7 @@ public class PortalFrame
 				true,					// modal
 				last_session,
 				options);
-		communications.show();
+		communications.setVisible(true);
 
 		if	(!communications.isCancelled())
 			communications.getValues().copyTo(last_session);
@@ -1190,7 +1194,7 @@ public class PortalFrame
 				true,					// modal
 				options);
 
-		options_dialog.show();
+		options_dialog.setVisible(true);
 
 	// options are always saved immediately
 		if	(!options_dialog.isCancelled())
@@ -1309,7 +1313,7 @@ public class PortalFrame
 				nova_keys_dialog = new NovaKeysDialog(this);
 			}
 
-			nova_keys_dialog.show();
+			nova_keys_dialog.setVisible(true);
 		}
 
 		if	(cmd.equals("Function Key Bar"))
@@ -1317,7 +1321,7 @@ public class PortalFrame
 			if	(key_bar_dialog == null)
 				key_bar_dialog = new KeyBarDialog(this);
 
-			key_bar_dialog.show();
+			key_bar_dialog.setVisible(true);
 		}
 
 		if	(cmd.equals("Technical Support..."))

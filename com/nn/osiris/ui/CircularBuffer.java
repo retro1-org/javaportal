@@ -266,7 +266,7 @@ public final class CircularBuffer
 	protected void finalize() throws java.lang.Throwable
 	{
 		buffer = null;
-		super.finalize();
+		//super.finalize();
 	}
 
 	/** The in point for the circular buffer. */

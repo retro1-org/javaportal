@@ -51,7 +51,7 @@ package com.nn.osiris.ui;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -78,25 +78,25 @@ public class BrowserLauncher {
 	private static boolean loadedWithoutErrors;
 
 	/** The com.apple.mrj.MRJFileUtils class */
-	private static Class mrjFileUtilsClass;
+	private static Class<?> mrjFileUtilsClass;
 
 	/** The com.apple.mrj.MRJOSType class */
-	private static Class mrjOSTypeClass;
+	private static Class<?> mrjOSTypeClass;
 
 	/** The com.apple.MacOS.MacOSError class */
-	private static Class macOSErrorClass;
+	//private static Class<?> macOSErrorClass;
 	
 	/** The com.apple.MacOS.AEDesc class */
-	private static Class aeDescClass;
+	private static Class<?> aeDescClass;
 	
 	/** The <init>(int) method of com.apple.MacOS.AETarget */
-	private static Constructor aeTargetConstructor;
+	private static Constructor<?> aeTargetConstructor;
 	
 	/** The <init>(int, int, int) method of com.apple.MacOS.AppleEvent */
-	private static Constructor appleEventConstructor;
+	private static Constructor<?> appleEventConstructor;
 	
 	/** The <init>(String) method of com.apple.MacOS.AEDesc */
-	private static Constructor aeDescConstructor;
+	private static Constructor<?> aeDescConstructor;
 	
 	/** The findFolder method of com.apple.mrj.MRJFileUtils */
 	private static Method findFolder;
@@ -231,11 +231,11 @@ public class BrowserLauncher {
 		switch (jvm) {
 			case MRJ_2_0:
 				try {
-					Class aeTargetClass = Class.forName("com.apple.MacOS.AETarget");
-					macOSErrorClass = Class.forName("com.apple.MacOS.MacOSError");
-					Class osUtilsClass = Class.forName("com.apple.MacOS.OSUtils");
-					Class appleEventClass = Class.forName("com.apple.MacOS.AppleEvent");
-					Class aeClass = Class.forName("com.apple.MacOS.ae");
+					Class<?> aeTargetClass = Class.forName("com.apple.MacOS.AETarget");
+					//macOSErrorClass = Class.forName("com.apple.MacOS.MacOSError");
+					Class<?> osUtilsClass = Class.forName("com.apple.MacOS.OSUtils");
+					Class<?> appleEventClass = Class.forName("com.apple.MacOS.AppleEvent");
+					Class<?> aeClass = Class.forName("com.apple.MacOS.ae");
 					aeDescClass = Class.forName("com.apple.MacOS.AEDesc");
 
 					aeTargetConstructor = aeTargetClass.getDeclaredConstructor(new Class [] { int.class });
@@ -364,7 +364,7 @@ public class BrowserLauncher {
 							return browser;
 						}
 					} catch (IllegalArgumentException iare) {
-						browser = browser;
+						//browser = browser;
 						errorMessage = iare.getMessage();
 						return null;
 					} catch (IllegalAccessException iae) {

@@ -8,9 +8,9 @@
 package com.nn.osiris.ui;
 
 import java.awt.*;
-import java.awt.event.*;
+//import java.awt.event.*;
 import java.awt.image.*;
-import java.awt.Font.*;
+//import java.awt.Font.*;
 
 /**
  * Class that implements the L1P printing methods,

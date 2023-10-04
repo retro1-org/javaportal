@@ -10,12 +10,12 @@
 
 package com.nn.osiris.ui;
 
-import java.awt.*;
+//import java.awt.*;
 import javax.swing.*;
-import javax.swing.text.*;
-import java.lang.*;
+//import javax.swing.text.*;
+//import java.lang.*;
 import java.awt.event.*;
-import java.util.*;
+//import java.util.*;
 
 /**
  * This class represents the non-modal dialog that gives buttons for NovaNET function keys.
@@ -24,6 +24,10 @@ public class NovaKeysDialog
 	extends JDialog
 	implements ActionListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	PortalFrame	frame;
 
 	public NovaKeysDialog(PortalFrame parent)

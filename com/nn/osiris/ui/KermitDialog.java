@@ -19,6 +19,11 @@ import javax.swing.*;
 public class KermitDialog extends JDialog
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Construct a kermit dialog which displays a kermit message.
 	 *
 	 * @param	parent	The parent which owns this dialog.

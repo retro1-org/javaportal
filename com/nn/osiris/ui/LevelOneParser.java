@@ -18,9 +18,11 @@ package com.nn.osiris.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.awt.Font.*;
+//import java.awt.Font.*;
 import java.io.*;
 import java.util.*;
+
+//import com.nn.osiris.ui.LevelOneParser.WatchInfo;
 
 
 
@@ -2204,7 +2206,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			 * 
 			 */
 			
-			if (sub_type == 16)  // needed only for Cybis/Cyber1.
+			if (sub_type == 16 && L1PPDataMode == data_proc)  // needed only for Cybis/Cyber1.
 			{
 				if (m_pending == 0 && b == 0xff)
 				{
@@ -2756,12 +2758,13 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 *
 	 * @param
 	 */
+	/*
 	private final int ExtractSlot (int firstbyte)
 	{
 		return ((data[firstbyte+1] & 0x3f) << 6) |
 			(data[firstbyte] & 0x3f);
 	}
-
+*/
 	/**
 	 * Adjust the current x and y.
 	 *
@@ -4359,6 +4362,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 * Returns true if stringbuffer describes a quicktime still picture format.
 	 *
 	 */
+	/*
 	private final boolean IsPictureFile(StringBuffer x)
 	{
 		String test = x.toString();
@@ -4368,7 +4372,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		return false;
 	}
-
+*/
 	/**
 	 * Make rectangle flipped.
 	 *
@@ -5366,8 +5370,8 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		try
 		{
-		FileInputStream	trap_fis = new FileInputStream(trap_file);
-		long 		offset;
+			FileInputStream	trap_fis = new FileInputStream(trap_file);
+			long 		offset;
 		
 			for (offset=0; offset < file_length; offset += 256)
 			{
@@ -6214,7 +6218,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 				kermit_dir = current_dir;
 			kermit_object = new LevelOneKermit(levelone_network,kermit_dir,tmp_dir,kerm_delay);
 			kermit_dialog = new KermitDialog(parent_frame,"Kermit","File transfer in progress; please be patient!");
-			kermit_dialog.show();
+			kermit_dialog.setVisible(true);
 		}
 	}
 
@@ -8092,7 +8096,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	/**
 	 * Command to watch a directory for changes.
 	 */
-	Vector watch_data = new Vector();
+	Vector<WatchInfo> watch_data = new Vector();
 	javax.swing.Timer watch_timer;
 
 	class WatchInfo
@@ -8891,7 +8895,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	int 			pix[] = draw_string_pix;
 	int 			x,y;
 	int 			relsize;
-	int 			index = 0;
+	//int 			index = 0;
 	int 			pixvalue;
 
 		if (size != 0)
@@ -8983,9 +8987,9 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			levelone_base_graphics.drawImage (img,plotx,ploty-16*relsize+1,null);
 		else
 		{
-			if	(false)
+/*			if	(false)
 				do_repaint = true;
-			else
+			else */
 				levelone_container.repaint(plotx,ploty-16*relsize+1,
 					plotx+8*stringlength*relsize,ploty-16*relsize+1+16*relsize);
 		}
@@ -10428,7 +10432,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		
 		try
 		{
-			Class target_class = Class.forName(class_name);
+			Class<?> target_class = Class.forName(class_name);
 			java.lang.reflect.Method target_method = target_class.getMethod(
 				method_name,
 				parameter_classes);
@@ -10750,7 +10754,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		SendExt(0xff);
 	}
-
+/*
 	private final void sleep(int mills)
 	{
 		try
@@ -10761,7 +10765,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		{
 		}
 	}
-
+*/
 	// This is a table of the M0/M1 characters
 	// from the NovaNET ascii terminal definition.
 	//
@@ -11564,6 +11568,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 * @param	bytes	The bytes to be converted into array of longs.
 	 * @return			The converted array of longs.
 	 */
+	/*
 	private long[] convert(byte[] bytes)
 	{
 		// Every eight bytes map to a long.
@@ -11597,7 +11602,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		return converted_longs;
 	}
-	
+	*/
 	/**
 	 * Convert array of longs to array of bytes. Every long will map to eight
 	 * bytes.
@@ -11607,6 +11612,8 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 * @param	size	Number of longs to be converted.
 	 * @return			The converted array of bytes.
 	 */
+	
+	/*
   	private byte[] convert(
 		long[] longs,
 		int offset,
@@ -11627,6 +11634,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		return converted_bytes;
   	}
+  	*/
 
 
 }

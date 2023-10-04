@@ -8,10 +8,10 @@
 package com.nn.osiris.ui;
 
 import java.awt.*;
-import java.awt.event.*;
+//import java.awt.event.*;
 import java.util.*;
-import java.io.*;
-import netscape.javascript.*;
+//import java.io.*;
+//import netscape.javascript.*;
 
 /**
  * JPortal is the main class of the Java Portal application/applet.
@@ -22,6 +22,10 @@ import netscape.javascript.*;
  */
 public class JPortal extends javax.swing.JFrame
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Configuration file object
 	private static 	Properties	settings;
 	static JPortal		global_jportal;
@@ -233,7 +237,7 @@ public class JPortal extends javax.swing.JFrame
 			{
 				frame = new PortalFrame(settings);
 				frame.pack();
-				frame.show();
+				frame.setVisible(true);
 			}
 		}
 		catch (Exception e) {

@@ -13,8 +13,8 @@ package com.nn.osiris.ui;
 import java.net.*;
 import java.io.*;
 import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+//import java.awt.*;
+//import java.util.*;
  
 /**
  * This class manages the connection to the host.
@@ -106,7 +106,7 @@ public class LevelOneNetwork extends Thread
 
 		try
 		{
-		Class netclass = Class.forName("com.nn.osiris.ui.NetConnModern");
+		Class<?> netclass = Class.forName("com.nn.osiris.ui.NetConnModern");
 
 			nci = (NetConnInterface) netclass.newInstance();
 			if	(PortalConsts.is_debugging)	System.out.println("Using JRE1.5+ NetConnInterface");
@@ -132,9 +132,9 @@ public class LevelOneNetwork extends Thread
 		{
 			try
 			{
-			Class netclass = Class.forName("com.nn.osiris.ui.NetConnInterface");
+			Class<?> netclass = Class.forName("com.nn.osiris.ui.NetConnInterface");
 
-				nci = (NetConnInterface) netclass.newInstance();
+				nci = (NetConnInterface) netclass.getDeclaredConstructor().newInstance();
 				if	(PortalConsts.is_debugging)	System.out.println("Using JRE<1.5 NetConnInterface");
 			}
 			catch (Exception notpossible)

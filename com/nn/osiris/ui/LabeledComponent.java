@@ -20,9 +20,13 @@ import java.awt.*;
  */
 public class LabeledComponent extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JComponent		component;
 	private JLabel			label;
-	private BorderLayout	layout;
+	//private BorderLayout	layout;
 	
 	public static int		LABEL_LEFT = 0;
 	public static int		LABEL_ABOVE = 1;

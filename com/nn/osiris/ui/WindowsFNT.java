@@ -219,7 +219,7 @@ public final class WindowsFNT
 		int	pix[];
 		int	x;
 		int y;
-		int	index = 0;
+		//int	index = 0;
 		int	pix_value;
 		int	display_width = 0;
 		

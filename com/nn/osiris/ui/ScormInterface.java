@@ -12,7 +12,7 @@ class ScormInterface
 	{
 		if	(PortalConsts.is_debugging)System.out.println("Using ScormInterface");
 	}
-	public void init(javax.swing.JApplet papplet)
+	public void init(javax.swing.JFrame papplet)
 	{
 //		ScormApiImp.InitInstance(papplet);
 //		ScormApiImp.GetInstance().initialize();

@@ -9,10 +9,10 @@ package com.nn.osiris.ui;
 
 import java.awt.*;
 import javax.swing.*;
-import java.lang.*;
+//import java.lang.*;
 import java.awt.event.*;
-import java.util.*;
-import java.lang.reflect.*;
+//import java.util.*;
+//import java.lang.reflect.*;
 
 /**
  * This class represents the dialog used to change the host and port settings.
@@ -21,6 +21,11 @@ public class OptionsDialog
 	extends JDialog
 	implements ActionListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Options			options = new Options();
 
 	private JCheckBox		disconnect_button = new JCheckBox("Disconnect at Signoff");
@@ -95,18 +100,18 @@ public class OptionsDialog
 		pack();
 		setLocationRelativeTo(parent);
 	}
-
+/*
 	private void resetButtonsEnabling()
 	{
 		ok_button.setEnabled (true);
 	}
-
+*/
 	public void actionPerformed(ActionEvent e) 
 	{
 		// CANCEL BUTTON
 		if (e.getSource() == cancel_button)
 		{
-			hide();
+			setVisible(false);
 			cancelled = true;
 		}
 
@@ -118,7 +123,7 @@ public class OptionsDialog
 			options.disable_signon_display = disable_name_button.isSelected();
 			options.multi_connect = multi_connect_button.isSelected();
 			cancelled = false;
-			hide();
+			setVisible(false);
 		}
 	}
 

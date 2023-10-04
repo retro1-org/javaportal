@@ -17,6 +17,10 @@ import java.awt.event.*;
 public class ConnectDialog extends JDialog
 	implements ActionListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	PortalFrame	pf;
 
 	/**

@@ -12,7 +12,7 @@ package com.nn.osiris.ui;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.awt.geom.*;
+//import java.awt.geom.*;
 
 /**
  * Decodes the level one terminal protocol with graphics 2D capability.
@@ -80,6 +80,7 @@ public class LevelOneParser2 extends LevelOneParser
 	 * @param	sthick		Thickness of the pen stroke.
 	 * @param	sfill		Ellipse is filled.
 	 */
+	/*
 	private void plotEllipse(
 		int x_radius,
 		int y_radius,
@@ -122,7 +123,7 @@ public class LevelOneParser2 extends LevelOneParser
 			renderShape(obj, true, true, true, false);
 		}
 	}
-
+*/
 	/**
 	 * Render arc.
 	 *
@@ -137,6 +138,8 @@ public class LevelOneParser2 extends LevelOneParser
 	 * @param	sthick		Thickness of the pen stroke.
 	 * @param	sfill		Arc is filled.
 	 */
+	
+	/*
 	private void plotArc(
 		int x_radius,
 		int y_radius,
@@ -209,7 +212,7 @@ public class LevelOneParser2 extends LevelOneParser
 			renderShape(thearc, true, true, false, false);
 		}
 	}
-
+*/
 	/**
 	 * Gets pattern brush to draw with.
 	 *

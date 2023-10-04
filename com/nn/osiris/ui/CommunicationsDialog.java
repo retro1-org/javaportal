@@ -12,10 +12,10 @@ package com.nn.osiris.ui;
 
 import java.awt.*;
 import javax.swing.*;
-import java.lang.*;
+//import java.lang.*;
 import java.awt.event.*;
-import java.util.*;
-import java.lang.reflect.*;
+//import java.util.*;
+//import java.lang.reflect.*;
 
 /**
  * This class represents the dialog used to change the host and port settings.
@@ -24,6 +24,8 @@ public class CommunicationsDialog
 	extends JDialog
 	implements ActionListener
 {
+	private static final long serialVersionUID = 1L;
+	
 	private boolean			is_host_valid = true;
 	private boolean			is_port_valid = true;
 	private boolean			cancelled = false;
@@ -36,7 +38,7 @@ public class CommunicationsDialog
 	private JButton			ok_button = new JButton("Ok");
 	private JButton			cancel_button = new JButton("Cancel");
 
-	private PortalFrame		parent;
+	//private PortalFrame		parent;
 	private Session			session = new Session();
 
 	/**
@@ -98,19 +100,19 @@ public class CommunicationsDialog
 		{
 		// Grab the constructor we need through reflection..
 		// wont load without 1.4+
-		Class	cls = Class.forName("com.nn.osiris.ui.FieldFilter");
+		Class<?>	cls = Class.forName("com.nn.osiris.ui.FieldFilter");
 		FieldFilterInterface	ff;
 
-			ff = (FieldFilterInterface) cls.newInstance();
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
 			ff.setFilter(host_field,50);
 
-			ff = (FieldFilterInterface) cls.newInstance();
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
 			ff.setFilter(port_field,5);
 
-			ff = (FieldFilterInterface) cls.newInstance();
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
 			ff.setFilter(name_field,18);
 
-			ff = (FieldFilterInterface) cls.newInstance();
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
 			ff.setFilter(group_field,8);
 		}
 		catch (NoClassDefFoundError e1)
@@ -202,7 +204,7 @@ public class CommunicationsDialog
 		if (e.getSource() == cancel_button)
 		{
 			cancelled = true;
-			hide();
+			setVisible(false);
 		}
 
 		// OK BUTTON
@@ -226,7 +228,7 @@ public class CommunicationsDialog
 			}
 			session.name = name_field.getText();
 			session.group = group_field.getText();
-			hide();
+			setVisible(false);
 		}
 	}
 
