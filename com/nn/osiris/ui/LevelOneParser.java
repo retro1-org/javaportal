@@ -5326,6 +5326,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 *
 	 */
 
+	@SuppressWarnings("resource")
 	void TrapRead()
 	{
 		if (playback)

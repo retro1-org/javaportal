@@ -108,7 +108,7 @@ public class LevelOneNetwork extends Thread
 		{
 		Class<?> netclass = Class.forName("com.nn.osiris.ui.NetConnModern");
 
-			nci = (NetConnInterface) netclass.newInstance();
+			nci = (NetConnInterface) netclass.getDeclaredConstructor().newInstance();
 			if	(PortalConsts.is_debugging)	System.out.println("Using JRE1.5+ NetConnInterface");
 		}
 		catch (UnsupportedClassVersionError e)
@@ -127,7 +127,12 @@ public class LevelOneNetwork extends Thread
 		{
 			load_error = true;
 		}
-
+		catch (Exception notpossible)
+		{
+			if	(PortalConsts.is_debugging)	System.out.println("ERROR: unable to load netconninterface");
+			load_error = true;
+		}
+		
 		if	(load_error)
 		{
 			try

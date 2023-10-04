@@ -263,10 +263,17 @@ public class JPortal extends javax.swing.JFrame
 		//~~ but it doesn't work, at least in 1.4.x
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name","Portal");
 		}
+		/*
 		catch (java.security.AccessControlException e1)
 		{
 		// will splat here with applet runs - no big deal
 		}
+		*/
+		catch (Exception e1)
+		{
+		// will splat here with applet runs - no big deal
+		}
+
 	}
 
 	/**

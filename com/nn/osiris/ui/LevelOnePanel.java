@@ -37,7 +37,7 @@ public class LevelOnePanel
 	/** The level one parser. */
 	private LevelOneParser level_one_parser;
 	/** List of registered network listeners. */
-	private Vector<ONetworkListener> network_listeners = new Vector();
+	private Vector<ONetworkListener> network_listeners = new Vector<ONetworkListener>();
 	/** The level one network to use for connecting to novaNET. */
 	private LevelOneNetwork level_one_network;
 	/** Network timer. */
@@ -49,7 +49,7 @@ public class LevelOnePanel
 	/** Version of java this is running on. */
 	private String java_version = System.getProperty("java.version");
 	/** Vector to keep track of threads that need cleanup */
-	Vector<LevelOneNetwork> thread_list = new Vector();
+	Vector<LevelOneNetwork> thread_list = new Vector<LevelOneNetwork>();
 
 	/** Variables holding information about the current screen selection */
 	Rectangle lastMark = null;
@@ -766,9 +766,9 @@ public class LevelOnePanel
 		}
 		catch (java.lang.NoSuchMethodError e1)
 		{
-			if	((e.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
+			if	((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0)
 				ret = 1;
-			if	((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
+			if	((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0)
 				ret = 3;
 		}
 
@@ -893,7 +893,7 @@ public class LevelOnePanel
 				Object[] arguments = {parent_frame, this, 
 					this.getGraphics(), this.getGraphics(), offscreen,
 					offscreen.getGraphics(), level_one_network,
-					new Integer(panel_width)};
+					Integer.valueOf(panel_width)};
 				
 				level_one_parser = (LevelOneParser)
 					parser_constructor.newInstance(arguments);
@@ -966,7 +966,7 @@ public class LevelOnePanel
 		// these were used for connection hotkeys with > 1 connection
 		else if (KeyEvent.VK_0 <= event.getKeyCode() &&
 				KeyEvent.VK_9 >= event.getKeyCode() &&
-				0 != event.getModifiers() &&
+				0 != event.getModifiersEx() &&
 			 	!event.isShiftDown())
 		{
 			return false;
