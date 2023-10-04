@@ -552,8 +552,8 @@ public class PortalFrame
 
 		jMenuHelp.add (item = new JMenuItem("Keyboard..."));
 		item.addActionListener(this);
-		jMenuHelp.add (item = new JMenuItem("Technical Support..."));
-		item.addActionListener(this);
+//		jMenuHelp.add (item = new JMenuItem("Technical Support..."));
+//		item.addActionListener(this);
 		jMenuHelp.addSeparator();
 		jMenuHelp.add (item = new JMenuItem("Function Key Bar"));
 		item.addActionListener(this);
