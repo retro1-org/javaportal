@@ -21,7 +21,7 @@ public class KermitDialog extends JDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -121L;
 
 	/**
 	 * Construct a kermit dialog which displays a kermit message.

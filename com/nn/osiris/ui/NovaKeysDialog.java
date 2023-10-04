@@ -27,7 +27,7 @@ public class NovaKeysDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -161L;
 	PortalFrame	frame;
 
 	public NovaKeysDialog(PortalFrame parent)

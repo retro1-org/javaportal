@@ -27,7 +27,7 @@ public class LevelOnePanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -151L;
 
 	/** Level one panel height. */
 	public static final int PANEL_HEIGHT = 512;

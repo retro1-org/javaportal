@@ -24,7 +24,7 @@ public class CommunicationsDialog
 	extends JDialog
 	implements ActionListener
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -111L;
 	
 	private boolean			is_host_valid = true;
 	private boolean			is_port_valid = true;

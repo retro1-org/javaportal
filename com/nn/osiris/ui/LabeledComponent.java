@@ -23,7 +23,7 @@ public class LabeledComponent extends JPanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -141L;
 	private JComponent		component;
 	private JLabel			label;
 	//private BorderLayout	layout;

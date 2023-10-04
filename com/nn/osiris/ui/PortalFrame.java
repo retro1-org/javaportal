@@ -33,7 +33,7 @@ public class PortalFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -181L;
 	MacGlueInterface	mgi = null;		// macintosh-specific goo
 	KeyBarDialog	key_bar_dialog;		// dialog to assist user with NovaNET fkeys
 	NovaKeysDialog	nova_keys_dialog;	// dialog that displays help on NovaNET keys

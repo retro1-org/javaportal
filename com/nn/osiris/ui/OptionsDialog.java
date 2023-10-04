@@ -24,7 +24,7 @@ public class OptionsDialog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -171L;
 
 	private Options			options = new Options();
 

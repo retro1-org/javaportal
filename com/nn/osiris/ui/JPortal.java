@@ -25,7 +25,7 @@ public class JPortal extends javax.swing.JFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -11L;
 	// Configuration file object
 	private static 	Properties	settings;
 	static JPortal		global_jportal;
