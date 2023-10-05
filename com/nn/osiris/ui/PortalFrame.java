@@ -515,7 +515,7 @@ public class PortalFrame
 		// the command key is the special key and not used
 		// by portal
 			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		}
  		item.addActionListener(this);
 
@@ -523,7 +523,7 @@ public class PortalFrame
 		if	(PortalConsts.is_macintosh)
 		{
 			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		}
 		item.addActionListener(this);
 		jMenuBar1.add(jMenuEdit);
