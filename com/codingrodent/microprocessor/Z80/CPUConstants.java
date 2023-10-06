@@ -20,7 +20,7 @@ package com.codingrodent.microprocessor.Z80;
 public class CPUConstants {
 
     // Pre-calculate parity table
-    static final boolean[] PARITY_TABLE = new boolean[256];
+    static public final boolean[] PARITY_TABLE = new boolean[256];
     //
     // T States for all instructions (Where fixed) - If variable, handled locally
     final static byte[] OPCODE_T_STATES = new byte[]{4, 16, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4,        // 0

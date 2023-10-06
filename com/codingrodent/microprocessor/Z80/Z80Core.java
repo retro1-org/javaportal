@@ -2777,7 +2777,7 @@ public class Z80Core implements ICPUData {
         }
     }
 
-    private void ret() {
+    public void ret() {
         tStates = tStates + 10;
         reg_PC = ram.readWord(reg_SP);
         inc2SP();

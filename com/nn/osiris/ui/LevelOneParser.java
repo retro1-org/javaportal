@@ -6662,7 +6662,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 			cpu.z80Memory.writeWord(mem_addr, val);
 			
-			System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
+			//System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
 			mem_addr = mem_addr + 2;
 			
 		}
