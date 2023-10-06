@@ -244,7 +244,13 @@ public class CPUConstants {
         /**
          * 7 bit refresh register
          */
-        R
+        R,
+        B,
+        C,
+        D,
+        E,
+        H,
+        L
     }
 
     /*

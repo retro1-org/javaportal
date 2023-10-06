@@ -170,6 +170,12 @@ public class Z80Core implements ICPUData {
             case F_ALT -> reg_F_ALT;
             case I -> reg_I;
             case R -> getR();
+            case B -> getB();
+            case C -> getCreg();
+            case D -> getD();
+            case E -> getE();
+            case H -> getHreg();
+            case L -> getL();
         };
     }
 
@@ -197,6 +203,12 @@ public class Z80Core implements ICPUData {
             case F_ALT -> reg_F_ALT = value & 0xFF;
             case I -> reg_I = value & 0xFF;
             case R -> setR(value);
+            case B -> reg_B = value & 0xff;
+            case C -> reg_C = value & 0xff;
+            case D -> reg_D = value & 0xff;
+            case E -> reg_E = value & 0xff;
+            case H -> reg_H = value & 0xff;
+            case L -> reg_L = value & 0xff;
         }
     }
 
@@ -208,7 +220,21 @@ public class Z80Core implements ICPUData {
     public int getSP() {
         return reg_SP;
     }
+    
+    
+    public void push(int x)
+    {
+        dec2SP();
+        ram.writeWord(reg_SP, x);
+    }
 
+    public int pop()
+    {
+    	int p =ram.readWord(reg_SP);
+        inc2SP();
+        return p;
+    }
+    
     /**
      * Execute a single instruction at the present program counter (PC) then return. The internal state of the processor
      * is updated along with the T state count.
@@ -2221,6 +2247,30 @@ public class Z80Core implements ICPUData {
         return (reg_B << 8) + reg_C;
     }
 
+    private int getB() {
+        return reg_B;
+    }
+    
+    private int getCreg() {
+        return reg_C;
+    }
+    
+    private int getD() {
+        return reg_D;
+    }
+    
+    private int getE() {
+        return reg_E;
+    }
+    
+    private int getHreg() {
+        return reg_H;
+    }
+    
+    private int getL() {
+        return reg_L;
+    }
+    
     private void setBC(int bc) {
         reg_B = (bc & 0xFF00) >> 8;
         reg_C = bc & 0x00FF;

@@ -22,6 +22,10 @@ import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 
+import com.codingrodent.microprocessor.Z80.Utilities;
+import com.codingrodent.microprocessor.Z80.Z80Core;
+import com.codingrodent.microprocessor.Z80.CPUConstants.RegisterNames;
+
 //import com.nn.osiris.ui.LevelOneParser.WatchInfo;
 
 
@@ -33,6 +37,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 {
 	
 	public PZ80Cpu cpu;
+	public Z80Core z80;
 	
 	/**
 	 * Constructor.
@@ -109,12 +114,16 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		data_pnt = 0;
   		data_proc = TTYDataMode;
 
-  		cpu = new PZ80Cpu();
+  		cpu = new PZ80Cpu(this);
+  		z80 = cpu.z80;
+
   		/*
   		cpu.z80Memory.writeByte(0, 0); //noop
   		cpu.z80Memory.writeByte(1, 0x76); // halt
-  		cpu.run(0);
   		*/
+  		
+  		cpu.z80Memory.writeByte(PortalConsts.R_LINE, 0x76);
+  		cpu.run(PortalConsts.R_LINE);
   		
   		font_height = 16;
 		
@@ -6634,7 +6643,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		if (mem_conv != 0)
 		{
 			build_char [ build_count ++ ] = ExtractWord ( 0);
-
+			
 			if (build_count == 8)
 			{
 				CharFlip();
@@ -6645,6 +6654,17 @@ int PtermHostConnection::AssembleAsciiWord (void)
 				else
 					mem_addr += 16;
 			}
+			// System.out.println("Char load at: 0x" + String.format("%x",mem_addr) );
+		}
+		else
+		{
+			int val = ExtractWord ( 0);
+
+			cpu.z80Memory.writeWord(mem_addr, val);
+			
+			System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
+			mem_addr = mem_addr + 2;
+			
 		}
 	}
 
@@ -6754,6 +6774,24 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		text_size = temp;
 	}
 
+	private void ProgMode(int d, int origin)
+	{
+		
+		System.out.println("ProgMode:   Data: 0x" + String.format("%x",d) +"  Origin: 0x" +String.format("%x",origin));
+		
+		// Load C/D/E with data word
+		z80.setRegisterValue(RegisterNames.C, (d >> 16) & 0xff);
+		z80.setRegisterValue(RegisterNames.D, (d >> 8) & 0xff);
+		z80.setRegisterValue(RegisterNames.E, (d & 0xff));
+
+	    // Push the fake return address for "return to main loop" onto the
+	    // stack, as if we just did a CALL instruction		
+		z80.setRegisterValue(RegisterNames.SP, PortalConsts.INITSP);
+		z80.push(PortalConsts.R_MAIN);
+		
+		cpu.runWithMtutorCheck(cpu.z80Memory.readWord(origin));
+	}
+	
 	/**
 	 *
 	 * Mode 5 (user mode).
@@ -6762,6 +6800,30 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 	private final void UserData5()
 	{
+		int val = ExtractWord(0);
+
+		System.out.println("UserData5:   Data: 0x" + String.format("%x",val));
+		
+		// Load C/D/E with data word
+		z80.setRegisterValue(RegisterNames.C, (val >> 16) & 0xff);
+		z80.setRegisterValue(RegisterNames.D, (val >> 8) & 0xff);
+		z80.setRegisterValue(RegisterNames.E, (val & 0xff));
+		
+		int d = z80.getRegisterValue(RegisterNames.D);
+		int c = z80.getRegisterValue(RegisterNames.C);
+		if ((c & 3) == 0 && d > 0 )
+		{
+			ProgMode(val, PortalConsts.M5ORIGIN);
+			return;
+		}
+		
+		   //// Push the return address onto the
+		   //// stack, as if we just did a CALL instruction
+		
+		z80.push(z80.getProgramCounter());
+		int xaddr = cpu.z80Memory.readWord(PortalConsts.M5ORIGIN);
+		cpu.runWithMtutorCheck(xaddr);
+		
 	}
 
 	/**
@@ -6772,6 +6834,9 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 	private final void UserData6()
 	{
+		int val = ExtractWord(0);
+
+		System.out.println("UserData6:   Data: 0x" + String.format("%x",val));
 	}
 
 	/**
@@ -6782,6 +6847,9 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 	private final void UserData7()
 	{
+		int val = ExtractWord(0);
+
+		System.out.println("UserData7:   Data: 0x" + String.format("%x",val));
 	}
 
 	/**
