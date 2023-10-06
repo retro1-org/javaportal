@@ -141,7 +141,7 @@ public class PZ80Cpu {
                 {
                 	if (lth > 2)
                 		lth = lth;
-                	parser.drawString(cbuf, lth, 0xffffff, 0, currentX, currentY, ((z80Memory.readByte(PortalConsts.M_MODE)) & 0x6) >> 1 , 0, 0, 0  );
+                	parser.drawString(cbuf, lth, 0xffffff, 0, currentX, currentY, ((z80Memory.readByte(PortalConsts.M_MODE)) & 0x3), 0, 0, 0  );
                     break;
                 }
 
@@ -173,7 +173,7 @@ public class PZ80Cpu {
     		
     		int mode = z80.getRegisterValue(RegisterNames.HL) & 0xff;
     		
-    		z80Memory.writeByte(PortalConsts.M_MODE, mode);
+    		z80Memory.writeByte(PortalConsts.M_MODE, mode >> 1);
     		
     		if ( (mode & 1) == 1)
     			mode = mode;		// TODO erase screen
