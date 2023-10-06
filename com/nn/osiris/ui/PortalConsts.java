@@ -32,7 +32,7 @@ class PortalConsts
 
 	static public boolean	is_macintosh = false;
 	static public boolean	is_windows = false;
-	static public boolean	is_debugging = true;
+	static public boolean	is_debugging = false;
 	static public boolean	is_applet = false;
 	static public boolean	is_quicktime = false;
 	// Default tcp host & port to connect to:

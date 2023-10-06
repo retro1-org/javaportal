@@ -87,22 +87,22 @@ public class PZ80Cpu {
         int x, y, cp, c, x2, y2;
 
         
-    	System.out.print("----------------------------------------------------------Calling resident... ");
+    	//System.out.print("----------------------------------------------------------Calling resident... ");
 
     	
     	switch(val)
     	{
     	
     	case PortalConsts.R_MAIN:
-        	System.out.println("R_MAIN");
+        	//System.out.println("R_MAIN");
     		return 2;
     	
     	case PortalConsts.R_INIT:
-        	System.out.println("R_INIT");
+        	//System.out.println("R_INIT");
     		return 2;
     		
     	case PortalConsts.R_DOT:
-        	System.out.println("R_DOT");
+        	//System.out.println("R_DOT");
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
         	
@@ -114,10 +114,10 @@ public class PZ80Cpu {
     		return 1;    		
     	
     	case PortalConsts.R_LINE:
-        	System.out.print("R_LINE");
+        	//System.out.print("R_LINE");
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
-        	System.out.println(": (" + x+ ","+ y + ")" );
+        	//System.out.println(": (" + x+ ","+ y + ")" );
         	
         	parser.PlotLine(currentX, currentY, x, y, 1, 0, 0, 1, 0);
         	
@@ -127,23 +127,15 @@ public class PZ80Cpu {
     		return 1;
     		
     	case PortalConsts.R_CHARS:
-        	System.out.println("R_CHARS");
+        	//System.out.println("R_CHARS");
         	int cpointer = z80.getRegisterValue(RegisterNames.HL);
         	byte[] cbuf =  new byte[500];
         	
-        	int chr = z80Memory.readByte(cpointer);
+        	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
-        	
         	
             for (;;)
             {
-                if (chr == 077 && z80Memory.readByte(cpointer) == 0)
-                {
-                	if (lth > 2)
-                		lth = lth;
-                	parser.drawString(cbuf, lth, 0xffffff, 0, currentX, currentY, ((z80Memory.readByte(PortalConsts.M_MODE)) & 0x3), 0, 0, 0  );
-                    break;
-                }
 
                 int save = z80Memory.readByte(PortalConsts.M_CCR);
                 int charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
@@ -154,9 +146,13 @@ public class PZ80Cpu {
                 	z80Memory.writeByte(PortalConsts.M_CCR,(z80Memory.readByte(PortalConsts.M_CCR) & ~0x0e) | (charM + 1) << 1);
                 }
 
-                cbuf[lth++] = (byte)(chr & 0x3f);
+                cbuf[lth++] = ((byte)(chr & 0x3f));
                 
-                //plotChar (c & 0x3f );
+
+                //cbuf[lth++] = (byte)Sixbit.pa6[((byte)(chr & 0x3f))];
+
+                
+                ////////////////////////////////////plotChar (c & 0x3f );
 
                 if (chr > 0x3F )
                 {
@@ -165,6 +161,22 @@ public class PZ80Cpu {
                 }
 
                 chr = z80Memory.readByte(cpointer++);
+
+            	boolean p1 = (chr == 0x3f);
+            	boolean p2 = (z80Memory.readByte(cpointer) == 0);
+                if (p1 && p2)
+                {
+                	int wrMode = (z80Memory.readByte(PortalConsts.M_MODE)) & 0x3;
+                	
+                	int fgcolor = 0xffffff | (255 << 24);
+                	int bgcolor = 0 | (255 << 24);
+                
+                	parser.drawString(cbuf, lth, fgcolor, bgcolor, currentX, currentY, wrMode, 1, 0, 0);
+                	currentX += 8;
+                	//parser.FlushText();
+                    break;
+                }
+
             }
                         
     		return 1;
@@ -216,25 +228,25 @@ public class PZ80Cpu {
 
     		
     	case PortalConsts.R_INPX:
-        	System.out.println("R_INPX");
+        	//System.out.println("R_INPX");
         	z80.setRegisterValue(RegisterNames.HL, currentX);
         	
         	return 1;
     		
     	case PortalConsts.R_INPY:
-        	System.out.println("R_INPY");
+        	//System.out.println("R_INPY");
         	z80.setRegisterValue(RegisterNames.HL, currentY);
         	
         	return 1;
     		
     	case PortalConsts.R_OUTX:
-        	System.out.println("R_OUTX");
+        	//System.out.println("R_OUTX");
         	currentX = z80.getRegisterValue(RegisterNames.HL);
         	
         	return 1;
         	
     	case PortalConsts.R_OUTY:
-        	System.out.println("R_OUTY");
+        	//System.out.println("R_OUTY");
         	currentY = z80.getRegisterValue(RegisterNames.HL);
         	
         	return 1;
@@ -242,7 +254,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_XMIT: 
         	{
             int k = z80.getRegisterValue(RegisterNames.HL);
-        	System.out.println("R_XMIT 0x" + String.format("%x", k));
+        	//System.out.println("R_XMIT 0x" + String.format("%x", k));
 
             //int temp_hold = mt_ksw;
             //if (k != 0x3a)
@@ -262,7 +274,7 @@ public class PZ80Cpu {
         	}
         	
     	case PortalConsts.R_CCR:
-        	System.out.println("R_CCR");
+        	//System.out.println("R_CCR");
         	int ccr_val = z80.getRegisterValue(RegisterNames.HL);
         	z80Memory.writeWord(PortalConsts.M_CCR, ccr_val);
         	
@@ -277,19 +289,30 @@ public class PZ80Cpu {
     		return 1;
         	
     	case PortalConsts.R_FCOLOR:
-    		System.out.println("R_FCOLOR"); // TODO
+    		//System.out.println("R_FCOLOR"); // TODO
     		return 1;
     		
     	case PortalConsts.R_FCOLOR+1:
-    		System.out.println("R_FCOLOR+1"); // TODO
+    		//System.out.println("R_FCOLOR+1"); // TODO
     		return 1;
+    	
+    	case PortalConsts.R_FCOLOR+2:
+    		//System.out.println("R_FCOLOR+2"); // TODO
+    		return 1;
+    	
+    	case PortalConsts.R_SSF:
+    		
+    		// TODO
+    		System.out.println("------------------------NOT handled R_SSF");
+    		return 2;
 
     	default: 
         	System.out.println("------------------------NOT handled 0x" + String.format("%x", val));
+        	return 2;
         	
     	}
     	
-    	return 2;
+    	//return 2;
     }
 
 }

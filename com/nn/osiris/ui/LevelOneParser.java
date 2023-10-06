@@ -6777,7 +6777,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	private void ProgMode(int d, int origin)
 	{
 		
-		System.out.println("ProgMode:   Data: 0x" + String.format("%x",d) +"  Origin: 0x" +String.format("%x",origin));
+		//System.out.println("ProgMode:   Data: 0x" + String.format("%x",d) +"  Origin: 0x" +String.format("%x",origin));
 		
 		// Load C/D/E with data word
 		z80.setRegisterValue(RegisterNames.C, (d >> 16) & 0xff);
@@ -6802,7 +6802,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	{
 		int val = ExtractWord(0);
 
-		System.out.println("UserData5:   Data: 0x" + String.format("%x",val));
+		//System.out.println("UserData5:   Data: 0x" + String.format("%x",val));
 		
 		// Load C/D/E with data word
 		z80.setRegisterValue(RegisterNames.C, (val >> 16) & 0xff);
@@ -6836,7 +6836,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	{
 		int val = ExtractWord(0);
 
-		System.out.println("UserData6:   Data: 0x" + String.format("%x",val));
+		//System.out.println("UserData6:   Data: 0x" + String.format("%x",val));
 	}
 
 	/**
@@ -6849,7 +6849,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	{
 		int val = ExtractWord(0);
 
-		System.out.println("UserData7:   Data: 0x" + String.format("%x",val));
+		//System.out.println("UserData7:   Data: 0x" + String.format("%x",val));
 	}
 
 	/**
