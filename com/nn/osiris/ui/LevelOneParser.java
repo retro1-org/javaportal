@@ -31,6 +31,9 @@ import java.util.*;
  */
 public class LevelOneParser implements java.awt.event.ActionListener
 {
+	
+	public PZ80Cpu cpu;
+	
 	/**
 	 * Constructor.
 	 *
@@ -105,11 +108,17 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		stack_pointer = 0;
   		data_pnt = 0;
   		data_proc = TTYDataMode;
-		
+
+  		cpu = new PZ80Cpu();
+  		/*
+  		cpu.z80Memory.writeByte(0, 0); //noop
+  		cpu.z80Memory.writeByte(1, 0x76); // halt
+  		cpu.run(0);
+  		*/
+  		
   		font_height = 16;
 		
   		int stype = 116;
-  		
   		
   		initEngine(
   		   width,	// Terminal width.
@@ -117,6 +126,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		   stype,	// Terminal subtype.
   		   1,		// Color flag.
   		   14);		// Colors supported
+  		
+ 		
   	}
 
 	/**
