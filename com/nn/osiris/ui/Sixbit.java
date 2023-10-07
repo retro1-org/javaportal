@@ -161,7 +161,7 @@ public final class Sixbit
 	}
 
 	// Conversion table from CDC 6 bit display codes to CDC 6 bit ascii.
-	public static final char pa6[] =
+	private static final char pa6[] =
 	{
 		':','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
 		'q','r','s','t','u','v','w','x','y','z',
