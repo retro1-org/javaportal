@@ -36,9 +36,6 @@ import com.codingrodent.microprocessor.Z80.CPUConstants.RegisterNames;
 public class LevelOneParser implements java.awt.event.ActionListener
 {
 	
-	public PZ80Cpu cpu;
-	public Z80Core z80;
-	
 	/**
 	 * Constructor.
 	 *
@@ -114,17 +111,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		data_pnt = 0;
   		data_proc = TTYDataMode;
 
-  		cpu = new PZ80Cpu(this);
-  		z80 = cpu.z80;
+  		
 
-  		/*
-  		cpu.z80Memory.writeByte(0, 0); //noop
-  		cpu.z80Memory.writeByte(1, 0x76); // halt
-  		*/
-  		
-  		cpu.z80Memory.writeByte(PortalConsts.R_LINE, 0x76);
-  		cpu.run(PortalConsts.R_LINE);
-  		
   		font_height = 16;
 		
   		int stype = 116;
@@ -135,7 +123,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		   stype,	// Terminal subtype.
   		   1,		// Color flag.
   		   14);		// Colors supported
+
   		
+  		//LevelOneParser mTutorParser = new LevelOneParser(this);
+  		
+  		cpu = new PZ80Cpu(this);
+  		z80 = cpu.z80;
  		
   	}
 
@@ -146,6 +139,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	LevelOneParser(LevelOneParser base)
 	{
+		
 		parent_frame = base.parent_frame;
 		levelone_container = base.levelone_container;
 		levelone_base_graphics = base.levelone_base_graphics;
@@ -222,7 +216,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		text_right = base.text_right;
 		terminalWidth = base.terminalWidth;
 		terminalHeight = base.terminalHeight;
-//		terminalColors = base.terminalColors;		// never used drs 2023/10/3
+		terminalColors = base.terminalColors;		// never used drs 2023/10/3
+		
+  		cpu = new PZ80Cpu(this);
+  		z80 = cpu.z80;
+
+
 	}
 
 	/**
@@ -453,6 +452,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private long rstartu;
 	/** The student variables for the session. */
 	private long[] student_variables;	
+
+	
+	public PZ80Cpu cpu;
+	public Z80Core z80;
 
 	/** The frame contains the parser. */
 	Frame parent_frame;
@@ -791,7 +794,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Height of virtual screen. */
 	private int terminalHeight;
 	/** Colors of screen. */
-	//private int terminalColors;		// never used drs 2023/10/3
+	private int terminalColors;		// never used drs 2023/10/3
 
 	/** Buffer for transmitting keys back to system. */
 	private byte[] transmit_buffer = new byte[12];
@@ -2137,7 +2140,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		terminalHeight = (height > 511 ? height : 512);
 		sub_type = sub;
 		colorAvail = true;
-//		terminalColors = 0;		// never used drs 2023/10/3
+		terminalColors = 0;		// never used drs 2023/10/3
 		initTTY();
 	}
 	
@@ -6706,6 +6709,42 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		XYAdjust(CHARWIDTH,0);
 	}
 
+	
+/*
+	public final void AlphaDataM(byte[] mdata)
+	{
+	int tempX = 0;
+
+		if (text_dir == REVERSE)
+		{
+			tempX = current_x;
+			XYAdjust (CHARWIDTH,0);
+		}
+
+		if (text_axis == HORIZONTAL && text_dir == FORWARD)
+		{
+			is_quick_text_on = true;
+			quick_text_data[0] = mdata[0];
+			quick_text_length = 1;
+			quick_text_x = current_x;
+			quick_text_y = current_y;
+		}
+		else
+		{
+			quick_text_data[0] = mdata[0];
+			quick_text_length = 1;
+			quick_text_x = current_x;
+			quick_text_y = current_y;
+			FlushText();
+		}
+
+		if (text_dir == REVERSE)
+			current_x = tempX;
+
+		XYAdjust(CHARWIDTH,0);
+	}
+*/
+	
 	/**
 	 *
 	 * Mode 4 data (block mode).

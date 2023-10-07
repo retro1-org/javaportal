@@ -7,15 +7,20 @@ public class PZ80Cpu {
     public Z80Core z80;
     public PZMemory z80Memory;
     public PZIO z80IO;
-    public LevelOneParser parser
-;	
+    public LevelOneParser parser;
+    
+    public int m_mtPLevel;
+    
+    int currentX;
+    int currentY;
+    
     public PZ80Cpu(LevelOneParser x)
     {
     	parser = x;
     	z80Memory = new PZMemory();
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
-    	z80.reset();
+    	//z80.reset();
     }
 
     public void run(int address) { //
@@ -54,8 +59,47 @@ public class PZ80Cpu {
     {
     	// do checks here for patching the levels of MTUTOR -  then run
     	
+        // find mtutor release level
+        // unfortunately cdc put it in different places in different
+        // releases - but only off by 1 byte.
+        int release = z80Memory.readByte(0x530b);  // release or year *y1*
+        if (release == 8)           // year *y1* 82 - 8?
+            release = z80Memory.readByte(0x530a);  // release
+        m_mtPLevel = release;
+
+        switch (m_mtPLevel)
+        {
+        case 2: break; // PatchL2 (); break;
+        case 3: break; // PatchL3 (); break;
+        case 4: PatchL4 (); break;
+        case 5: break; // PatchL5 (); break;
+        case 6: break; // PatchL6 (); break;
+        default: break;
+        }
     	
     	run(address);
+    }
+    
+    void PatchL4 ()
+    {
+    	
+    	System.out.println("----------------PatchL4");
+    	
+        // Call resident and wxWidgets for brief pause
+    	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
+    	z80Memory.writeByte(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PortalConsts.Level4Pause + 2, 0);
+        
+
+        // remove off-line check for calling r.exec - 
+        // only safe place to give up control..  
+        // was a z80 jr - 2 bytes only
+        //RAM[Level4Xplato] = 0;
+        //RAM[Level4Xplato + 1] = 0;
+
+        //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
+
+//        PatchColor (0xe5);
     }
     
     public int Parity(int x)
@@ -71,8 +115,6 @@ public class PZ80Cpu {
     
     
     
-    int currentX;
-    int currentY;
     
  // This emulates the "ROM resident".  Return values:
  // 0: PC is not special (not in resident), proceed normally.
@@ -147,12 +189,6 @@ public class PZ80Cpu {
                 }
 
                 cbuf[lth++] = ((byte)(chr & 0x3f));
-                
-
-                //cbuf[lth++] = (byte)Sixbit.pa6[((byte)(chr & 0x3f))];
-
-                
-                ////////////////////////////////////plotChar (c & 0x3f );
 
                 if (chr > 0x3F )
                 {
@@ -170,9 +206,12 @@ public class PZ80Cpu {
                 	
                 	int fgcolor = 0xffffff | (255 << 24);
                 	int bgcolor = 0 | (255 << 24);
+                	
+                	//parser.AlphaDataM(cbuf);
                 
-                	parser.drawString(cbuf, lth, fgcolor, bgcolor, currentX, currentY, wrMode, 1, 0, 0);
+                	parser.drawString(cbuf, lth, fgcolor, bgcolor, currentX, 512-currentY, wrMode, 1, 0, 0);
                 	currentX += 8;
+                	
                 	//parser.FlushText();
                     break;
                 }
@@ -299,6 +338,13 @@ public class PZ80Cpu {
     	case PortalConsts.R_FCOLOR+2:
     		//System.out.println("R_FCOLOR+2"); // TODO
     		return 1;
+    	
+    	
+    	case PortalConsts.R_WAIT16:
+    		
+    		// TODO
+    		
+    	return 1;
     	
     	case PortalConsts.R_SSF:
     		
