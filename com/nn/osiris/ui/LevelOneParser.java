@@ -125,10 +125,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		   14);		// Colors supported
 
   		
-  		//LevelOneParser mTutorParser = new LevelOneParser(this);
+  		//cpu = new PZ80Cpu(this);
+  		//z80 = cpu.z80;
   		
-  		cpu = new PZ80Cpu(this);
-  		z80 = cpu.z80;
+  		
  		
   	}
 
@@ -218,8 +218,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		terminalHeight = base.terminalHeight;
 		terminalColors = base.terminalColors;		// never used drs 2023/10/3
 		
-  		cpu = new PZ80Cpu(this);
-  		z80 = cpu.z80;
+ // 		cpu = new PZ80Cpu(this);
+ // 		z80 = cpu.z80;
 
 
 	}
@@ -456,6 +456,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	
 	public PZ80Cpu cpu;
 	public Z80Core z80;
+	
+	public LevelOneParser mTutorParser;
 
 	/** The frame contains the parser. */
 	Frame parent_frame;
@@ -657,13 +659,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 * Level one graphics state.
 	 */
 	/** Current screen mode of terminal. */
-	protected int screen_mode;
+	public int screen_mode;
 	/** Current x location. */
-	private int current_x;
+	public int current_x;
 	/** Current y location. */
-	private int current_y;
+	public int current_y;
 	/** Current charset working in. */
-	private byte text_charset;
+	public byte text_charset;
 	/** Text plotting direction. */
 	private byte text_dir;
 	/** Text plotting axis. */
@@ -677,7 +679,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Terminal subtype. */
 	private int sub_type;
 	/** X coordinate for centering. */
-	protected int center_x;
+	public int center_x;
 	/** Y coordinate for centering. */
 	protected int center_y;
 	/** System sent centering. */
@@ -687,9 +689,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Touch is enabled. */
 	private boolean	is_touch_enabled;
 	/** Foreground color. */
-	private Color fg_color;
+	public Color fg_color;
 	/** Background color. */
-	private Color bg_color;
+	public Color bg_color;
 
 	/*
 	 * For putting together charsets.
@@ -6659,14 +6661,27 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			}
 			// System.out.println("Char load at: 0x" + String.format("%x",mem_addr) );
 		}
+		else if (mem_addr == 0x2306 || mem_addr == 0x2308)
+		{
+			// ignore these for now drs
+		}
 		else
 		{
 			int val = ExtractWord ( 0);
 
+			if (cpu == null)
+			{
+			//	mTutorParser = new LevelOneParser(this);
+				
+				cpu = new PZ80Cpu();
+				cpu.Init(this);
+				z80 = cpu.z80;			// shortcut
+			}
+			
 			cpu.z80Memory.writeWord(mem_addr, val);
 			
 			//System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
-			mem_addr = mem_addr + 2;
+			mem_addr += 2;
 			
 		}
 	}
@@ -6710,7 +6725,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	}
 
 	
-/*
+
 	public final void AlphaDataM(byte[] mdata)
 	{
 	int tempX = 0;
@@ -6743,7 +6758,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		XYAdjust(CHARWIDTH,0);
 	}
-*/
+
 	
 	/**
 	 *

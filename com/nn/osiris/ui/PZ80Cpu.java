@@ -1,5 +1,7 @@
 package com.nn.osiris.ui;
 
+import java.awt.Color;
+
 import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
 
@@ -11,9 +13,7 @@ public class PZ80Cpu {
     
     public int m_mtPLevel;
     
-    int currentX;
-    int currentY;
-    
+  
     public PZ80Cpu(LevelOneParser x)
     {
     	parser = x;
@@ -22,7 +22,22 @@ public class PZ80Cpu {
     	z80 = new Z80Core(z80Memory, z80IO);
     	//z80.reset();
     }
+ 
+    public PZ80Cpu()
+    {
 
+    }    
+    public Z80Core Init(LevelOneParser x)
+    {
+    	parser = x;
+    	z80Memory = new PZMemory();
+    	z80IO  = new PZIO();
+    	z80 = new Z80Core(z80Memory, z80IO);
+    			
+    	return z80;
+    }
+    
+    
     public void run(int address) { //
         // Ok, run the program
         z80.setProgramCounter(address);
@@ -83,7 +98,7 @@ public class PZ80Cpu {
     void PatchL4 ()
     {
     	
-    	System.out.println("----------------PatchL4");
+    	//System.out.println("----------------PatchL4");
     	
         // Call resident and wxWidgets for brief pause
     	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
@@ -114,7 +129,7 @@ public class PZ80Cpu {
     }
     
     
-    
+    int charM;
     
  // This emulates the "ROM resident".  Return values:
  // 0: PC is not special (not in resident), proceed normally.
@@ -128,6 +143,8 @@ public class PZ80Cpu {
     	
         int x, y, cp, c, x2, y2;
 
+        
+        int cx = parser.center_x;
         
     	//System.out.print("----------------------------------------------------------Calling resident... ");
 
@@ -148,10 +165,10 @@ public class PZ80Cpu {
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
         	
-        	parser.PlotLine(x, y, x, y, 1, 0, 0, 1, 0);
+        	parser.PlotLine(x+cx, y, x+cx, y, 1, 0, 0, 1, 0);
            	
-            currentX = x;
-            currentY = y;        	
+            parser.current_x = x;
+            parser.current_y = y;        	
         	
     		return 1;    		
     	
@@ -161,17 +178,16 @@ public class PZ80Cpu {
         	y = z80.getRegisterValue(RegisterNames.DE);
         	//System.out.println(": (" + x+ ","+ y + ")" );
         	
-        	parser.PlotLine(currentX, currentY, x, y, 1, 0, 0, 1, 0);
+        	parser.PlotLine(parser.current_x+cx, parser.current_y, x+cx, y, 1, 0, 0, 1, 0);
         	
-            currentX = x;
-            currentY = y;
+            parser.current_x = x;
+            parser.current_y = y;
             
     		return 1;
     		
     	case PortalConsts.R_CHARS:
-        	//System.out.println("R_CHARS");
         	int cpointer = z80.getRegisterValue(RegisterNames.HL);
-        	byte[] cbuf =  new byte[500];
+        	byte[] cbuf =  new byte[5];
         	
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
@@ -180,12 +196,13 @@ public class PZ80Cpu {
             {
 
                 int save = z80Memory.readByte(PortalConsts.M_CCR);
-                int charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
+                charM = (save & 0x0e) >> 1; // Current M slot
 
                 if (chr > 0x3F )
                 {
                     // advance M slot by one
                 	z80Memory.writeByte(PortalConsts.M_CCR,(z80Memory.readByte(PortalConsts.M_CCR) & ~0x0e) | (charM + 1) << 1);
+                    charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
                 }
 
                 cbuf[lth++] = ((byte)(chr & 0x3f));
@@ -202,17 +219,14 @@ public class PZ80Cpu {
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
-                	int wrMode = (z80Memory.readByte(PortalConsts.M_MODE)) & 0x3;
+                	//
+                	parser.text_charset = (byte)(charM + 1);
+
+                	parser.AlphaDataM(cbuf);
+                	parser.FlushText();
                 	
-                	int fgcolor = 0xffffff | (255 << 24);
-                	int bgcolor = 0 | (255 << 24);
+                	//parser.drawString(cbuf, lth, fgcolor, bgcolor, parser.current_x, 512-parser.current_y, wrMode, 1, 0, 0);
                 	
-                	//parser.AlphaDataM(cbuf);
-                
-                	parser.drawString(cbuf, lth, fgcolor, bgcolor, currentX, 512-currentY, wrMode, 1, 0, 0);
-                	currentX += 8;
-                	
-                	//parser.FlushText();
                     break;
                 }
 
@@ -226,8 +240,17 @@ public class PZ80Cpu {
     		
     		z80Memory.writeByte(PortalConsts.M_MODE, mode >> 1);
     		
+    		parser.screen_mode = mode & 3;
+    		
     		if ( (mode & 1) == 1)
     			mode = mode;		// TODO erase screen
+    		
+    		
+    		if ((mode & 1) == 1)
+    		{
+    			parser.clearScreen();
+    		}
+    		
     		
     		return 1;
 
@@ -238,23 +261,23 @@ public class PZ80Cpu {
     	case PortalConsts.R_STEPX:
     		int sdir = z80Memory.readByte(PortalConsts.M_DIR) & 3;
     		if ((sdir & 2)==0)
-    			currentX++;
+    			parser.current_x++;
     		else
-    			currentX--;
+    			parser.current_x--;
     		
     		return 1;
 
     	case PortalConsts.R_STEPY:
     		int sdir2 = z80Memory.readByte(PortalConsts.M_DIR) & 3;
     		if ((sdir2 & 1)==0)
-    			currentY++;
+    			parser.current_y++;
     		else
-    			currentY--;
+    			parser.current_y--;
     		
     		return 1;
     		
     	case PortalConsts.R_WE:
-    		parser.PlotLine(currentX, currentY, currentX, currentY, 1, 0, 0, 1, 0);
+    		parser.PlotLine(parser.current_x+cx, parser.current_y, parser.current_x+cx, parser.current_y, 1, 0, 0, 1, 0);
     		
     		return 1;
     		
@@ -268,25 +291,25 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_INPX:
         	//System.out.println("R_INPX");
-        	z80.setRegisterValue(RegisterNames.HL, currentX);
+        	z80.setRegisterValue(RegisterNames.HL, parser.current_x);
         	
         	return 1;
     		
     	case PortalConsts.R_INPY:
         	//System.out.println("R_INPY");
-        	z80.setRegisterValue(RegisterNames.HL, currentY);
+        	z80.setRegisterValue(RegisterNames.HL, parser.current_y);
         	
         	return 1;
     		
     	case PortalConsts.R_OUTX:
         	//System.out.println("R_OUTX");
-        	currentX = z80.getRegisterValue(RegisterNames.HL);
+        	parser.current_x = z80.getRegisterValue(RegisterNames.HL);
         	
         	return 1;
         	
     	case PortalConsts.R_OUTY:
         	//System.out.println("R_OUTY");
-        	currentY = z80.getRegisterValue(RegisterNames.HL);
+        	parser.current_y = z80.getRegisterValue(RegisterNames.HL);
         	
         	return 1;
 
@@ -315,10 +338,8 @@ public class PZ80Cpu {
     	case PortalConsts.R_CCR:
         	//System.out.println("R_CCR");
         	int ccr_val = z80.getRegisterValue(RegisterNames.HL);
-        	z80Memory.writeWord(PortalConsts.M_CCR, ccr_val);
-        	
-        	// TODO set flags
-        	
+        	z80Memory.writeByte(PortalConsts.M_CCR, ccr_val);
+
         	return 1;
         	
     	case PortalConsts.R_INPUT:
@@ -332,13 +353,33 @@ public class PZ80Cpu {
     		return 1;
     		
     	case PortalConsts.R_FCOLOR+1:
-    		//System.out.println("R_FCOLOR+1"); // TODO
+    		{
+    			int DE = z80.getRegisterValue(RegisterNames.DE);
+    			int red  = z80Memory.readByte(DE++);
+    			int green  = z80Memory.readByte(DE++);
+    			int blue  = z80Memory.readByte(DE);
+    			parser.fg_color = new Color(red, green, blue);
+    		}
+    		
     		return 1;
     	
     	case PortalConsts.R_FCOLOR+2:
     		//System.out.println("R_FCOLOR+2"); // TODO
     		return 1;
     	
+    	case PortalConsts.R_BCOLOR:
+    		return 1;
+    		
+    	case PortalConsts.R_BCOLOR+1:
+    		{
+    			int DE = z80.getRegisterValue(RegisterNames.DE);
+    			int red  = z80Memory.readByte(DE++);
+    			int green  = z80Memory.readByte(DE++);
+    			int blue  = z80Memory.readByte(DE);
+    			parser.bg_color = new Color(red, green, blue);
+    		}
+    		
+    		return 1;    	
     	
     	case PortalConsts.R_WAIT16:
     		
