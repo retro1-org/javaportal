@@ -174,6 +174,9 @@ class PortalConsts
 	
 	// These used for patching levels of mtutor
 	static final int Level2Pause = 0x68d9;
+	static final int Level4Pause = 0x6967;
 	
+	
+	static final int CALL8080 = 0xcd;
 	
 }
