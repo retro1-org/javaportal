@@ -32,7 +32,7 @@ public class Z80Core implements ICPUData {
     private final IBaseDevice io;
     //
     private int instruction;
-    private boolean halt;
+    public boolean halt;
     private long tStates;
     /* registers */
     private int reg_B, reg_C, reg_D, reg_E, reg_H, reg_L;

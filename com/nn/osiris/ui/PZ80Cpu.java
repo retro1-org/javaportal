@@ -12,11 +12,17 @@ public class PZ80Cpu extends Thread {
     public PZIO z80IO;
     public LevelOneParser parser;
     
+    
+    private int charM;
+
+    
     public int m_mtPLevel;
     
     public boolean stopme;
     
     public	int threadsCopied;
+    
+    private int runs;
     
     //private boolean R_CHARS_Inprogress = false;
     
@@ -29,6 +35,7 @@ public class PZ80Cpu extends Thread {
     	z80 = new Z80Core(z80Memory, z80IO);
     	z80.reset();
     	threadsCopied = 0;
+    	runs = 0;
     }
  
     public PZ80Cpu()
@@ -44,6 +51,9 @@ public class PZ80Cpu extends Thread {
     	z80 = base.z80;
     	stopme = false;
     	m_mtPLevel = base.m_mtPLevel;
+    	charM = base.charM;
+    	runs = base.runs;
+    	
     	//R_CHARS_Inprogress = base.R_CHARS_Inprogress;
     	threadsCopied = base.threadsCopied + 1;
     	
@@ -66,11 +76,12 @@ public class PZ80Cpu extends Thread {
 
         boolean test = z80.getHalt();
         stopme = false;
+        int pc;
         
 	        while (true) {
 	            try {
-	                //System.out.println("----------------------------------------------------------Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
-	                int pc = z80.getProgramCounter();	// Check if PC is calling resident
+	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
+	                pc = z80.getProgramCounter();	// Check if PC is calling resident
 	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 +1) && !stopme)
 	                {
 	                	// need to process resident calls here.
@@ -96,8 +107,12 @@ public class PZ80Cpu extends Thread {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
 	            }
 	        }
+	        long tstates = z80.getTStates();
 	        
-	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread exit...");
+	        //int inst = z80Memory.readByte(PortalConsts.Level4Pause+ 2000);
+	        
+	        z80.resetTStates();
+	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread exit...PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
 	    	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
 
     }
@@ -115,6 +130,8 @@ public class PZ80Cpu extends Thread {
             release = z80Memory.readByte(0x530a);  // release
         m_mtPLevel = release;
         
+        runs++;
+        
         stopme = true;
         
         switch (m_mtPLevel)
@@ -130,10 +147,10 @@ public class PZ80Cpu extends Thread {
         z80.setResetAddress(address);
         z80.setProgramCounter(address);
     	 
-        run();
-        
-//        start();
-
+		if (PortalConsts.is_threaded)
+			start();
+		else
+	        run();
     }
     
     void PatchL4 ()
@@ -168,9 +185,6 @@ public class PZ80Cpu extends Thread {
     	else
     		return x + 0x80;
     }
-    
-    
-    int charM;
     
  // This emulates the "ROM resident".  Return values:
  // 0: PC is not special (not in resident), proceed normally.
@@ -407,7 +421,7 @@ public class PZ80Cpu extends Thread {
         	return 1;
         	
     	case PortalConsts.R_INPUT:
-    		System.out.println("----------------------- R_INPUT");
+    		//System.out.println("----------------------- R_INPUT");
     		z80.setRegisterValue(RegisterNames.HL, -1 & 0xffff); // TMP TODO
     		
     		return 1;
@@ -491,7 +505,6 @@ public class PZ80Cpu extends Thread {
         	
     	}
     	
-    	//return 2;
     }
 
 }
