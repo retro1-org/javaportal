@@ -1,17 +1,24 @@
 package com.nn.osiris.ui;
 
 import java.awt.Color;
+import java.util.*;
 
 import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
 
-public class PZ80Cpu {
+public class PZ80Cpu extends Thread {
     public Z80Core z80;
     public PZMemory z80Memory;
     public PZIO z80IO;
     public LevelOneParser parser;
     
     public int m_mtPLevel;
+    
+    public boolean stopme;
+    
+    public	int threadsCopied;
+    
+    //private boolean R_CHARS_Inprogress = false;
     
   
     public PZ80Cpu(LevelOneParser x)
@@ -20,13 +27,29 @@ public class PZ80Cpu {
     	z80Memory = new PZMemory();
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
-    	//z80.reset();
+    	z80.reset();
+    	threadsCopied = 0;
     }
  
     public PZ80Cpu()
     {
 
-    }    
+    }
+    
+    public PZ80Cpu( PZ80Cpu base)
+    {
+    	parser = base.parser;
+    	z80Memory = base.z80Memory;
+    	z80IO = base.z80IO;
+    	z80 = base.z80;
+    	stopme = false;
+    	m_mtPLevel = base.m_mtPLevel;
+    	//R_CHARS_Inprogress = base.R_CHARS_Inprogress;
+    	threadsCopied = base.threadsCopied + 1;
+    	
+    }
+    
+    
     public Z80Core Init(LevelOneParser x)
     {
     	parser = x;
@@ -38,35 +61,45 @@ public class PZ80Cpu {
     }
     
     
-    public void run(int address) { //
+    public void run() { //
         // Ok, run the program
-        z80.setProgramCounter(address);
+
         boolean test = z80.getHalt();
-        while (!test) {
-            try {
-                //System.out.println("----------------------------------------------------------Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
-                int pc = z80.getProgramCounter();	// Check if PC is calling resident
-                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 +1))
-                {
-                	// need to process resident calls here.
-                	int result = Resident(pc);
-                	
-                	if (result == 1)
-                		z80.ret();
-                	else if (result == 0)
-                		continue;
-                	else if (result == 2)
-                		break;
-                	
-                	//z80Memory.writeByte(pc, 0x76);
-                }
-                z80.executeOneInstruction();
-                
-                
-            } catch (Exception e) {
-                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
-            }
-        }
+        stopme = false;
+        
+	        while (true) {
+	            try {
+	                //System.out.println("----------------------------------------------------------Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
+	                int pc = z80.getProgramCounter();	// Check if PC is calling resident
+	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 +1) && !stopme)
+	                {
+	                	// need to process resident calls here.
+	                	int result = Resident(pc);
+	                	
+	                	if (result == 1)
+	                		z80.ret();
+	                	else if (result == 0)
+	                		continue;
+	                	else if (result == 2)
+	                		stopme = true;
+	                	
+	                }
+	                if (!test && !stopme)
+	                	z80.executeOneInstruction();
+	                else
+	                	break;
+	                
+	                test = z80.getHalt();
+	                
+	                
+	            } catch (Exception e) {
+	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
+	            }
+	        }
+	        
+	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread exit...");
+	    	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
+
     }
     
     
@@ -81,7 +114,9 @@ public class PZ80Cpu {
         if (release == 8)           // year *y1* 82 - 8?
             release = z80Memory.readByte(0x530a);  // release
         m_mtPLevel = release;
-
+        
+        stopme = true;
+        
         switch (m_mtPLevel)
         {
         case 2: break; // PatchL2 (); break;
@@ -91,8 +126,14 @@ public class PZ80Cpu {
         case 6: break; // PatchL6 (); break;
         default: break;
         }
-    	
-    	run(address);
+        
+        z80.setResetAddress(address);
+        z80.setProgramCounter(address);
+    	 
+        run();
+        
+//        start();
+
     }
     
     void PatchL4 ()
@@ -149,8 +190,15 @@ public class PZ80Cpu {
         int sMode = z80Memory.readByte(PortalConsts.M_MODE) & 3;
         
     	//System.out.print("----------------------------------------------------------Calling resident... ");
-
-    	
+        //System.out.println("  ---------------------------=============================== >>>>>>>>>>> WAIT CALL " + String.format("%x", z80Memory.readWord(PortalConsts.Level4Pause)));
+        
+/*    	
+        if (R_CHARS_Inprogress && val != PortalConsts.R_CHARS)
+        {
+        	parser.FlushText();
+        	R_CHARS_Inprogress = false;
+        }
+*/       
     	switch(val)
     	{
     	
@@ -189,14 +237,18 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_CHARS:
         	int cpointer = z80.getRegisterValue(RegisterNames.HL);
-        	byte[] cbuf =  new byte[5];
+        	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
         	
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
         	
             for (;;)
             {
-
+            	if (chr == 0x3f   && 0 == z80Memory.readByte(cpointer))
+            	{
+            		break;
+            	}
+            	
                 int save = z80Memory.readByte(PortalConsts.M_CCR);
                 charM = (save & 0x0e) >> 1; // Current M slot
 
@@ -209,14 +261,9 @@ public class PZ80Cpu {
 
                 cbuf[lth++] = ((byte)(chr & 0x3f));
 
-                if (chr > 0x3F )
-                {
-                    // restore M slot
-                	z80Memory.writeByte(PortalConsts.M_CCR, save);
-                }
-
+                int chr0 = chr;
                 chr = z80Memory.readByte(cpointer++);
-
+                
             	boolean p1 = (chr == 0x3f);
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
@@ -231,11 +278,18 @@ public class PZ80Cpu {
                 	parser.text_charset = (byte)(charM + 1);
 
                 	parser.AlphaDataM(cbuf);
+                	//R_CHARS_Inprogress = true;
                 	parser.FlushText();
                 	
                 	//parser.drawString(cbuf, lth, fgcolor, bgcolor, parser.current_x, 512-parser.current_y, wrMode, 1, 0, 0);
+                
+                    if (chr0 > 0x3F )
+                    {
+                        // restore M slot
+                    	z80Memory.writeByte(PortalConsts.M_CCR, save);
+                    }
                 	
-                    break;
+                    //break;
                 }
 
             }
@@ -353,7 +407,7 @@ public class PZ80Cpu {
         	return 1;
         	
     	case PortalConsts.R_INPUT:
-    		
+    		System.out.println("----------------------- R_INPUT");
     		z80.setRegisterValue(RegisterNames.HL, -1 & 0xffff); // TMP TODO
     		
     		return 1;
@@ -408,10 +462,25 @@ public class PZ80Cpu {
     		
     		// TODO
     		
-    	return 1;
+    		try {
+				sleep(15);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				//  e.printStackTrace();
+			}
+    		
+    		return 1;
+    	
+    	case PortalConsts.R_ALARM:
+    		
+    		return 1;
     	
     	case PortalConsts.R_SSF:
-    		
+    	
+            int hl = z80.getRegisterValue(RegisterNames.HL);
+
+            
+            System.out.println("------------------------R_SSF HL: " + String.format("%x", hl));
     		// TODO
     		System.out.println("------------------------NOT handled R_SSF");
     		return 2;

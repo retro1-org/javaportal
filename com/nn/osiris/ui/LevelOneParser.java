@@ -124,11 +124,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		   1,		// Color flag.
   		   14);		// Colors supported
 
-  		
-  		//cpu = new PZ80Cpu(this);
-  		//z80 = cpu.z80;
-  		
-  		
  		
   	}
 
@@ -218,10 +213,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		terminalHeight = base.terminalHeight;
 		terminalColors = base.terminalColors;		// never used drs 2023/10/3
 		
- // 		cpu = new PZ80Cpu(this);
- // 		z80 = cpu.z80;
-
-
 	}
 
 	/**
@@ -6671,7 +6662,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 			if (cpu == null)
 			{
-			//	mTutorParser = new LevelOneParser(this);
+				//mTutorParser = new LevelOneParser(this);
 				
 				cpu = new PZ80Cpu();
 				cpu.Init(this);
@@ -6842,6 +6833,9 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		z80.setRegisterValue(RegisterNames.SP, PortalConsts.INITSP);
 		z80.push(PortalConsts.R_MAIN);
 		
+		cpu.stopme = true;
+		
+		cpu = new PZ80Cpu(cpu);
 		cpu.runWithMtutorCheck(cpu.z80Memory.readWord(origin));
 	}
 	
@@ -6875,6 +6869,10 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		
 		z80.push(z80.getProgramCounter());
 		int xaddr = cpu.z80Memory.readWord(PortalConsts.M5ORIGIN);
+		
+		cpu.stopme = true;
+		
+		cpu = new PZ80Cpu(cpu);
 		cpu.runWithMtutorCheck(xaddr);
 		
 	}
