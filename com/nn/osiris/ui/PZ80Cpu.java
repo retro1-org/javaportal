@@ -13,7 +13,7 @@ public class PZ80Cpu extends Thread {
     public LevelOneParser parser;
     
     
-    private int charM;
+   // private int charM;
 
     
     public int m_mtPLevel;
@@ -51,7 +51,7 @@ public class PZ80Cpu extends Thread {
     	z80 = base.z80;
     	stopme = false;
     	m_mtPLevel = base.m_mtPLevel;
-    	charM = base.charM;
+//    	charM = base.charM;
     	runs = base.runs;
     	
     	//R_CHARS_Inprogress = base.R_CHARS_Inprogress;
@@ -255,10 +255,11 @@ public class PZ80Cpu extends Thread {
         	
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
+        	int charM;
         	
             for (;;)
             {
-            	if (chr == 0x3f   && 0 == z80Memory.readByte(cpointer))
+            	if (chr == 0x3f && 0 == z80Memory.readByte(cpointer))
             	{
             		break;
             	}
@@ -273,22 +274,34 @@ public class PZ80Cpu extends Thread {
                     charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
                 }
 
-                cbuf[lth++] = ((byte)(chr & 0x3f));
+                cbuf[lth++] = (byte)(chr & 0x3f);      //((byte)Sixbit.sixBitCharToAscii(chr & 0x3f, charM > 0));
+                
+            
+                switch(cbuf[0])
+                {
+                case 0x2d:				// space
+                	cbuf[0] = 0x20;
+                	break;
+                	
+                	default: break;
+                }
 
+              
+                
                 int chr0 = chr;
                 chr = z80Memory.readByte(cpointer++);
+                
+                if(charM > 0)
+                {
+                	charM = 0;
+                //	cbuf[0] -= 54;
+                }
+            	
                 
             	boolean p1 = (chr == 0x3f);
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
-                	//
-                    if(charM > 0)
-                    {
-                    	charM = 0;
-                    	cbuf[0] += 0x4b;
-                    }
-                	
                 	parser.text_charset = (byte)(charM + 1);
 
                 	parser.AlphaDataM(cbuf);
@@ -303,7 +316,6 @@ public class PZ80Cpu extends Thread {
                     	z80Memory.writeByte(PortalConsts.M_CCR, save);
                     }
                 	
-                    //break;
                 }
 
             }

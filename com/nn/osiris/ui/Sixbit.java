@@ -160,6 +160,17 @@ public final class Sixbit
 		return output;
 	}
 
+	
+/*	
+	public static final int sixBitCharToAscii(int ch, boolean shifted)
+	{
+		if (!shifted)
+			return pa6[ch];
+		
+		return pa6[ch] -32;
+		
+	}
+*/	
 	// Conversion table from CDC 6 bit display codes to CDC 6 bit ascii.
 	private static final char pa6[] =
 	{
