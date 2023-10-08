@@ -374,11 +374,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private static final int TRFAILED = 2;
 	
 	/** Plotting modes. */
-	private static final int SCWRITE = 0;
-	private static final int SCERASE = 1;
-	private static final int SCREWRITE = 2;
-	private static final int SCINVERSE = 3;
-	private static final int SCXOR = 4;
+	public static final int SCWRITE = 0;
+	public static final int SCERASE = 1;
+	public static final int SCREWRITE = 2;
+	public static final int SCINVERSE = 3;
+	public static final int SCXOR = 4;
 	/** Plotting axis. */
 	private static final int HORIZONTAL = 0;
 	private static final int VERTICAL = 1;
@@ -671,7 +671,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Text plotting axis. */
 	private byte text_axis;
 	/** Text size. */
-	private byte text_size;
+	public byte text_size;
 	/** Text margin. */
 	private int text_margin;
 	/** Memory address. */
@@ -6682,7 +6682,6 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			
 			//System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
 			mem_addr += 2;
-			
 		}
 	}
 
@@ -11694,7 +11693,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		return converted;
 	}
-
+	
 	/**
 	 * Convert array of bytes into array of longs. Every eight bytes will map
 	 * to a long.

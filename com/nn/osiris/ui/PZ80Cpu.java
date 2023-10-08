@@ -146,6 +146,8 @@ public class PZ80Cpu {
         
         int cx = parser.center_x;
         
+        int sMode = z80Memory.readByte(PortalConsts.M_MODE) & 3;
+        
     	//System.out.print("----------------------------------------------------------Calling resident... ");
 
     	
@@ -165,7 +167,7 @@ public class PZ80Cpu {
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
         	
-        	parser.PlotLine(x+cx, y, x+cx, y, 1, 0, 0, 1, 0);
+        	parser.PlotLine(x+cx, y, x+cx, y, sMode, 0, 0, 1, 0);
            	
             parser.current_x = x;
             parser.current_y = y;        	
@@ -178,7 +180,7 @@ public class PZ80Cpu {
         	y = z80.getRegisterValue(RegisterNames.DE);
         	//System.out.println(": (" + x+ ","+ y + ")" );
         	
-        	parser.PlotLine(parser.current_x+cx, parser.current_y, x+cx, y, 1, 0, 0, 1, 0);
+        	parser.PlotLine(parser.current_x+cx, parser.current_y, x+cx, y,  sMode, 0, 0, 1, 0);
         	
             parser.current_x = x;
             parser.current_y = y;
@@ -220,6 +222,12 @@ public class PZ80Cpu {
                 if (p1 && p2)
                 {
                 	//
+                    if(charM > 0)
+                    {
+                    	charM = 0;
+                    	cbuf[0] += 0x4b;
+                    }
+                	
                 	parser.text_charset = (byte)(charM + 1);
 
                 	parser.AlphaDataM(cbuf);
@@ -236,26 +244,28 @@ public class PZ80Cpu {
 
     	case PortalConsts.R_MODE:
     		
-    		int mode = z80.getRegisterValue(RegisterNames.HL) & 0xff;
+    		int mode = z80.getRegisterValue(RegisterNames.L) & 0xff;
     		
-    		z80Memory.writeByte(PortalConsts.M_MODE, mode >> 1);
+    		z80Memory.writeByte(PortalConsts.M_MODE, (mode & 0x1f ) >> 1);
     		
-    		parser.screen_mode = mode & 3;
-    		
-    		if ( (mode & 1) == 1)
-    			mode = mode;		// TODO erase screen
-    		
+    		switch ((mode >> 1) & 3)
+    		{
+    		case 0: parser.screen_mode = parser.SCINVERSE; break;
+    		case 1: parser.screen_mode = parser.SCREWRITE; break;
+    		case 2: parser.screen_mode = parser.SCERASE; break;
+    		case 3: parser.screen_mode = parser.SCWRITE; break;
+    		}
     		
     		if ((mode & 1) == 1)
     		{
     			parser.clearScreen();
     		}
     		
-    		
     		return 1;
 
     	case PortalConsts.R_DIR:
-    		z80Memory.writeByte(PortalConsts.M_DIR, z80.getRegisterValue(RegisterNames.HL) & 3);
+    		int zhl = z80.getRegisterValue(RegisterNames.HL);
+    		z80Memory.writeByte(PortalConsts.M_DIR, zhl & 3);
     		return 1;
     		
     	case PortalConsts.R_STEPX:
@@ -287,7 +297,6 @@ public class PZ80Cpu {
     		// TODO
     		
     		return 1;
-
     		
     	case PortalConsts.R_INPX:
         	//System.out.println("R_INPX");
@@ -316,7 +325,6 @@ public class PZ80Cpu {
     	case PortalConsts.R_XMIT: 
         	{
             int k = z80.getRegisterValue(RegisterNames.HL);
-        	//System.out.println("R_XMIT 0x" + String.format("%x", k));
 
             //int temp_hold = mt_ksw;
             //if (k != 0x3a)
@@ -337,8 +345,10 @@ public class PZ80Cpu {
         	
     	case PortalConsts.R_CCR:
         	//System.out.println("R_CCR");
-        	int ccr_val = z80.getRegisterValue(RegisterNames.HL);
+        	int ccr_val = z80.getRegisterValue(RegisterNames.L) & 0xff;
         	z80Memory.writeByte(PortalConsts.M_CCR, ccr_val);
+        	
+        	parser.text_size = (byte)((ccr_val >> 5) & 1);
 
         	return 1;
         	
@@ -350,6 +360,13 @@ public class PZ80Cpu {
         	
     	case PortalConsts.R_FCOLOR:
     		//System.out.println("R_FCOLOR"); // TODO
+    		
+    		{
+    			int red = z80.getRegisterValue(RegisterNames.H);
+    			int green = z80.getRegisterValue(RegisterNames.L);
+    			int blue = z80.getRegisterValue(RegisterNames.D);
+    			parser.fg_color = new Color(red, green, blue);
+    		}
     		return 1;
     		
     	case PortalConsts.R_FCOLOR+1:
@@ -368,6 +385,12 @@ public class PZ80Cpu {
     		return 1;
     	
     	case PortalConsts.R_BCOLOR:
+		{
+			int red = z80.getRegisterValue(RegisterNames.H);
+			int green = z80.getRegisterValue(RegisterNames.L);
+			int blue = z80.getRegisterValue(RegisterNames.D);
+			parser.bg_color = new Color(red, green, blue);
+		}
     		return 1;
     		
     	case PortalConsts.R_BCOLOR+1:
