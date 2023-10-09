@@ -327,16 +327,7 @@ public class PZ80Cpu extends Thread {
                 		cbuf[0] = cv;
                 		parser.text_charset =newchrset1[pv];
                 	}
-  /*              	
-                    switch(cbuf[0])
-                    {
-                    case 0x2d:				// space
-                    	cbuf[0] = 0x20;
-                    	break;
-                    	
-                    	default: break;
-                    }
-*/
+                	
      // end char converter
                     
                 	parser.AlphaDataM(cbuf);
