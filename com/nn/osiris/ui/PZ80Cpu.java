@@ -313,33 +313,21 @@ public class PZ80Cpu extends Thread {
      // Crude char code converter
                 	
                 	parser.text_charset = 1;	// assume lower case alpha
-                	
-                	if (charM > 0  && pv < 27)				// upper case
-                	{
-                		parser.text_charset = 0;
-                		cbuf[0] += 64;			// upper case alpha
-                	}
-                	else if (charM  == 0 )
+
+                	if (charM  == 0 )
                 	{
                 		byte cv = convert0[pv];
-                		
                 		cbuf[0] = cv;
-                		//if (pv != cv)
-                		//	parser.text_charset = 0;
                 		parser.text_charset =newchrset0[pv];
                 	}
 
                 	else if (charM  == 1 )
                 	{
                 		byte cv = convert1[pv];
-                		
                 		cbuf[0] = cv;
-                		//if (pv != cv)
-                		//	parser.text_charset = 0;
                 		parser.text_charset =newchrset1[pv];
                 	}
-
-                	
+  /*              	
                     switch(cbuf[0])
                     {
                     case 0x2d:				// space
@@ -348,7 +336,7 @@ public class PZ80Cpu extends Thread {
                     	
                     	default: break;
                     }
-
+*/
      // end char converter
                     
                 	parser.AlphaDataM(cbuf);
@@ -604,7 +592,7 @@ public class PZ80Cpu extends Thread {
     			16, 17, 18, 19, 20, 21, 22, 23,		// 16..23
     			24, 25, 26, 48, 49, 50, 51, 52,		// 24..31
     			53, 54, 55, 56, 57, 37, 38, 42,		// 32..39
-    			47, 41, 42, 43, 44, 45, 46, 46,		// 40..47
+    			47, 41, 42, 43, 44, 32, 46, 46,		// 40..47
     			47, 49, 50, 51, 42, 36, 54, 55,		// 48..55
     			56, 57, 58, 59, 60, 63, 63, 63,		// 56..63
     			0
@@ -625,10 +613,10 @@ public class PZ80Cpu extends Thread {
 
     private static final byte[] convert1 =
 		{
-			 0,  1,  2,  3,  4,  5,  6,  7,		// 0..7	
-			 8,  9, 10, 11, 12, 13, 14, 15,		// 8..15
-			16, 17, 18, 19, 20, 21, 22, 23,		// 16..23
-			24, 25, 26, 27, 28, 29, 30, 31,		// 24..31
+			 0, 65, 66, 67, 68, 69, 70, 71,		// 0..7	
+			72, 73, 74, 75, 76, 77, 78, 79,		// 8..15
+			80, 81, 82, 83, 84, 85, 86, 87,		// 16..23
+			88, 89, 90, 27, 28, 29, 30, 31,		// 24..31
 			32, 33, 34, 35, 36, 43, 38, 39,		// 32..39
 			40, 41, 42, 43, 44, 45, 46, 47,		// 40..47
 			48, 48, 49, 50, 51, 52, 53, 54,		// 48..55
@@ -638,10 +626,10 @@ public class PZ80Cpu extends Thread {
     
     private static final byte[] newchrset1 =
     	{
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 0..7
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 8..15
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 16..23
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 24..31
+    			1, 0, 0, 0, 0, 0, 0, 0,			// 0..7
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 8..15
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 16..23
+    			0, 0, 0, 1, 1, 1, 1, 1,			// 24..31
     			1, 1, 1, 1, 1, 1, 1, 1,			// 32..39
     			1, 1, 1, 1, 1, 1, 1, 1,			// 40..47
     			1, 1, 1, 1, 1, 1, 1, 1,			// 48..55
