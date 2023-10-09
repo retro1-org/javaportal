@@ -251,7 +251,7 @@ public class PZ80Cpu extends Thread {
     		
     	case PortalConsts.R_CHARS:
         	int cpointer = z80.getRegisterValue(RegisterNames.HL);
-        	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
+        	byte[] cbuf =  new byte[500];	// never seen more than one char at a time from mtutor
         	
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
@@ -265,6 +265,7 @@ public class PZ80Cpu extends Thread {
             	}
             	
                 int save = z80Memory.readByte(PortalConsts.M_CCR);
+                int pv;
                 charM = (save & 0x0e) >> 1; // Current M slot
 
                 if (chr > 0x3F )
@@ -274,48 +275,62 @@ public class PZ80Cpu extends Thread {
                     charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
                 }
 
-                cbuf[lth++] = (byte)(chr & 0x3f);      //((byte)Sixbit.sixBitCharToAscii(chr & 0x3f, charM > 0));
-                
-            
-                switch(cbuf[0])
-                {
-                case 0x2d:				// space
-                	cbuf[0] = 0x20;
-                	break;
-                	
-                	default: break;
-                }
+                cbuf[lth++] = (byte)(chr & 0x3f);      	//((byte)Sixbit.sixBitCharToAscii(chr & 0x3f, charM > 0));
+                pv = cbuf[0];							// for testing value
 
-              
-                
                 int chr0 = chr;
                 chr = z80Memory.readByte(cpointer++);
                 
-                if(charM > 0)
-                {
-                	charM = 0;
-                //	cbuf[0] -= 54;
-                }
-            	
                 
             	boolean p1 = (chr == 0x3f);
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
-                	parser.text_charset = (byte)(charM + 1);
+                	// Crude code converter
+                	
+                	parser.text_charset = 1;	// assume lower case
+                	
+                	if (charM > 0 )				// upper case
+                	{
+                		parser.text_charset = 0;
+                		cbuf[0] += 64;			// upper case alpha
+                	}
+                	else if (charM  == 0 && pv >= 27 && pv <= 36) // numbers
+                	{
+                		cbuf[0] += 48-27;
+                		parser.text_charset = 0;
+                	}
+                	else if (charM  == 0 && pv == 47) // .
+                	{
+                		cbuf[0] = 46;
+                		parser.text_charset = 0;
+                	}
+                	else if (charM  == 0 && pv == 61) // ?
+                	{
+                		cbuf[0] = 63;
+                		parser.text_charset = 0;
+                	}
+
+                    switch(cbuf[0])
+                    {
+                    case 0x2d:				// space
+                    	cbuf[0] = 0x20;
+                    	break;
+                    	
+                    	default: break;
+                    }
 
                 	parser.AlphaDataM(cbuf);
-                	//R_CHARS_Inprogress = true;
                 	parser.FlushText();
                 	
                 	//parser.drawString(cbuf, lth, fgcolor, bgcolor, parser.current_x, 512-parser.current_y, wrMode, 1, 0, 0);
                 
-                    if (chr0 > 0x3F )
+                	if (chr0 > 0x3F )
                     {
                         // restore M slot
                     	z80Memory.writeByte(PortalConsts.M_CCR, save);
                     }
-                	
+                                  	
                 }
 
             }
@@ -499,6 +514,8 @@ public class PZ80Cpu extends Thread {
     	
     	case PortalConsts.R_ALARM:
     		
+    		CharTest();
+    		
     		return 1;
     	
     	case PortalConsts.R_SSF:
@@ -518,5 +535,35 @@ public class PZ80Cpu extends Thread {
     	}
     	
     }
+    
+    private void CharTest()
+    {
+
+    	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
+    	
+    	int chr;
+    	int lth = 0;
+    	
+        for (int i = 0; i < 64 ; i++) //  0..63 or 64..127
+        {
+        	chr = i;
+        
+            cbuf[lth++] = (byte)(chr);
+            
+           
+            if (true)
+            {
+            	parser.text_charset = 1;
+
+            	parser.AlphaDataM(cbuf);
+            	parser.FlushText();
+            	
+                lth = 0;              	
+            }
+
+        }
+
+    }
+    
 
 }
