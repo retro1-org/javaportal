@@ -6839,7 +6839,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		{
 			for (int z = 0 ; z < 100000; z++)    // wait for stop
 				z++;
-			cpu = new PZ80Cpu(cpu);
+			//cpu = new PZ80Cpu(cpu);
 		}
 		cpu.runWithMtutorCheck(cpu.z80Memory.readWord(origin));
 	}
@@ -6881,7 +6881,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		{
 			for (int z = 0 ; z < 100000; z++)  // wait for stop
 				z++;
-			cpu = new PZ80Cpu(cpu);
+			//cpu = new PZ80Cpu(cpu);
 		}
 		cpu.runWithMtutorCheck(xaddr);
 		

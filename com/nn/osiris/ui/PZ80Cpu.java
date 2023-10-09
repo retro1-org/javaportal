@@ -1,7 +1,7 @@
 package com.nn.osiris.ui;
 
 import java.awt.Color;
-import java.util.*;
+//import java.util.*;
 
 import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
@@ -12,10 +12,6 @@ public class PZ80Cpu extends Thread {
     public PZIO z80IO;
     public LevelOneParser parser;
     
-    
-   // private int charM;
-
-    
     public int m_mtPLevel;
     
     public boolean stopme;
@@ -24,9 +20,6 @@ public class PZ80Cpu extends Thread {
     
     private int runs;
     
-    //private boolean R_CHARS_Inprogress = false;
-    
-  
     public PZ80Cpu(LevelOneParser x)
     {
     	parser = x;
@@ -51,10 +44,8 @@ public class PZ80Cpu extends Thread {
     	z80 = base.z80;
     	stopme = false;
     	m_mtPLevel = base.m_mtPLevel;
-//    	charM = base.charM;
     	runs = base.runs;
     	
-    	//R_CHARS_Inprogress = base.R_CHARS_Inprogress;
     	threadsCopied = base.threadsCopied + 1;
     	
     }
@@ -74,9 +65,14 @@ public class PZ80Cpu extends Thread {
     public void run() { //
         // Ok, run the program
 
+        int pc;
+        long tstates = z80.getTStates();
+        pc = z80.getProgramCounter();
+        z80.resetTStates();
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program running...Starting PC= "+String.format("%x", pc));
+
         boolean test = z80.getHalt();
         stopme = false;
-        int pc;
         
 	        while (true) {
 	            try {
@@ -98,7 +94,31 @@ public class PZ80Cpu extends Thread {
 	                if (!test && !stopme)
 	                	z80.executeOneInstruction();
 	                else
-	                	break;
+	                	
+	                	// for threading in stead of a break we should be in a sleep loop here until stopme is false again
+	                	
+	                	if (PortalConsts.is_threaded)
+	                	{
+	                		if (stopme)
+	                		{
+	                	        tstates = z80.getTStates();
+	                	        z80.resetTStates();
+	                	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread waiting... waiting PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
+	                	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
+
+	                		}
+	                		while (stopme)
+	                		{
+	                			sleep(50);
+	                		}
+	            	        //long tstates = z80.getTStates();
+	            	        z80.resetTStates();
+	            	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread continuing...PC= "+String.format("%x", pc));
+	            	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
+	                		continue;
+	                	}
+	                	else	
+	                		break;
 	                
 	                test = z80.getHalt();
 	                
@@ -107,16 +127,15 @@ public class PZ80Cpu extends Thread {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
 	            }
 	        }
-	        long tstates = z80.getTStates();
-	        
-	        //int inst = z80Memory.readByte(PortalConsts.Level4Pause+ 2000);
-	        
+	        tstates = z80.getTStates();
 	        z80.resetTStates();
-	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread exit...PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	    	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
+	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
+	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
 
     }
     
+    
+    private boolean has_been_started = false;
     
     public void runWithMtutorCheck(int address)
     {
@@ -147,8 +166,13 @@ public class PZ80Cpu extends Thread {
         z80.setResetAddress(address);
         z80.setProgramCounter(address);
     	 
-		if (PortalConsts.is_threaded)
+		if (PortalConsts.is_threaded && !has_been_started)
+		{
+			has_been_started = true;
 			start();
+		}
+		else if (PortalConsts.is_threaded && has_been_started)
+			stopme = false;
 		else
 	        run();
     }
@@ -286,31 +310,24 @@ public class PZ80Cpu extends Thread {
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
-                	// Crude code converter
+     // Crude char code converter
                 	
-                	parser.text_charset = 1;	// assume lower case
+                	parser.text_charset = 1;	// assume lower case alpha
                 	
-                	if (charM > 0 )				// upper case
+                	if (charM > 0  && pv < 27)				// upper case
                 	{
                 		parser.text_charset = 0;
                 		cbuf[0] += 64;			// upper case alpha
                 	}
-                	else if (charM  == 0 && pv >= 27 && pv <= 36) // numbers
+                	else if (charM  == 0 )
                 	{
-                		cbuf[0] += 48-27;
-                		parser.text_charset = 0;
+                		byte cv = convert0[pv];
+                		
+                		cbuf[0] = cv;
+                		if (pv != cv)
+                			parser.text_charset = 0;
                 	}
-                	else if (charM  == 0 && pv == 47) // .
-                	{
-                		cbuf[0] = 46;
-                		parser.text_charset = 0;
-                	}
-                	else if (charM  == 0 && pv == 61) // ?
-                	{
-                		cbuf[0] = 63;
-                		parser.text_charset = 0;
-                	}
-
+                	
                     switch(cbuf[0])
                     {
                     case 0x2d:				// space
@@ -320,6 +337,8 @@ public class PZ80Cpu extends Thread {
                     	default: break;
                     }
 
+     // end char converter
+                    
                 	parser.AlphaDataM(cbuf);
                 	parser.FlushText();
                 	
@@ -345,10 +364,10 @@ public class PZ80Cpu extends Thread {
     		
     		switch ((mode >> 1) & 3)
     		{
-    		case 0: parser.screen_mode = parser.SCINVERSE; break;
-    		case 1: parser.screen_mode = parser.SCREWRITE; break;
-    		case 2: parser.screen_mode = parser.SCERASE; break;
-    		case 3: parser.screen_mode = parser.SCWRITE; break;
+    		case 0: parser.screen_mode = LevelOneParser.SCINVERSE; break;
+    		case 1: parser.screen_mode = LevelOneParser.SCREWRITE; break;
+    		case 2: parser.screen_mode = LevelOneParser.SCERASE; break;
+    		case 3: parser.screen_mode = LevelOneParser.SCWRITE; break;
     		}
     		
     		if ((mode & 1) == 1)
@@ -553,7 +572,7 @@ public class PZ80Cpu extends Thread {
            
             if (true)
             {
-            	parser.text_charset = 1;
+            	parser.text_charset = 0;
 
             	parser.AlphaDataM(cbuf);
             	parser.FlushText();
@@ -565,5 +584,19 @@ public class PZ80Cpu extends Thread {
 
     }
     
+    
+    private static final byte[] convert0 =
+    		{
+    			 0,  1,  2,  3,  4,  5,  6,  7,
+    			 8,  9, 10, 11, 12, 13, 14, 15,
+    			16, 17, 18, 19, 20, 21, 22, 23,
+    			24, 25, 26, 48, 49, 50, 51, 52,
+    			53, 54, 55, 56, 57, 37, 38, 42,
+    			47, 41, 42, 43, 44, 45, 46, 46,
+    			48, 49, 50, 51, 52, 53, 54, 55,
+    			56, 57, 58, 59, 60, 63, 62, 63,
+    			0
+    		};
+
 
 }
