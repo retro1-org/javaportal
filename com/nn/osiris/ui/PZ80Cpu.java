@@ -310,11 +310,10 @@ public class PZ80Cpu extends Thread {
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
-     // Crude char code converter
-                	
+     // Char code converter
                 	parser.text_charset = 1;	// assume lower case alpha -> M1 (ASCII)
 
-                	if (charM  == 0 )			// raw char code
+                	if (charM  == 0 )			// unSHIFTed char code
                 	{
                 		byte cv = convert0[pv];
                 		cbuf[0] = cv;
@@ -339,9 +338,7 @@ public class PZ80Cpu extends Thread {
                 		cbuf[0] = cv;
                 		parser.text_charset = (byte)(newchrset1[pv] +2);
                 	}
-                	
      // end char converter
-                    
                 	parser.AlphaDataM(cbuf);
                 	parser.FlushText();
                 	
@@ -557,8 +554,29 @@ public class PZ80Cpu extends Thread {
     	}
     	
     }
+   
     
     private void CharTest()
+    {
+    	parser.current_x = 0;
+    	parser.current_y = 496;
+    	CharTestx((byte)0,0);
+
+    	parser.current_x = 0;
+    	parser.current_y = 496-16;
+    	CharTestx((byte)0,64);
+
+    	parser.current_x = 0;
+    	parser.current_y = 496-32;
+    	CharTestx((byte)1, 0);
+
+    	parser.current_x = 0;
+    	parser.current_y = 496-48;
+    	CharTestx((byte)1, 64);
+
+    }
+    
+    private void CharTestx(byte set, int start )
     {
 
     	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
@@ -566,7 +584,7 @@ public class PZ80Cpu extends Thread {
     	int chr;
     	int lth = 0;
     	
-        for (int i = 64; i < 128 ; i++) //  0..63 or 64..127
+        for (int i = start; i < start+64 ; i++) //  0..63 or 64..127
         {
         	chr = i;
         
@@ -575,7 +593,7 @@ public class PZ80Cpu extends Thread {
            
             if (true)
             {
-            	parser.text_charset = 0;
+            	parser.text_charset = set;
 
             	parser.AlphaDataM(cbuf);
             	parser.FlushText();
@@ -597,7 +615,7 @@ public class PZ80Cpu extends Thread {
     			24, 25, 26, 48, 49, 50, 51, 52,		// 24..31
     			53, 54, 55, 56, 57, 43, 45, 42,		// 32..39
     			47, 40, 41, 36, 61, 32, 44, 46,		// 40..47
-    			47, 49, 50, 37, 42, 36, 54, 55,		// 48..55
+    			47, 91, 93, 37, 42, 36, 39, 34,		// 48..55
     			33, 59, 60, 62, 95, 63, 63, 63,		// 56..63
     			0
     		};
@@ -612,7 +630,7 @@ public class PZ80Cpu extends Thread {
     			1, 1, 1, 0, 0, 0, 0, 0,			// 24..31
     			0, 0, 0, 0, 0, 0, 0, 0,			// 32..39
     			0, 0, 0, 0, 0, 1, 0, 0,			// 40..47
-    			1, 1, 1, 0, 1, 1, 1, 1,			// 48..55
+    			1, 0, 0, 0, 1, 1, 0, 0,			// 48..55
     			0, 0, 0, 0, 0, 0, 1, 1,			// 56..63
     			1
     	};
@@ -625,10 +643,10 @@ public class PZ80Cpu extends Thread {
 			72, 73, 74, 75, 76, 77, 78, 79,		// 8..15
 			80, 81, 82, 83, 84, 85, 86, 87,		// 16..23
 			88, 89, 90, 27, 28, 29, 30, 31,		// 24..31
-			32, 33, 34, 35, 30, 43, 38, 39,		// 32..39
-			40, 41, 42, 38, 44, 45, 46, 47,		// 40..47
+			32, 33, 34, 35, 30, 43, 44, 39,		// 32..39
+			40, 27, 29, 38, 44, 45, 28, 47,		// 40..47
 			48, 48, 49, 50, 51, 52, 53, 54,		// 48..55
-			55, 56, 57, 58, 59, 64, 61, 62,		// 56..63
+			55, 56, 57, 58, 59, 64, 92, 62,		// 56..63
 			0
 		};
 
@@ -643,7 +661,7 @@ public class PZ80Cpu extends Thread {
     			1, 1, 1, 1, 1, 1, 1, 1,			// 32..39
     			1, 1, 1, 0, 1, 1, 1, 1,			// 40..47
     			1, 1, 1, 1, 1, 1, 1, 1,			// 48..55
-    			1, 1, 1, 1, 1, 0, 1, 1,			// 56..63
+    			1, 1, 1, 1, 1, 0, 0, 1,			// 56..63
     			1
     	};
 
