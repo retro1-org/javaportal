@@ -312,20 +312,32 @@ public class PZ80Cpu extends Thread {
                 {
      // Crude char code converter
                 	
-                	parser.text_charset = 1;	// assume lower case alpha
+                	parser.text_charset = 1;	// assume lower case alpha -> M1 (ASCII)
 
-                	if (charM  == 0 )
+                	if (charM  == 0 )			// raw char code
                 	{
                 		byte cv = convert0[pv];
                 		cbuf[0] = cv;
                 		parser.text_charset =newchrset0[pv];
                 	}
 
-                	else if (charM  == 1 )
+                	else if (charM  == 1 )		// SHIFTed char code
                 	{
                 		byte cv = convert1[pv];
                 		cbuf[0] = cv;
                 		parser.text_charset =newchrset1[pv];
+                	}
+                	else if (charM  == 2 )	// font char code
+                	{
+                		byte cv = convert0[pv];
+                		cbuf[0] = cv;
+                		parser.text_charset =(byte) (newchrset0[pv]+ 2);
+                	}
+                	else if (charM  == 3 )	// SHIFTed font char code
+                	{
+                		byte cv = convert1[pv];
+                		cbuf[0] = cv;
+                		parser.text_charset = (byte)(newchrset1[pv] +2);
                 	}
                 	
      // end char converter
@@ -554,7 +566,7 @@ public class PZ80Cpu extends Thread {
     	int chr;
     	int lth = 0;
     	
-        for (int i = 0; i < 64 ; i++) //  0..63 or 64..127
+        for (int i = 64; i < 128 ; i++) //  0..63 or 64..127
         {
         	chr = i;
         
@@ -563,7 +575,7 @@ public class PZ80Cpu extends Thread {
            
             if (true)
             {
-            	parser.text_charset = 1;
+            	parser.text_charset = 0;
 
             	parser.AlphaDataM(cbuf);
             	parser.FlushText();
@@ -575,36 +587,70 @@ public class PZ80Cpu extends Thread {
 
     }
     
+   //  index position is char code, value is index into M table
     
     private static final byte[] convert0 =
     		{
-    			 0,  1,  2,  3,  4,  5,  6,  7,		// 0..7	
+    			58,  1,  2,  3,  4,  5,  6,  7,		// 0..7	
     			 8,  9, 10, 11, 12, 13, 14, 15,		// 8..15
     			16, 17, 18, 19, 20, 21, 22, 23,		// 16..23
     			24, 25, 26, 48, 49, 50, 51, 52,		// 24..31
-    			53, 54, 55, 56, 57, 37, 38, 42,		// 32..39
-    			47, 41, 42, 43, 44, 32, 46, 46,		// 40..47
-    			47, 49, 50, 51, 42, 36, 54, 55,		// 48..55
-    			56, 57, 58, 59, 60, 63, 63, 63,		// 56..63
+    			53, 54, 55, 56, 57, 43, 45, 42,		// 32..39
+    			47, 40, 41, 36, 61, 32, 44, 46,		// 40..47
+    			47, 49, 50, 37, 42, 36, 54, 55,		// 48..55
+    			33, 59, 60, 62, 95, 63, 63, 63,		// 56..63
     			0
     		};
 
-    private static final byte[] newchrset0 =
+ // entries of 0 for M0 1 for M1 (ASCII) M0 has upper alpha M1 lower alpha
+    
+    private static final byte[] newchrset0 =				
     	{
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 0..7
+    			0, 1, 1, 1, 1, 1, 1, 1,			// 0..7
     			1, 1, 1, 1, 1, 1, 1, 1,			// 8..15
     			1, 1, 1, 1, 1, 1, 1, 1,			// 16..23
     			1, 1, 1, 0, 0, 0, 0, 0,			// 24..31
-    			0, 0, 0, 0, 0, 1, 1, 0,			// 32..39
-    			0, 1, 1, 1, 1, 1, 1, 0,			// 40..47
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 32..39
+    			0, 0, 0, 0, 0, 1, 0, 0,			// 40..47
+    			1, 1, 1, 0, 1, 1, 1, 1,			// 48..55
+    			0, 0, 0, 0, 0, 0, 1, 1,			// 56..63
+    			1
+    	};
+
+    //  index position is char code, value is index into M table
+
+    private static final byte[] convert1 =
+		{
+			35, 65, 66, 67, 68, 69, 70, 71,		// 0..7	
+			72, 73, 74, 75, 76, 77, 78, 79,		// 8..15
+			80, 81, 82, 83, 84, 85, 86, 87,		// 16..23
+			88, 89, 90, 27, 28, 29, 30, 31,		// 24..31
+			32, 33, 34, 35, 30, 43, 38, 39,		// 32..39
+			40, 41, 42, 38, 44, 45, 46, 47,		// 40..47
+			48, 48, 49, 50, 51, 52, 53, 54,		// 48..55
+			55, 56, 57, 58, 59, 64, 61, 62,		// 56..63
+			0
+		};
+
+    // entries of 0 for M0 1 for M1 (ASCII) M0 has upper alpha M1 lower alpha
+
+    private static final byte[] newchrset1 =
+    	{
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 0..7
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 8..15
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 16..23
+    			0, 0, 0, 1, 1, 1, 1, 1,			// 24..31
+    			1, 1, 1, 1, 1, 1, 1, 1,			// 32..39
+    			1, 1, 1, 0, 1, 1, 1, 1,			// 40..47
     			1, 1, 1, 1, 1, 1, 1, 1,			// 48..55
     			1, 1, 1, 1, 1, 0, 1, 1,			// 56..63
     			1
     	};
 
+/*
     private static final byte[] convert1 =
 		{
-			 0, 65, 66, 67, 68, 69, 70, 71,		// 0..7	
+			35, 65, 66, 67, 68, 69, 70, 71,		// 0..7	
 			72, 73, 74, 75, 76, 77, 78, 79,		// 8..15
 			80, 81, 82, 83, 84, 85, 86, 87,		// 16..23
 			88, 89, 90, 27, 28, 29, 30, 31,		// 24..31
@@ -617,7 +663,7 @@ public class PZ80Cpu extends Thread {
     
     private static final byte[] newchrset1 =
     	{
-    			1, 0, 0, 0, 0, 0, 0, 0,			// 0..7
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 0..7
     			0, 0, 0, 0, 0, 0, 0, 0,			// 8..15
     			0, 0, 0, 0, 0, 0, 0, 0,			// 16..23
     			0, 0, 0, 1, 1, 1, 1, 1,			// 24..31
@@ -629,4 +675,7 @@ public class PZ80Cpu extends Thread {
     	};
 
 
+ * 
+ * 
+ */
 }
