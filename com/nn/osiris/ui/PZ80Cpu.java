@@ -16,10 +16,13 @@ public class PZ80Cpu {
     
     public boolean stopme;
     
-    public	int threadsCopied;
+    public boolean mtutor_waiting = false;
+    
+    //public	int threadsCopied;
     
     private int runs;
     
+/*    
     public PZ80Cpu(LevelOneParser x)
     {
     	parser = x;
@@ -27,10 +30,11 @@ public class PZ80Cpu {
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
     	z80.reset();
-    	threadsCopied = 0;
+  //  	threadsCopied = 0;
     	runs = 0;
     }
- 
+*/  
+
     public PZ80Cpu()
     {
 
@@ -46,7 +50,7 @@ public class PZ80Cpu {
     	m_mtPLevel = base.m_mtPLevel;
     	runs = base.runs;
     	
-    	threadsCopied = base.threadsCopied + 1;
+ //   	threadsCopied = base.threadsCopied + 1;
     	
     }
     
@@ -57,6 +61,8 @@ public class PZ80Cpu {
     	z80Memory = new PZMemory();
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
+    	
+    	setM_KSW(0);	// keys to plato
     			
     	return z80;
     }
@@ -67,8 +73,19 @@ public class PZ80Cpu {
 
         saveParserState();
     	
+        
+        if(mtutor_waiting)
+        {
+        	// restore local state
+        	
+        	restoreLocalState();
+        }
+        
         int pc;
         long tstates = z80.getTStates();
+        
+        long loops = 0;
+        
         pc = z80.getProgramCounter();
         z80.resetTStates();
         System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program running...Starting PC= "+String.format("%x", pc));
@@ -77,6 +94,11 @@ public class PZ80Cpu {
         stopme = false;
         
 	        while (true) {
+	        	if (loops++ > 300000)
+	        	{
+	        		mtutor_waiting = true;
+	        		break;
+	        	}
 	            try {
 	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
 	                pc = z80.getProgramCounter();	// Check if PC is calling resident
@@ -118,7 +140,6 @@ public class PZ80Cpu {
 	            	        //long tstates = z80.getTStates();
 	            	        z80.resetTStates();
 	            	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread continuing...PC= "+String.format("%x", pc));
-	            	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
 	                		
 	            	        saveParserState();	            	        
 	            	        continue;
@@ -133,17 +154,30 @@ public class PZ80Cpu {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
 	            }
 	        }
+	        
+	        if ( mtutor_waiting)
+	        {
+	        	// save local state for resume
+	        	
+	        	parser.do_repaint = true;
+	        	
+	        	saveLocalState();
+	        }
+	        
 	        restoreParserState();
 	        
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
-	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
+	        if (!mtutor_waiting)
+	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
+	        else
+	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program WAITING...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
+	        	
 
     }
     
     
-    private boolean has_been_started = false;
+    //private boolean has_been_started = false;
     
     public void runWithMtutorCheck(int address)
     {
@@ -459,11 +493,10 @@ public class PZ80Cpu {
         	{
             int k = z80.getRegisterValue(RegisterNames.HL);
 
-            //int temp_hold = mt_ksw;
-            //if (k != 0x3a)
-            //    mt_ksw = 0;
+            byte temp_hold = getM_KSW();
+            if (k != 0x3a)
+                setM_KSW(0);
            
-            
         	parser.SendRawKey(0x1b);
         	
         	x = Parity(0x40+(k & 0x3f));
@@ -471,7 +504,7 @@ public class PZ80Cpu {
         	x = Parity(0x60+(k >> 6));
         	parser.SendRawKey(x);
         	
-        	//mt_ksw = temp_hold;   
+        	setM_KSW(temp_hold);   
     		
     		return 1;
         	}
@@ -545,7 +578,7 @@ public class PZ80Cpu {
     	
     	case PortalConsts.R_ALARM:
     		
-    		CharTest();
+    		CharTest();		// temp
     		
     		return 1;
     	
@@ -557,10 +590,15 @@ public class PZ80Cpu {
             System.out.println("------------------------R_SSF HL: " + String.format("%x", hl));
     		// TODO
     		System.out.println("------------------------NOT handled R_SSF");
+        	mtutor_waiting = false;
+        	sendKeysToPlato();
     		return 2;
 
     	default: 
+    		    		
         	System.out.println("------------------------NOT handled 0x" + String.format("%x", val));
+        	mtutor_waiting = false;
+        	sendKeysToPlato();
         	return 2;
         	
     	}
@@ -568,7 +606,39 @@ public class PZ80Cpu {
     }
    
     
+    public byte getM_KSW()
+    {
+    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	return val;
+    }
+
+    public void setM_KSW(int val)
+    {
+    	val &= 0xff;
+    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    }
     
+    public boolean key2mtutor()
+    {
+    	return (getM_KSW() & 1) == 1;
+    }
+    
+    public void sendKeysToPlato()
+    {
+    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	val &= 0xfe;
+    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    	
+    }
+
+    public void sendKeysToMicro()
+    {
+    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	val |= 1;
+    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    	
+    }
+
     
     private void CharTest()
     {
@@ -699,10 +769,56 @@ public class PZ80Cpu {
     private Color fg_color;
 	/** Background color. */
     private Color bg_color;
+
+    
+	/** Current screen mode of terminal. */
+    private int Rscreen_mode;
+	/** Current x location. */
+    private int Rcurrent_x;
+	/** Current y location. */
+    private int Rcurrent_y;
+	/** Current charset working in. */
+    private byte Rtext_charset;
+	/** Text size. */
+    private byte Rtext_size;
+	/** X coordinate for centering. */
+    private int Rcenter_x;
+	/** Foreground color. */
+    private Color Rfg_color;
+	/** Background color. */
+    private Color Rbg_color;
 	
 	
 	/////
 
+    public void saveLocalState()
+    {
+    	Rscreen_mode = screen_mode;
+    	Rcurrent_x = current_x;
+    	Rcurrent_y = current_y;
+    	Rtext_charset = text_charset;
+    	Rtext_size = text_size;
+    	Rcenter_x = center_x;
+    	Rfg_color = fg_color;
+    	Rbg_color = bg_color;
+    	
+    }
+
+    
+    public void restoreLocalState()
+    {
+    	screen_mode = Rscreen_mode;
+    	current_x = Rcurrent_x;
+    	current_y = Rcurrent_y;
+    	text_charset = Rtext_charset;
+    	text_size = Rtext_size;
+    	center_x = Rcenter_x;
+    	fg_color = Rfg_color;
+    	bg_color = Rbg_color;
+    	
+    }
+
+    
     public void saveParserState()
     {
     	screen_mode = parser.screen_mode;

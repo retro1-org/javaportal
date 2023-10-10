@@ -414,7 +414,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		0xa0, 0x40, 0x00, 0x00, 0x0a, 0x04, 0x00, 0x00	// Pattern 31
 	};
 
-	protected boolean do_repaint;
+	public boolean do_repaint;
 
 	protected int[] user_patterns = new int[32*8];
 
@@ -2269,6 +2269,9 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		{
 			levelone_container.repaint();
 		}
+		
+		if (cpu != null && cpu.mtutor_waiting)	//   does the z80 need the cpu?
+			cpu.runWithMtutorCheck(z80.getProgramCounter());
 		
 		return i;
 	}
@@ -11700,6 +11703,16 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 		return converted;
 	}
+	
+	
+	private boolean key2mtutor()
+	{
+		if (cpu != null)
+			return cpu.key2mtutor();
+		return false;
+	}
+	
+	
 	
 	/**
 	 * Convert array of bytes into array of longs. Every eight bytes will map
