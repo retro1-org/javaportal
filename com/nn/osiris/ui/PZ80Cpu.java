@@ -274,6 +274,7 @@ public class PZ80Cpu {
     	
     	case PortalConsts.R_MAIN:
         	//System.out.println("R_MAIN");
+    		sendKeysToPlato();
     		return 2;
     	
     	case PortalConsts.R_INIT:
@@ -639,6 +640,7 @@ public class PZ80Cpu {
                if (device == 1 && writ == 0)  // touch enable/disable
                {
 //                   m_canvas->ptermTouchPanel((data & 0x20) != 0);  // TODO drs
+            	   System.out.println("--------- TOUCH enable/disable");
                }
                //break;
            }
@@ -650,7 +652,7 @@ public class PZ80Cpu {
     		// 
             //System.out.println("------------------------NOT handled R_SSF");
         	//mtutor_waiting = false;
-        	sendKeysToPlato();
+        	//sendKeysToPlato();
     		return 1;
 
     	default: 
