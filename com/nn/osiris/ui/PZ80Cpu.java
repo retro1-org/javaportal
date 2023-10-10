@@ -49,7 +49,7 @@ public class PZ80Cpu {
     public void run() { //
         // Ok, run the program
     	
-        //saveParserState();
+        saveParserState();
         
         if(mtutor_waiting)
         {
@@ -144,7 +144,7 @@ public class PZ80Cpu {
 	        	saveLocalState();
 	        }
 	        
-	        //restoreParserState();
+	        restoreParserState();
 	        
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
@@ -783,28 +783,28 @@ public class PZ80Cpu {
 
     public void saveLocalState()
     {
-    	Rscreen_mode = screen_mode;
-    	Rcurrent_x = current_x;
-    	Rcurrent_y = current_y;
-    	Rtext_charset = text_charset;
-    	Rtext_size = text_size;
-    	Rcenter_x = center_x;
-    	Rfg_color = fg_color;
-    	Rbg_color = bg_color;
+    	Rscreen_mode = parser.screen_mode;
+    	Rcurrent_x = parser.current_x;
+    	Rcurrent_y = parser.current_y;
+    	Rtext_charset = parser.text_charset;
+    	Rtext_size = parser.text_size;
+    	Rcenter_x = parser.center_x;
+    	Rfg_color = parser.fg_color;
+    	Rbg_color = parser.bg_color;
     	
     }
 
     
     public void restoreLocalState()
     {
-    	screen_mode = Rscreen_mode;
-    	current_x = Rcurrent_x;
-    	current_y = Rcurrent_y;
-    	text_charset = Rtext_charset;
-    	text_size = Rtext_size;
-    	center_x = Rcenter_x;
-    	fg_color = Rfg_color;
-    	bg_color = Rbg_color;
+    	parser.screen_mode = Rscreen_mode;
+    	parser.current_x = Rcurrent_x;
+    	parser.current_y = Rcurrent_y;
+    	parser.text_charset = Rtext_charset;
+    	parser.text_size = Rtext_size;
+    	parser.center_x = Rcenter_x;
+    	parser.fg_color = Rfg_color;
+    	parser.bg_color = Rbg_color;
     	
     }
 
