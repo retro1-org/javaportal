@@ -94,7 +94,11 @@ public class PZ80Cpu {
 	                	else if (result == 0)
 	                		continue;
 	                	else if (result == 2)
+	                	{
+	                		mtutor_waiting = false;
+	                		
 	                		stopme = true;
+	                	}
 	                	
 	                }
 	                if (!test && !stopme)
@@ -273,7 +277,7 @@ public class PZ80Cpu {
     		return 2;
     	
     	case PortalConsts.R_INIT:
-        	//System.out.println("R_INIT");
+        	System.out.println("R_INIT");
     		return 2;
     		
     	case PortalConsts.R_DOT:
@@ -616,6 +620,9 @@ public class PZ80Cpu {
                // printf("r.ssf returns=%02x\n\n", state->registers.byte[Z80_L]);
            }
            
+           
+           // I think this switch is PTerm specific   will leave for now
+           
            switch (n)
            {
            case 0x1f00:    // xin 7; means start CWS functions
@@ -627,19 +634,17 @@ public class PZ80Cpu {
            case -1:
                break;
            default:
-               if (device == 1 && writ == 0)
+        	   // set interrupt mask ??  TODO ??
+        	   
+               if (device == 1 && writ == 0)  // touch enable/disable
                {
-//                   m_canvas->ptermTouchPanel((data & 0x20) != 0);
+//                   m_canvas->ptermTouchPanel((data & 0x20) != 0);  // TODO drs
                }
-               break;
+               //break;
            }
            
            
     	}
-
-           
-           
-            
             
             System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
     		// 
