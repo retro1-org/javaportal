@@ -646,6 +646,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Highest protocol interpreter (protocolP function index). */
 	private int data_proc;
 
+	
+	private int skipper = 0;	// for time slicing the z80
+	
 	/*
 	 * Level one graphics state.
 	 */
@@ -2270,8 +2273,11 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			levelone_container.repaint();
 		}
 		
-		if (cpu != null && cpu.mtutor_waiting)	//   does the z80 need the cpu?
+		if (cpu != null && cpu.mtutor_waiting && (++skipper % 5) == 0)	//   does the z80 need the cpu?
+		{
+			skipper = 0;
 			cpu.runWithMtutorCheck(z80.getProgramCounter());
+		}
 		
 		return i;
 	}

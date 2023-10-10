@@ -81,6 +81,8 @@ public class PZ80Cpu {
         	restoreLocalState();
         }
         
+        mtutor_waiting = true;
+        
         int pc;
         long tstates = z80.getTStates();
         
@@ -88,13 +90,13 @@ public class PZ80Cpu {
         
         pc = z80.getProgramCounter();
         z80.resetTStates();
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program running...Starting PC= "+String.format("%x", pc));
+        //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program running...Starting PC= "+String.format("%x", pc));
 
         boolean test = z80.getHalt();
         stopme = false;
         
 	        while (true) {
-	        	if (loops++ > 300000)
+	        	if (loops++ > 600000)
 	        	{
 	        		mtutor_waiting = true;
 	        		break;
@@ -168,11 +170,12 @@ public class PZ80Cpu {
 	        
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
+	        /*
 	        if (!mtutor_waiting)
 	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
 	        else
 	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program WAITING...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	        	
+	        	*/
 
     }
     
