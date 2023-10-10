@@ -22,7 +22,7 @@ import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 
-import com.codingrodent.microprocessor.Z80.Utilities;
+//import com.codingrodent.microprocessor.Z80.Utilities;
 import com.codingrodent.microprocessor.Z80.Z80Core;
 import com.codingrodent.microprocessor.Z80.CPUConstants.RegisterNames;
 
@@ -448,7 +448,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	public PZ80Cpu cpu;
 	public Z80Core z80;
 	
-	public LevelOneParser mTutorParser;
+	//public LevelOneParser mTutorParser;
 
 	/** The frame contains the parser. */
 	Frame parent_frame;
@@ -6714,7 +6714,6 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		XYAdjust(CHARWIDTH,0);
 	}
 
-	
 
 	public final void AlphaDataM(byte[] mdata)
 	{

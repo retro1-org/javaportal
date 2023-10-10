@@ -6,7 +6,7 @@ import java.awt.Color;
 import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
 
-public class PZ80Cpu extends Thread {
+public class PZ80Cpu {
     public Z80Core z80;
     public PZMemory z80Memory;
     public PZIO z80IO;
@@ -65,6 +65,8 @@ public class PZ80Cpu extends Thread {
     public void run() { //
         // Ok, run the program
 
+        saveParserState();
+    	
         int pc;
         long tstates = z80.getTStates();
         pc = z80.getProgramCounter();
@@ -95,7 +97,7 @@ public class PZ80Cpu extends Thread {
 	                	z80.executeOneInstruction();
 	                else
 	                	
-	                	// for threading in stead of a break we should be in a sleep loop here until stopme is false again
+	                	// for threading instead of a break we should be in a sleep loop here until stopme is false again
 	                	
 	                	if (PortalConsts.is_threaded)
 	                	{
@@ -107,15 +109,19 @@ public class PZ80Cpu extends Thread {
 	                	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
 
 	                		}
+	            	        restoreParserState();
+
 	                		while (stopme)
 	                		{
-	                			sleep(50);
+	                			//sleep(50);
 	                		}
 	            	        //long tstates = z80.getTStates();
 	            	        z80.resetTStates();
 	            	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread continuing...PC= "+String.format("%x", pc));
 	            	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
-	                		continue;
+	                		
+	            	        saveParserState();	            	        
+	            	        continue;
 	                	}
 	                	else	
 	                		break;
@@ -127,6 +133,8 @@ public class PZ80Cpu extends Thread {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
 	            }
 	        }
+	        restoreParserState();
+	        
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
 	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
@@ -165,7 +173,8 @@ public class PZ80Cpu extends Thread {
         
         z80.setResetAddress(address);
         z80.setProgramCounter(address);
-    	 
+  
+        /*
 		if (PortalConsts.is_threaded && !has_been_started)
 		{
 			has_been_started = true;
@@ -174,6 +183,8 @@ public class PZ80Cpu extends Thread {
 		else if (PortalConsts.is_threaded && has_been_started)
 			stopme = false;
 		else
+		
+		*/
 	        run();
     }
     
@@ -199,7 +210,7 @@ public class PZ80Cpu extends Thread {
 //        PatchColor (0xe5);
     }
     
-    public int Parity(int x)
+    public static int Parity(int x)
     {
     	
     	boolean p = CPUConstants.PARITY_TABLE[x];
@@ -412,6 +423,14 @@ public class PZ80Cpu extends Thread {
     		
     		return 1;
     		
+        case PortalConsts.R_GJOB:
+            // r.gjob
+            return 1;
+            
+        case PortalConsts.R_XJOB:
+            // r.xjob
+            return 1;
+    		
     	case PortalConsts.R_INPX:
         	//System.out.println("R_INPX");
         	z80.setRegisterValue(RegisterNames.HL, parser.current_x);
@@ -522,13 +541,6 @@ public class PZ80Cpu extends Thread {
     		
     		// TODO
     		
-    		try {
-				sleep(15);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				//  e.printStackTrace();
-			}
-    		
     		return 1;
     	
     	case PortalConsts.R_ALARM:
@@ -555,6 +567,8 @@ public class PZ80Cpu extends Thread {
     	
     }
    
+    
+    
     
     private void CharTest()
     {
@@ -664,36 +678,55 @@ public class PZ80Cpu extends Thread {
     			1, 1, 1, 1, 1, 0, 0, 1,			// 56..63
     			1
     	};
-
-/*
-    private static final byte[] convert1 =
-		{
-			35, 65, 66, 67, 68, 69, 70, 71,		// 0..7	
-			72, 73, 74, 75, 76, 77, 78, 79,		// 8..15
-			80, 81, 82, 83, 84, 85, 86, 87,		// 16..23
-			88, 89, 90, 27, 28, 29, 30, 31,		// 24..31
-			32, 33, 34, 35, 36, 43, 38, 39,		// 32..39
-			40, 41, 42, 43, 44, 45, 46, 47,		// 40..47
-			48, 48, 49, 50, 51, 52, 53, 54,		// 48..55
-			55, 56, 57, 58, 59, 60, 61, 62,		// 56..63
-			0
-		};
     
-    private static final byte[] newchrset1 =
-    	{
-    			0, 0, 0, 0, 0, 0, 0, 0,			// 0..7
-    			0, 0, 0, 0, 0, 0, 0, 0,			// 8..15
-    			0, 0, 0, 0, 0, 0, 0, 0,			// 16..23
-    			0, 0, 0, 1, 1, 1, 1, 1,			// 24..31
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 32..39
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 40..47
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 48..55
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 56..63
-    			1
-    	};
+    
+	
+	////// Parser state to save/restore
+	
+	/** Current screen mode of terminal. */
+    private int screen_mode;
+	/** Current x location. */
+    private int current_x;
+	/** Current y location. */
+    private int current_y;
+	/** Current charset working in. */
+    private byte text_charset;
+	/** Text size. */
+    private byte text_size;
+	/** X coordinate for centering. */
+    private int center_x;
+	/** Foreground color. */
+    private Color fg_color;
+	/** Background color. */
+    private Color bg_color;
+	
+	
+	/////
 
+    public void saveParserState()
+    {
+    	screen_mode = parser.screen_mode;
+    	current_x = parser.current_x;
+    	current_y = parser.current_y;
+    	text_charset = parser.text_charset;
+    	text_size = parser.text_size;
+    	center_x = parser.center_x;
+    	fg_color = parser.fg_color;
+    	bg_color = parser.bg_color;
+    	
+    }
+    
+    public void restoreParserState()
+    {
+    	parser.screen_mode = screen_mode;
+    	parser.current_x = current_x;
+    	parser.current_y = current_y;
+    	parser.text_charset = text_charset;
+    	parser.text_size = text_size;
+    	parser.center_x = center_x;
+    	parser.fg_color = fg_color;
+    	parser.bg_color = bg_color;
+    	
+    }
 
- * 
- * 
- */
 }
