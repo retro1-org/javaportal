@@ -646,8 +646,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Highest protocol interpreter (protocolP function index). */
 	private int data_proc;
 
-	
-	private int skipper = 0;	// for time slicing the z80
+	public int skipper_mod;;	// number of bytes of stream to process before checking z80 for a time slice - uses skipper below
+	private int skipper = 0;	// for time slicing the z80 
+	public long z80_loops;		// instructions per Z80 time slice
 	
 	/*
 	 * Level one graphics state.
@@ -2138,6 +2139,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		colorAvail = true;
 		terminalColors = 0;		// never used drs 2023/10/3
 		initTTY();
+		
+		z80_loops = PortalConsts.z80_loops;
+		skipper_mod = PortalConsts.skipper_mod;
+		
 	}
 	
 	int m_pending = 0;
@@ -2273,7 +2278,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			levelone_container.repaint();
 		}
 		
-		if (cpu != null && cpu.mtutor_waiting && (++skipper % 5) == 0)	//   does the z80 need the cpu?
+		if (cpu != null && cpu.mtutor_waiting && (++skipper % skipper_mod) == 0)	//   does the z80 need the cpu?
 		{
 			skipper = 0;
 			cpu.runWithMtutorCheck(z80.getProgramCounter());
@@ -10395,7 +10400,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	{
 	int 	count;
 
-		if (is_flow_control_on)
+		if (is_flow_control_on  && !key2mtutor())
 		{
 			switch ( keynum)
 			{
@@ -10449,7 +10454,11 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			count = 1;
 		}
 
-		if (!lw_suppress)
+		if(key2mtutor())
+		{
+			cpu.keyBuffer.Enqueue(transmit_buffer, 0, count);
+		}
+		else if (!lw_suppress)
 		{
 			if	(null != levelone_network)
 				levelone_network.write(transmit_buffer, 0, count, delay);

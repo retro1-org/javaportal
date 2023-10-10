@@ -43,6 +43,11 @@ class PortalConsts
 	
 	// The rest of this file is for executing Z80 code - MTUTOR
 	
+	// time slicing init values
+	static final int skipper_mod = 20;
+	static final long z80_loops = 300000;
+	
+	
 	// Resident entry points.
 	
 	static final int R_MAIN =  0x3d;    // Fake return address for mode 5/6/7 call

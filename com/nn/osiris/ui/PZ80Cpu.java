@@ -18,43 +18,17 @@ public class PZ80Cpu {
     
     public boolean mtutor_waiting = false;
     
-    //public	int threadsCopied;
+    private boolean giveupz80;
     
     private int runs;
     
-/*    
-    public PZ80Cpu(LevelOneParser x)
-    {
-    	parser = x;
-    	z80Memory = new PZMemory();
-    	z80IO  = new PZIO();
-    	z80 = new Z80Core(z80Memory, z80IO);
-    	z80.reset();
-  //  	threadsCopied = 0;
-    	runs = 0;
-    }
-*/  
-
+    public CircularBuffer keyBuffer;
+    
     public PZ80Cpu()
     {
 
     }
-    
-    public PZ80Cpu( PZ80Cpu base)
-    {
-    	parser = base.parser;
-    	z80Memory = base.z80Memory;
-    	z80IO = base.z80IO;
-    	z80 = base.z80;
-    	stopme = false;
-    	m_mtPLevel = base.m_mtPLevel;
-    	runs = base.runs;
-    	
- //   	threadsCopied = base.threadsCopied + 1;
-    	
-    }
-    
-    
+
     public Z80Core Init(LevelOneParser x)
     {
     	parser = x;
@@ -63,16 +37,19 @@ public class PZ80Cpu {
     	z80 = new Z80Core(z80Memory, z80IO);
     	
     	setM_KSW(0);	// keys to plato
-    			
+    	
+    	keyBuffer = new CircularBuffer(200);
+    	
+    	giveupz80 = false;
+    	
     	return z80;
     }
     
     
     public void run() { //
         // Ok, run the program
-
-        saveParserState();
     	
+        //saveParserState();
         
         if(mtutor_waiting)
         {
@@ -90,14 +67,15 @@ public class PZ80Cpu {
         
         pc = z80.getProgramCounter();
         z80.resetTStates();
-        //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program running...Starting PC= "+String.format("%x", pc));
+        //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 New time slice...Starting PC= "+String.format("%x", pc));
 
         boolean test = z80.getHalt();
         stopme = false;
         
 	        while (true) {
-	        	if (loops++ > 600000)
+	        	if (loops++ > parser.z80_loops || giveupz80)
 	        	{
+	        		giveupz80 = false;
 	        		mtutor_waiting = true;
 	        		break;
 	        	}
@@ -166,7 +144,7 @@ public class PZ80Cpu {
 	        	saveLocalState();
 	        }
 	        
-	        restoreParserState();
+	        //restoreParserState();
 	        
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
@@ -455,8 +433,8 @@ public class PZ80Cpu {
     		
     		
     	case PortalConsts.R_EXEC:
-    		
-    		// TODO
+    		System.out.println("R_EXEC");
+//    		giveupz80 = true;				// TODO
     		
     		return 1;
     		
@@ -523,13 +501,17 @@ public class PZ80Cpu {
         	
     	case PortalConsts.R_INPUT:
     		//System.out.println("----------------------- R_INPUT");
-    		z80.setRegisterValue(RegisterNames.HL, -1 & 0xffff); // TMP TODO
+    		
+    		int mkey = keyBuffer.Dequeue();
+    		
+    		if ((mkey & 0xffff) != 0xffff)
+    			System.out.println("------------------------R_INPUT key: 0x" + String.format("%x", mkey));
+    		
+      		z80.setRegisterValue(RegisterNames.HL, mkey & 0xffff);
     		
     		return 1;
         	
     	case PortalConsts.R_FCOLOR:
-    		//System.out.println("R_FCOLOR"); // TODO
-    		
     		{
     			int red = z80.getRegisterValue(RegisterNames.H);
     			int green = z80.getRegisterValue(RegisterNames.L);
@@ -590,9 +572,9 @@ public class PZ80Cpu {
             int hl = z80.getRegisterValue(RegisterNames.HL);
 
             
-            System.out.println("------------------------R_SSF HL: " + String.format("%x", hl));
-    		// TODO
-    		System.out.println("------------------------NOT handled R_SSF");
+            System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
+    		// 
+            System.out.println("------------------------NOT handled R_SSF");
         	mtutor_waiting = false;
         	sendKeysToPlato();
     		return 2;
@@ -608,24 +590,28 @@ public class PZ80Cpu {
     	
     }
    
-    
+ 
+    // get resident status byte
     public byte getM_KSW()
     {
     	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
     	return val;
     }
 
+    // set resident status byte
     public void setM_KSW(int val)
     {
     	val &= 0xff;
     	z80Memory.writeByte(PortalConsts.M_KSW, val);
     }
     
+    // check if we are sending keys to mtutor
     public boolean key2mtutor()
     {
     	return (getM_KSW() & 1) == 1;
     }
     
+    // set to send keys to host
     public void sendKeysToPlato()
     {
     	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
@@ -634,6 +620,7 @@ public class PZ80Cpu {
     	
     }
 
+    //set to send keys to mtutor
     public void sendKeysToMicro()
     {
     	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
