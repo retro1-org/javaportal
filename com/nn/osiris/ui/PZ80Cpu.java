@@ -20,6 +20,8 @@ public class PZ80Cpu {
     
     private boolean giveupz80;
     
+    private int m_mtincnt = 0;
+    
     private int runs;
     
     public CircularBuffer keyBuffer;
@@ -568,16 +570,83 @@ public class PZ80Cpu {
     		return 1;
     	
     	case PortalConsts.R_SSF:
-    	
-            int hl = z80.getRegisterValue(RegisterNames.HL);
+    		int hl;
+    	{
+            int n = hl = z80.getRegisterValue(RegisterNames.HL);
 
+
+            int device = (n >> 10) & 0x1f;
+            int writ = (n >> 9) & 0x1;
+            int inter = (n >> 8) & 0x1;
+            int data = n & 0xff;
+
+           z80Memory.writeByte(PortalConsts.M_ENAB, data);
+           
+           // remember devices
+           if(writ == 1)
+           {
+               parser.m_indev = (byte)device;
+           }
+           else
+           {
+        	   parser.m_outdev = (byte)device;
+           }
+           
+           if (device == 15 && writ == 1 && inter == 0)   
+           {  
+               if ((m_mtincnt & 3) == 0)
+               {
+            	   z80.setRegisterValue(RegisterNames.L, 0xcc); //  state->registers.byte[Z80_L] = 0xcc;
+               }
+               else if ((m_mtincnt & 3) == 1)
+               {
+            	   z80.setRegisterValue(RegisterNames.L, 0x63);  //state->registers.byte[Z80_L] = 0x63;
+               }
+               else if ((m_mtincnt & 3) == 2)
+               {
+            	   z80.setRegisterValue(RegisterNames.L, 0x33);    //state->registers.byte[Z80_L] = 0x33;
+               }
+               else
+               {
+            	   z80.setRegisterValue(RegisterNames.L, 0x40);   //state->registers.byte[Z80_L] = 0x40;        // cdc disk resident loaded/running
+               }
+               m_mtincnt++;            // rotating selection of 3 possible responses
+                                       // mtutor tries many times
+
+               // printf("r.ssf returns=%02x\n\n", state->registers.byte[Z80_L]);
+           }
+           
+           switch (n)
+           {
+           case 0x1f00:    // xin 7; means start CWS functions
+               parser.m_cwsmode = 1;
+               break;
+           case 0x1d00:    // xout 7; means stop CWS functions
+        	   parser.m_cwsmode = 2;
+               break;
+           case -1:
+               break;
+           default:
+               if (device == 1 && writ == 0)
+               {
+//                   m_canvas->ptermTouchPanel((data & 0x20) != 0);
+               }
+               break;
+           }
+           
+           
+    	}
+
+           
+           
+            
             
             System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
     		// 
-            System.out.println("------------------------NOT handled R_SSF");
-        	mtutor_waiting = false;
+            //System.out.println("------------------------NOT handled R_SSF");
+        	//mtutor_waiting = false;
         	sendKeysToPlato();
-    		return 2;
+    		return 1;
 
     	default: 
     		    		

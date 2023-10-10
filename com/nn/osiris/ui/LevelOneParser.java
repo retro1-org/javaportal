@@ -650,6 +650,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private int skipper = 0;	// for time slicing the z80 
 	public long z80_loops;		// instructions per Z80 time slice
 	
+	public byte m_indev = 0;
+	public byte m_outdev = 0;
+	
+	public int m_cwsmode = 0;
+	
 	/*
 	 * Level one graphics state.
 	 */
