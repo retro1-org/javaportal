@@ -512,7 +512,14 @@ public class PZ80Cpu {
     		int mkey = keyBuffer.Dequeue();
     		
     		if ((mkey & 0xffff) != 0xffff)
+    		{
+    			if (mkey == 13)
+    				mkey = 22;
+    			else if (mkey == 0x61)
+    				mkey = 65;
+    			
     			System.out.println("------------------------R_INPUT key: 0x" + String.format("%x", mkey));
+    		}
     		
       		z80.setRegisterValue(RegisterNames.HL, mkey & 0xffff);
     		
