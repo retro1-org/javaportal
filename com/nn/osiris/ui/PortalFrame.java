@@ -316,7 +316,7 @@ public class PortalFrame
 				{
 					JOptionPane.showMessageDialog(PortalFrame.this,
 						"<html>"+
-						"You are no longer connected to NovaNET, <br>"+
+						"You are no longer connected, <br>"+
 						"you must choose the Open Connection option <br>"+
 						"in the File menu to continue working.</html>",
 						"Connection Lost",

@@ -31,7 +31,7 @@ public class PZ80Cpu {
     {
     		60, 0022, 0030,   27,   17, 49, 0064, 0013,			// 0..7   	, ANS, BACK, COPY, DATA, EDIT, divide, HELP,
     	  0023,   53,   12,   21, 0035, 0026,   56,   16,		// 8..15	ERASE,,,  LAB, NEXT, BACK1, ,
-    	  0020, 0072, 0031,   16, 0062,   -1,   59,   48,		// 16..23	SUP, STOP1, DATA, STOP, TERM, ,,,
+    	    16,   58, 0031,   16, 0062,   -1,   59,   48,		// 16..23	SUP, STOP1, DATA, STOP, TERM, ,,,
     	  0012,   51, 0027,   -1,   -1,   57,   -1,   96,		// 24..31	times, SUB, EDIT ,,,,,,,
     	    64, 0176, 0177, 0x3c24, 0044, 0045, 10, 0047,		// 32..39	, !, ", #, $, %, &, ',
     	  0051, 0173, 0050, 0016,   95, 0017,   94, 0135,		// 40..47	(, ), *, plus, ",", minus, ., /,
@@ -485,12 +485,12 @@ public class PZ80Cpu {
     			z80.setRegisterValue(RegisterNames.HL, (int)(-1));
     			return 1;
     		}
-			System.out.println("------------------------R_INPUT pre-key: 0x" + String.format("%x", mkey));
+			System.out.println("------------------------R_INPUT pre-key: " + mkey);
     		
     		if ((mkey & 0xff) != 0xff)
     		{
     			mkey = asciiToPlato[(int)mkey];
-    			System.out.println("------------------------R_INPUT post-key: 0x" + String.format("%x", mkey));
+    			System.out.println("------------------------R_INPUT post-key: " + mkey);
 
     			if (mkey != -1)
     			{
