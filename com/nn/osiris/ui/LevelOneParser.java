@@ -653,7 +653,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	public byte m_indev = 0;
 	public byte m_outdev = 0;
 	
-	public int m_cwsmode = 0;
+	public int m_cwsmode = 0;	// PTerm specific ??
 	
 	/*
 	 * Level one graphics state.

@@ -26,6 +26,29 @@ public class PZ80Cpu {
     
     public CircularBuffer keyBuffer;
     
+    
+    private static final long[] asciiToPlato = new long[]		// upper non-zero bytes to be sent first...
+    {
+    		60, 0022, 0030,   27,   17, 49, 0064, 0013,			// 0..7   	, ANS, BACK, COPY, DATA, EDIT, divide, HELP,
+    	  0023,   53,   12,   21, 0035, 0026,   56,   16,		// 8..15	ERASE,,,  LAB, NEXT, BACK1, ,
+    	  0020, 0072, 0031,   16, 0062,   -1,   59,   48,		// 16..23	SUP, STOP1, DATA, STOP, TERM, ,,,
+    	  0012,   51, 0027,   -1,   -1,   57,   -1,   96,		// 24..31	times, SUB, EDIT ,,,,,,,
+    	    64, 0176, 0177, 0x3c24, 0044, 0045, 10, 0047,		// 32..39	, !, ", #, $, %, &, ',
+    	  0051, 0173, 0050, 0016,   95, 0017,   94, 0135,		// 40..47	(, ), *, plus, ",", minus, ., /,
+    	  0000, 0001, 0002, 0003, 0004, 0005, 0006, 0007,		// 48..55	0, 1, 2, 3, 4, 5, 6, 7,
+    	  0010, 0011, 0174, 0134, 0040, 0133, 0041, 0175,		// 56..63	8, 9, :, ;, <, =, >, ?,
+    	  0x3c05, 0141, 0142, 0143, 0144, 0145, 0146, 0147,		// 64..71  @, A..G,
+    	  0150, 0151, 0152, 0153, 0154, 0155, 0156, 0157,		// 72..79  H..O
+    	  0160, 0162, 0162, 0163, 0164, 0165, 0166, 0167,		// 80..87  P..W
+    	  0170, 0171, 0172, 0042, 0x3c5d, 0043, 13, 0046, 		// 88..95  X, Y, Z, [, \, ], _,
+    	    11, 0101, 0102, 0103, 0104, 0105, 0106, 0107,		// 96..103  , a..g
+    	  0110, 0111, 0112, 0113, 0114, 0115, 0116, 0117,		// 104..111  h..o
+    	  0120, 0121, 0122, 0123, 0124, 0125, 0126, 0127,		// 112..119  p..w
+    	  0130, 0131, 0132, 0x3c22,   39, 0x3c23, 0x4e3c40, -1	// 120..127  {, |, }, ~, ,,
+    	  
+    };
+    
+    
     public PZ80Cpu()
     {
 
@@ -440,7 +463,7 @@ public class PZ80Cpu {
     		
     		
     	case PortalConsts.R_EXEC:
-    		System.out.println("R_EXEC");
+    		//System.out.println("R_EXEC");
 //    		giveupz80 = true;				// TODO
     		
     		return 1;
@@ -509,19 +532,37 @@ public class PZ80Cpu {
     	case PortalConsts.R_INPUT:
     		//System.out.println("----------------------- R_INPUT");
     		
-    		int mkey = keyBuffer.Dequeue();
+    		long mkey = keyBuffer.Dequeue();
     		
-    		if ((mkey & 0xffff) != 0xffff)
+    		if (mkey == -1)
     		{
+    			z80.setRegisterValue(RegisterNames.HL, (int)(-1));
+    			return 1;
+    		}
+			System.out.println("------------------------R_INPUT pre-key: 0x" + String.format("%x", mkey));
+    		
+    		if ((mkey & 0xff) != 0xff)
+    		{
+    			mkey = asciiToPlato[(int)mkey];
+    			System.out.println("------------------------R_INPUT post-key: 0x" + String.format("%x", mkey));
+    			
+
+    		if (mkey != -1)
+    			{
+    				mkey = (int)mkey & 0xffff;
+    	      		z80.setRegisterValue(RegisterNames.HL, (int)(mkey));
+    			}
+    			else
+    				z80.setRegisterValue(RegisterNames.HL, (int)(-1));
+    			
+/*    			
     			if (mkey == 13)
     				mkey = 22;
     			else if (mkey == 0x61)
     				mkey = 65;
-    			
-    			System.out.println("------------------------R_INPUT key: 0x" + String.format("%x", mkey));
+  */  			
     		}
     		
-      		z80.setRegisterValue(RegisterNames.HL, mkey & 0xffff);
     		
     		return 1;
         	
@@ -647,7 +688,7 @@ public class PZ80Cpu {
                if (device == 1 && writ == 0)  // touch enable/disable
                {
 //                   m_canvas->ptermTouchPanel((data & 0x20) != 0);  // TODO drs
-            	   System.out.println("--------- TOUCH enable/disable");
+            	   //System.out.println("--------- TOUCH enable/disable");
                }
                //break;
            }
@@ -655,11 +696,15 @@ public class PZ80Cpu {
            
     	}
             
-            System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
+            //System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
     		// 
             //System.out.println("------------------------NOT handled R_SSF");
         	//mtutor_waiting = false;
         	//sendKeysToPlato();
+    		return 1;
+    		
+    	case PortalConsts.R_PAINT:
+    		
     		return 1;
 
     	default: 
