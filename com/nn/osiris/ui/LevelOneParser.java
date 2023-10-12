@@ -11230,6 +11230,13 @@ int PtermHostConnection::AssembleAsciiWord (void)
 
 	public void SendRawKey (int key)
 	{
+		if (cpu != null && cpu.key2mtutor())
+		{
+			transmit_buffer[0] = (byte) key;
+			cpu.keyBuffer.Enqueue(transmit_buffer, 0, 1);
+			return;
+		}
+		
 		transmit_buffer[0] = (byte) key;
 		if	(!lw_suppress && levelone_network != null)
 			levelone_network.write(transmit_buffer,0,1);
@@ -11457,7 +11464,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	}
 
 	/**
-	 * Hanel cursor keypress.
+	 * Handle cursor keypress.
 	 *
 	 * @param
 	 * @param
