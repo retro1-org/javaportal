@@ -1,3 +1,12 @@
+/*
+ * PZ80Cpu.java
+ *
+ * Encapsulates Z80 microprocessor emulator and a PLATO Terminal Resident emulator.
+ * 
+ * Author: Dale Sinder
+ * 
+ */
+
 package com.nn.osiris.ui;
 
 import java.awt.Color;
@@ -7,29 +16,36 @@ import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
 
 public class PZ80Cpu {
-    public Z80Core z80;
+    /* z80 cpu */
+	public Z80Core z80;
+	/* ram for z80 */
     public PZMemory z80Memory;
+    /* IO for the z80 */
     public PZIO z80IO;
+    /* LevelOneParser that owns us */
     public LevelOneParser parser;
-    
+    /* mtutor level of the interpreter */
     public int m_mtPLevel;
-    
+    /* flag indicating z80 should stop */ 
     public boolean stopme;
-    
+    /* is mtutor running flag */
     public boolean mtutor_waiting = false;
-    
+    /* internal stop processing flag for z80 - */
     private boolean giveupz80;
-    
+    /* internal counter */
     private int m_mtincnt = 0;
     
-    private int runs;
+    private int r_execs = 0;
     
+    //private boolean timer_off = false;
+    
+    // circular buffer for accumulating keys */
     public CircularBuffer keyBuffer;
     
-    
-    private static final long[] portalToPlato = new long[]		// upper non-zero bytes to be sent first...
+    /* translates portal (non flow control) keys to mtutor keys */
+    private static final long[] portalToMTutor = new long[]		
     {
-    		60,   18,   24,   27,   17,   49,   52,   18,		// 0..7     ACCESS, ??, BACK, COPY, S, SUB1, ??, ANS,
+    		60,   18,   24,   27,   17,   49,   52,   18,		// 0..7     ACCESS, ??, BACK, COPY, SUB, SUB1, ??, ANS,
     	    19,   53,   12,   21,   29,   22,   56,   16,		// 8..15	ERASE, HELP1,,  LAB, NEXT, BACK1, ,
     	    -1,   58,   25,   16,   50,   -1,   59,   48,		// 16..23	??, STOP1, DATA, SUP, TERM, ,,,
     	    10,   51,   23,   -1,   -1,   57,   -1,   96,		// 24..31	times, SUB, EDIT ,,,,,,,
@@ -52,6 +68,7 @@ public class PZ80Cpu {
 
     }
 
+    /* Initializes the object */
     public Z80Core Init(LevelOneParser x)
     {
     	parser = x;
@@ -59,7 +76,7 @@ public class PZ80Cpu {
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
     	
-    	setM_KSW(0);	// keys to plato
+    	setM_KSW(0);	// init send keys to plato/host
     	
     	keyBuffer = new CircularBuffer(200);
     	
@@ -68,22 +85,24 @@ public class PZ80Cpu {
     	return z80;
     }
     
-    
-    public void run() { //
+    /* main z80 instruction loop */
+    public void runZ80() { //
         // Ok, run the program
     	
         saveParserState();
         
         if(mtutor_waiting)
         {
-        	// restore local state
-        	
+        	// restore local state except for first time through loop
         	restoreLocalState();
         }
+        else {
+        	keyBuffer.EmptyQueue();
+        }
         
-        mtutor_waiting = true;
+        mtutor_waiting = true;	// mark mtutor/z80 running
         
-        int pc;
+        int pc;					// Program counter
         long tstates = z80.getTStates();
         
         long loops = 0;
@@ -92,19 +111,21 @@ public class PZ80Cpu {
         z80.resetTStates();
         //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 New time slice...Starting PC= "+String.format("%x", pc));
 
-        boolean test = z80.getHalt();
+        boolean test;  // = z80.getHalt();
         stopme = false;
         
 	        while (true) {
-	        	if (loops++ > parser.z80_loops || giveupz80)
+                test = z80.getHalt(); 
+
+	        	if (loops++ > parser.z80_loops || giveupz80)	// limit loops per time slice
 	        	{
 	        		giveupz80 = false;
-	        		mtutor_waiting = true;
+	        		mtutor_waiting = true;		// tell owner we need more time slices
 	        		break;
 	        	}
 	            try {
 	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
-	                pc = z80.getProgramCounter();	// Check if PC is calling resident
+	                pc =  z80.reg_PC; // z80.getProgramCounter();	// Check if PC is calling Resident
 	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 +1) && !stopme)
 	                {
 	                	// need to process resident calls here.
@@ -122,9 +143,13 @@ public class PZ80Cpu {
 	                	}
 	                	
 	                }
-	                if (!test && !stopme)
+	                if (!test && !stopme && !giveupz80 )
+	                {
 	                	z80.executeOneInstruction();
+	                }
 	                else
+	                	
+	                	/*
 	                	
 	                	// for threading instead of a break we should be in a sleep loop here until stopme is false again
 	                	
@@ -134,7 +159,7 @@ public class PZ80Cpu {
 	                		{
 	                	        tstates = z80.getTStates();
 	                	        z80.resetTStates();
-	                	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread waiting... waiting PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
+	                	       // System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread waiting... waiting PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
 	                	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
 
 	                		}
@@ -151,10 +176,12 @@ public class PZ80Cpu {
 	            	        saveParserState();	            	        
 	            	        continue;
 	                	}
-	                	else	
+	                	else
+	                	*/
+	                	
 	                		break;
 	                
-	                test = z80.getHalt();
+	                //test = z80.getHalt();		// for test at top of loop 
 	                
 	                
 	            } catch (Exception e) {
@@ -166,16 +193,16 @@ public class PZ80Cpu {
 	        {
 	        	// save local state for resume
 	        	
-	        	parser.do_repaint = true;
+	        	parser.do_repaint = true;	// the caller to repaint screen
 	        	
-	        	saveLocalState();
+	        	saveLocalState();			// save the local state
 	        }
 	        
-	        restoreParserState();
+	        restoreParserState();			// restore the parsers state
 	        
+	        /*
 	        tstates = z80.getTStates();
 	        z80.resetTStates();
-	        /*
 	        if (!mtutor_waiting)
 	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
 	        else
@@ -185,8 +212,11 @@ public class PZ80Cpu {
     }
     
     
-    //private boolean has_been_started = false;
-    
+    /* 
+     * 
+     * Do checks and setup before running the z80
+     * 
+     */
     public void runWithMtutorCheck(int address)
     {
     	// do checks here for patching the levels of MTUTOR -  then run
@@ -199,7 +229,7 @@ public class PZ80Cpu {
             release = z80Memory.readByte(0x530a);  // release
         m_mtPLevel = release;
         
-        runs++;
+       // runs++;
         
         stopme = true;
         
@@ -227,7 +257,7 @@ public class PZ80Cpu {
 		else
 		
 		*/
-	        run();
+	    runZ80();
     }
     
     void PatchL4 ()
@@ -237,17 +267,20 @@ public class PZ80Cpu {
     	
         // Call resident and wxWidgets for brief pause
     	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
-    	z80Memory.writeByte(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
-    	z80Memory.writeByte(PortalConsts.Level4Pause + 2, 0);
+    	z80Memory.writeWord(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
+    	
+    	//z80Memory.writeWord(0x6958, 2);
+    	//z80Memory.writeWord(0x6962, 3);
         
-
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
         //RAM[Level4Xplato] = 0;
         //RAM[Level4Xplato + 1] = 0;
-
+    	z80Memory.writeWord(PortalConsts.Level4Xplato,  0);
+    	
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
+    	z80Memory.writeByte(0x5f5c, 0xc9);  // z80 ret
 
 //        PatchColor (0xe5);
     }
@@ -391,6 +424,8 @@ public class PZ80Cpu {
     		if ((mode & 1) == 1)
     		{
     			parser.screen_mode = LevelOneParser.SCWRITE;
+            	parser.do_repaint = true;		// tell the caller to repaint screen
+//            	giveupz80 = true;
     			parser.clearScreen();
     		}
     	}
@@ -425,7 +460,13 @@ public class PZ80Cpu {
     		return 1;
     		
     	case PortalConsts.R_EXEC:
-//    		giveupz80 = true;				// TODO ??
+        	parser.do_repaint = true;		// tell the caller to repaint screen
+    		
+        	if (++r_execs % 5 == 0)
+        	{
+        		r_execs = 0;
+        		giveupz80 = true;				// TODO ??
+        	}
     		return 1;
     		
         case PortalConsts.R_GJOB:
@@ -480,14 +521,14 @@ public class PZ80Cpu {
     		long mkey = keyBuffer.Dequeue();
     		if (mkey == -1)
     		{
-    			z80.setRegisterValue(RegisterNames.HL, (int)(-1));
+    			z80.setRegisterValue(RegisterNames.HL, -1);
     			return 1;
     		}
 			System.out.println("------------------------R_INPUT pre-key: " + mkey);
     		
-    		if ((mkey & 0xff) != 0xff)
+    		if ((mkey & 0xff) < 128)
     		{
-    			mkey = portalToPlato[(int)mkey];
+    			mkey = portalToMTutor[(int)mkey];
     			System.out.println("------------------------R_INPUT post-key: " + mkey);
 
     			if (mkey != -1)
@@ -496,7 +537,7 @@ public class PZ80Cpu {
     	      		z80.setRegisterValue(RegisterNames.HL, (int)(mkey));
     			}
     			else
-    				z80.setRegisterValue(RegisterNames.HL, (int)(-1));
+    				z80.setRegisterValue(RegisterNames.HL, -1);
     		}
     		
     		return 1;
@@ -543,11 +584,56 @@ public class PZ80Cpu {
     		return 1;    	
     	
     	case PortalConsts.R_WAIT16:
+ 
+        	parser.do_repaint = true;		// tell the caller to repaint screen
     		
-    		// TODO
+//        	int HL = z80.getRegisterValue(RegisterNames.HL);
+ 
+    		int ram = z80Memory.readWord(0x6962);
+    		
+    		
+    		try {
+				Thread.sleep(8);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		   		
+  /*  		
+    		long start_time = System.nanoTime();
+    		System.out.println(++runs);
+    		while ((System.nanoTime() - start_time) < 150000)
+    		{
+    			;
+    		}
+
+*/
+    		
     		
     		return 1;
-    	
+   
+       	case PortalConsts.R_WAIT16 + 1:
+       		/*
+       		       		try {
+       						Thread.sleep(15);
+       					} catch (InterruptedException e) {
+       						// TODO Auto-generated catch block
+       						e.printStackTrace();
+       					}
+       		   */ 		
+       		    		return 1;
+    		
+       	case PortalConsts.R_WAIT16 + 2:
+       		/*
+       		       		try {
+       						Thread.sleep(15);
+       					} catch (InterruptedException e) {
+       						// TODO Auto-generated catch block
+       						e.printStackTrace();
+       					}
+       		   */ 		
+       		    		return 1;
+       	
     	case PortalConsts.R_ALARM:
     		CharTest();		// temp
     		return 1;

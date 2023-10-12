@@ -44,8 +44,8 @@ class PortalConsts
 	// The rest of this file is for executing Z80 code - MTUTOR
 	
 	// time slicing initial values
-	static final int skipper_mod = 20;			// number of data processing loops (plato bytes) before giving z80 a time slice.
-	static final long z80_loops = 300000;		// number of z80 instructions / time slice
+	static final int skipper_mod = 3;			// number of data processing loops (plato bytes) before giving z80 a time slice.
+	static final long z80_loops = 500000;	// number of z80 instructions / time slice
 	
 	
 	// Resident entry points.
@@ -182,6 +182,7 @@ class PortalConsts
 	static final int Level2Pause = 0x68d9;
 	static final int Level4Pause = 0x6967;
 	
+	static final int Level4Xplato = 0x6061;
 	
 	static final int CALL8080 = 0xcd;
 	
