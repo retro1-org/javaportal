@@ -425,7 +425,7 @@ public class PZ80Cpu {
     		{
     			parser.screen_mode = LevelOneParser.SCWRITE;
             	parser.do_repaint = true;		// tell the caller to repaint screen
-//            	giveupz80 = true;
+            	//giveupz80 = true;
     			parser.clearScreen();
     		}
     	}
@@ -462,10 +462,11 @@ public class PZ80Cpu {
     	case PortalConsts.R_EXEC:
         	parser.do_repaint = true;		// tell the caller to repaint screen
     		
+        	// r.exec is called very frequently when needed.  If we give up the processor too, much -pause  time- does not work near right
         	if (++r_execs % 5 == 0)
         	{
         		r_execs = 0;
-        		giveupz80 = true;				// TODO ??
+        		giveupz80 = true;
         	}
     		return 1;
     		

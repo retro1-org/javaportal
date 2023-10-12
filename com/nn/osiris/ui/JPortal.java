@@ -345,6 +345,10 @@ public class JPortal extends javax.swing.JFrame
 			{
 				settings.setProperty("localfail",args[i+1]);
 			}
+			if	(args[i].equals("-mtutor") && i+1 < args.length)
+			{
+				settings.setProperty("mtutor",args[i+1]);
+			}
 			if	(args[i].equals("-width") && i+1 < args.length)
 				frame_width = Integer.parseInt(args[i+1]);
 		}
