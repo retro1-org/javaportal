@@ -275,8 +275,6 @@ public class PZ80Cpu {
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
-        //RAM[Level4Xplato] = 0;
-        //RAM[Level4Xplato + 1] = 0;
     	z80Memory.writeWord(PortalConsts.Level4Xplato,  0);
     	
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk

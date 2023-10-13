@@ -32,7 +32,7 @@ public class NovaKeysDialog
 
 	public NovaKeysDialog(PortalFrame parent)
 	{
-		super(parent, "NovaNET Keys", true);
+		super(parent, "Host Keys", true);
 		this.frame = parent;
 		getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.X_AXIS));
 

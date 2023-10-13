@@ -16,7 +16,8 @@ class Session
 	String	rs_host;
 	// for testing/debug of aw stub
 	double local_os_failure_rate;
-
+	// mtutor boot file
+	String mtutor;
 
 	public void toXML(StringBuffer sb)
 	{
@@ -95,6 +96,7 @@ class Session
 		this.group = p.getProperty("group");
 		this.lesson = p.getProperty("lesson");
 		this.unit = p.getProperty("unit");
+		this.mtutor = p.getProperty("mtutor");
 		this.rs_host = p.getProperty("resource_server");
 	}
 

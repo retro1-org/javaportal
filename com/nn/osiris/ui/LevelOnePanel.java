@@ -195,6 +195,12 @@ public class LevelOnePanel
 		level_one_parser.clearScreen();
 		// kill any previous session and clean up
 		endSession();
+		
+		if (this.session.mtutor != null)
+		{
+			if (PortalConsts.is_debugging) System.out.println("--- mtutor boot file : " + this.session.mtutor );
+		}
+		
 		// Create a level one network to be used for this session.
 		level_one_network = new LevelOneNetwork(this);
 
@@ -253,7 +259,7 @@ public class LevelOnePanel
 
 		try
 		{
-			connectDialog = new ConnectDialog(parent_frame,"Network","Opening connection to NovaNET...");
+			connectDialog = new ConnectDialog(parent_frame,"Network","Opening connection to host...");
 			connectDialog.setVisible(true);
 
 			// Connect to remote host.
@@ -317,7 +323,7 @@ public class LevelOnePanel
 
 		JOptionPane.showMessageDialog(parent_frame,
 			sb.toString(),
-			"NovaNET Session Closed",
+			"Host Session Closed",
 			JOptionPane.PLAIN_MESSAGE);
 		endSession();
 	}
@@ -429,7 +435,7 @@ public class LevelOnePanel
 				for (int i=0; i<PANEL_HEIGHT; i+=5)
 					graphics.drawLine(0,i,panel_width,i);
 				graphics.setColor(Color.black);
-				graphics.drawString("You are not connected to NovaNET",
+				graphics.drawString("You are not connected to the host",
 					(panel_width-200)>>1,266);
 			}
 			else
