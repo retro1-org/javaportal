@@ -702,6 +702,32 @@ public class PZ80Cpu {
     		
     		return 1;
 
+    	case PortalConsts.R_DUMMY2:
+    		
+    		return	1;
+    		
+    	case PortalConsts.R_DUMMY2 + 1:
+    		
+    		return	1;
+
+    	case PortalConsts.R_DUMMY2 + 2:
+    		
+    		return	1;
+
+    	case PortalConsts.R_DUMMY3:
+    		
+    		return	1;
+
+    	case PortalConsts.R_DUMMY3 + 1:
+    		
+    		return	1;
+    	
+    	case PortalConsts.R_DUMMY3 + 2:
+    		
+    		return	1;
+
+    	
+    	
     	default: 
         	System.out.println("------------------------NOT handled 0x" + String.format("%x", val));
         	mtutor_waiting = false;
