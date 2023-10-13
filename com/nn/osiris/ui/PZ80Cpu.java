@@ -75,6 +75,7 @@ public class PZ80Cpu {
     	z80Memory = new PZMemory();
     	z80IO  = new PZIO();
     	z80 = new Z80Core(z80Memory, z80IO);
+    	z80IO.Init(this);
     	
     	setM_KSW(0);	// init send keys to plato/host
     	
@@ -126,7 +127,7 @@ public class PZ80Cpu {
 	            try {
 	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
 	                pc =  z80.reg_PC; // z80.getProgramCounter();	// Check if PC is calling Resident
-	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 +1) && !stopme)
+	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 + 3) && !stopme)
 	                {
 	                	// need to process resident calls here.
 	                	int result = Resident(pc);
@@ -635,6 +636,7 @@ public class PZ80Cpu {
        	
     	case PortalConsts.R_ALARM:
     		CharTest();		// temp
+    		
     		return 1;
     	
     	case PortalConsts.R_SSF:
@@ -723,6 +725,11 @@ public class PZ80Cpu {
     		return	1;
     	
     	case PortalConsts.R_DUMMY3 + 2:
+    		// Boot Pterm HELP disk
+    		
+    		if (!BootMtutor("ptermhelp.mte"))
+    			return 2;
+		
     		
     		return	1;
 
@@ -958,6 +965,52 @@ public class PZ80Cpu {
     	parser.center_x = center_x;
     	parser.fg_color = fg_color;
     	parser.bg_color = bg_color;
+    }
+    
+    public boolean BootMtutor(String fn)
+    {
+		boolean fexists = MTFile.Exists(fn);
+		if (!fexists)
+			return false;
+		
+		stopme = true;
+		this.z80.reset();
+		MTFile myFile = new MTFile(fn);
+		
+		this.z80IO.m_MTFiles[0] = myFile;
+		
+		if (myFile.ReadByte(25) == 0)
+			return false;   // no router set
+		int m_mtPLevel = myFile.ReadByte(36);
+		int readnum = 0;  	// lth of interp in sectors
+		
+	    if (m_mtPLevel == 2)
+	    {
+	        readnum = 80;	// lth of interp in sectors
+	    }
+	    else if (m_mtPLevel == 3)
+	    {
+	        readnum = 81;	// lth of interp in sectors
+	    }
+	    else if (m_mtPLevel == 4)
+	    {
+	        readnum = 82;	// lth of interp in sectors
+	    }
+	    else if (m_mtPLevel == 5)
+	    {
+	        readnum = 82;	// lth of interp in sectors
+	    }
+	    else if (m_mtPLevel == 6)
+	    {
+	        readnum = 82;	// lth of interp in sectors
+	    }
+		
+		if (!myFile.ReadSectors(0x5300, 21504, readnum, this))	// read interp to ram
+			return false;
+		
+		runWithMtutorCheck(0x5306);  					// f.inix - boot entry point
+
+		return true;
     }
 
 }
