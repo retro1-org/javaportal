@@ -404,6 +404,11 @@ public class PZ80Cpu {
             	boolean p2 = (z80Memory.readByte(cpointer) == 0);
                 if (p1 && p2)
                 {
+                	if (pv == 63) // new line??
+                	{
+                		parser.CReturn2();
+                		return 1;
+                	}
      // Char code converter
                 	parser.text_charset = 1;	// assume lower case alpha -> M1 (ASCII)
 
@@ -523,6 +528,7 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_OUTX:
         	parser.current_x = z80.getRegisterValue(RegisterNames.HL);
+        	parser.text_margin = parser.current_x;
         	return 1;
         	
     	case PortalConsts.R_OUTY:
@@ -931,6 +937,8 @@ public class PZ80Cpu {
     private Color fg_color;
 	/** Background color. */
     private Color bg_color;
+    
+    private int text_margin;
 
     
 	/** Current screen mode of terminal. */
@@ -950,6 +958,7 @@ public class PZ80Cpu {
 	/** Background color. */
     private Color Rbg_color;
 	
+    private int Rtext_margin;
 	
 	/////
 
@@ -963,6 +972,7 @@ public class PZ80Cpu {
     	Rcenter_x = parser.center_x;
     	Rfg_color = parser.fg_color;
     	Rbg_color = parser.bg_color;
+    	Rtext_margin = parser.text_margin;
     }
 
     
@@ -976,6 +986,7 @@ public class PZ80Cpu {
     	parser.center_x = Rcenter_x;
     	parser.fg_color = Rfg_color;
     	parser.bg_color = Rbg_color;
+    	parser.text_margin = Rtext_margin;
     }
 
     
@@ -989,6 +1000,7 @@ public class PZ80Cpu {
     	center_x = parser.center_x;
     	fg_color = parser.fg_color;
     	bg_color = parser.bg_color;
+    	text_margin = parser.text_margin;
     }
     
     public void restoreParserState()
@@ -1001,6 +1013,7 @@ public class PZ80Cpu {
     	parser.center_x = center_x;
     	parser.fg_color = fg_color;
     	parser.bg_color = bg_color;
+    	parser.text_margin = text_margin;
     }
     
     public boolean BootMtutor(String fn)

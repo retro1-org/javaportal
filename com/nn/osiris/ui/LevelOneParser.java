@@ -675,7 +675,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Text size. */
 	public byte text_size;
 	/** Text margin. */
-	private int text_margin;
+	public int text_margin;
 	/** Memory address. */
 	private int mem_addr;
 	/** Terminal subtype. */
@@ -2909,6 +2909,28 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 * Set current_x/current_y to margin on next line.
 	 */
 	private final void CReturn()
+	{
+		int size = font_height;
+		
+		if (text_size != 0)
+			size = 32;
+		
+		switch ((text_axis<<1) + text_dir)
+		{
+			case 0x00: 
+			case 0x01:
+				current_x = text_margin;
+				current_y -= size;
+				break;
+			case 0x02:
+			case 0x03:
+				current_y = text_margin;
+				current_x += size;
+				break;
+		}
+	}
+	
+	public final void CReturn2()
 	{
 		int size = font_height;
 		
