@@ -286,22 +286,13 @@ public class PZ80Cpu {
     	z80Memory.writeByte(0x8013, 0xc3);  // jmp
     	z80Memory.writeByte(0x8014, 0x22);
     	z80Memory.writeByte(0x8015, 0x5d);
-
-    	
     }
 
     void PatchL3 ()
     {
-    	
-    	//System.out.println("----------------PatchL4");
-    	
-        // Call resident and wxWidgets for brief pause
     	z80Memory.writeByte(PortalConsts.Level3Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level3Pause + 1, PortalConsts.R_WAIT16);
     	
-    	//z80Memory.writeWord(0x6958, 2);
-    	//z80Memory.writeWord(0x6962, 3);
-        
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
@@ -309,17 +300,11 @@ public class PZ80Cpu {
     	
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x600d, 0xc9);  // z80 ret
-
-
     }
 
     
     void PatchL4 ()
     {
-    	
-    	//System.out.println("----------------PatchL4");
-    	
-        // Call resident and wxWidgets for brief pause
     	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
     	
@@ -577,12 +562,12 @@ public class PZ80Cpu {
     			z80.setRegisterValue(RegisterNames.HL, -1);
     			return 1;
     		}
-			System.out.println("------------------------R_INPUT pre-key: " + mkey);
+//			System.out.println("------------------------R_INPUT pre-key: " + mkey);
     		
     		if ((mkey & 0xff) < 128)
     		{
     			mkey = portalToMTutor[(int)mkey];
-    			System.out.println("------------------------R_INPUT post-key: " + mkey);
+//    			System.out.println("------------------------R_INPUT post-key: " + mkey);
 
     			if (mkey != -1)
     			{
@@ -780,7 +765,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_DUMMY3 + 2:
     		// Boot Pterm HELP disk
     		
-//    		parser.needToBoot = true;
+    		parser.needToBoot = true;
     		
     		return	1;
 
@@ -1066,8 +1051,8 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
-			return false;
+//		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
+//			return false;
 
 		parser.needToBoot = false; 
 		parser.booted = true;

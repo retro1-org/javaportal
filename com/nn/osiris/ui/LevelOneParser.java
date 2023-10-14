@@ -2292,7 +2292,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			if (needToBoot)
 			{
 				needToBoot = false;
-				cpu.BootMtutor("F:\\Downloads\\MtutorFloppys\\KEYB.mte");
+				cpu.BootMtutor("ptermhelp.mte");
 				return 1;
 			}
 			

@@ -10,12 +10,18 @@ public class MTDisk {
 	private String filename;
 	private File file;
 	private RandomAccessFile raf;
+	private String rwflag;
 	
-	public String rwflag = "  ";
 	
 	
 	public MTDisk(String fn)
 	{
+		rwflag = "  ";
+	    _chkSum = 0;
+		position = 0;
+	    rcnt = 0;
+	    wcnt = 0;
+	    file = null;
 		filename = fn;
 		try
 		{
@@ -75,7 +81,7 @@ public class MTDisk {
 			{
 				for (int bytes = 0; bytes < 128; bytes++)
 				{
-					mybyte = raf.read();
+					mybyte = ReadByte();
 					cpu.z80Memory.writeByte(addr++, mybyte);
 				}
 				// omit check bytes
@@ -94,23 +100,62 @@ public class MTDisk {
 	
 	public int ReadByte()
 	{
+		int myByte;
+		
+		// return checksum
+        if (rcnt == 129)                              
+        {                                           
+            rcnt++;                                 
+            return (_chkSum & 0xff);            
+        }                                           
+      else if (rcnt == 130)                         
+        {                                           
+            int ret = ((_chkSum >> 8) & 0xff);   
+            ReadReset ();                           
+            return ret;                             
+        }
+
 		try {
-			return raf.read();
+			myByte  = raf.read();
+	        position++;
+	        rcnt++;
+	        CalcCheck (myByte);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return -1;
 		}
+		
+		return myByte;
 	}
 
 	public void WriteByte(int w)
 	{
+	    if (wcnt > 129)
+	    {
+	        WriteReset ();
+	        return;
+	    }
+	    if (wcnt > 128)
+	    {
+	        wcnt++;
+	        return;
+	    }
+	    
 		try {
 			raf.write(w);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+        wcnt++;
+        if (wcnt > 130)
+            WriteReset ();
+
+        position++;
+
 	}
 
 	
@@ -154,5 +199,25 @@ public class MTDisk {
 		} 
 	}
 		
+	
+	void CalcCheck (int b)
+	{
+	    int cupper = ((_chkSum >> 8) & 0xff);
+	    int clower = (_chkSum & 0xff);
+	    cupper ^= b;
+	    int x = cupper << 1;
+	    if ((x & 0x100) > 0)
+	        x = (x | 1) & 0xff;
+	    cupper = x;
+	    clower ^= b;
+	    int y = 0;
+	    if ((clower & 1) == 1)
+	        y = 0x80;
+	    x = clower >> 1;
+	    x = (x | y) & 0xff;
+	    clower = x;
+	    _chkSum = (((cupper << 8) & 0xff00) | (clower & 0xff));
+	}
+
 	
 }
