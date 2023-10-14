@@ -24,7 +24,7 @@ public class PZIO implements IBaseDevice {
     private int m_mtsingledata;
     private int m_mtcanresp;
     
-    public MTFile[] m_MTFiles = new MTFile[2];
+    public MTDisk[] m_MTDisk = new MTDisk[3];
     public boolean m_floppy0;
     public boolean m_floppy1;
     
@@ -37,13 +37,13 @@ public class PZIO implements IBaseDevice {
     	
     	String fn = "ptermhelp.mte";  //  kludge TODO
     	
-		boolean fexists = MTFile.Exists(fn);
+		boolean fexists = MTDisk.Exists(fn);
 		if (!fexists)
 			return;
 		
-		MTFile myFile = new MTFile(fn);
+		MTDisk myFile = new MTDisk(fn);
 		
-		this.m_MTFiles[0] = myFile;
+		this.m_MTDisk[2] = myFile;
 
     }
     
@@ -90,10 +90,10 @@ public class PZIO implements IBaseDevice {
                 {
                 case 0:
                     // read next byte of data from disk
-                    if ( m_MTFiles[m_mtDiskUnit&1] == null)
-                 	   break;
-
-                    retval = m_MTFiles[m_mtDiskUnit&1].ReadByte(m_mtSeekPos);
+                    if ( m_MTDisk[m_mtDiskUnit&1] == null)
+                    	retval = m_MTDisk[2].ReadByte();
+                    else
+                    	retval = m_MTDisk[m_mtDiskUnit&1].ReadByte();
                     break;
                 case 2: // write data to disk - noop
                     break;
@@ -189,7 +189,7 @@ public class PZIO implements IBaseDevice {
     	               switch (m_mtDataPhase++)
     	               {
     	                   case 1:
-    	                       m_mtDiskUnit = acc;
+    	                       m_mtDiskUnit = acc & 1;
     	                       break;
     	                   case 2:
     	                       m_mtDiskTrack = acc;
@@ -212,13 +212,16 @@ public class PZIO implements IBaseDevice {
     	                       m_mtSeekPos = (128 * 64 * m_mtDiskTrack) + (128 * (m_mtDiskSector-1));
     	                       if (m_mtSeekPos < 0)
     	                           break;
-    	                       if ( m_MTFiles[m_mtDiskUnit&1] == null)
-    	                    	   break;
-    	                       m_MTFiles[m_mtDiskUnit&1].Seek(m_mtSeekPos);
+    	                       if ( m_MTDisk[m_mtDiskUnit&1] == null)
+        	                       m_MTDisk[2].Seek(m_mtSeekPos);
+    	                       else
+    	                       m_MTDisk[m_mtDiskUnit&1].Seek(m_mtSeekPos);
     	                       break;
 
     	                   default:   // write data
-    	                       //m_MTFiles[m_mtDiskUnit&1].WriteByte(acc);  // TODO
+    	                       if ( m_MTDisk[m_mtDiskUnit&1] == null)
+    	                    	   break;
+    	                       m_MTDisk[m_mtDiskUnit&1].WriteByte(acc);  // TODO
     	                       m_mtcanresp = 0x50;
     	                       break;
     	               }

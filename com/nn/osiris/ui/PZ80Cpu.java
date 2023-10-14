@@ -969,15 +969,15 @@ public class PZ80Cpu {
     
     public boolean BootMtutor(String fn)
     {
-		boolean fexists = MTFile.Exists(fn);
+		boolean fexists = MTDisk.Exists(fn);
 		if (!fexists)
 			return false;
 		
 		stopme = true;
 		this.z80.reset();
-		MTFile myFile = new MTFile(fn);
+		MTDisk myFile = new MTDisk(fn);
 		
-		this.z80IO.m_MTFiles[0] = myFile;
+		this.z80IO.m_MTDisk[0] = myFile;
 		
 		if (myFile.ReadByte(25) == 0)
 			return false;   // no router set
