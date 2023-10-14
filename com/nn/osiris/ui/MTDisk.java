@@ -59,7 +59,7 @@ public class MTDisk {
 		}
 	}
 	
-	public boolean ReadSectors(int addr, long offset, int scount, PZ80Cpu cpu) 
+	public boolean ReadSectorsForBoot(int addr, long offset, int scount, PZ80Cpu cpu) 
 	{
 		int mybyte = -1;
 		

@@ -24,9 +24,11 @@ public class PZIO implements IBaseDevice {
     private int m_mtsingledata;
     private int m_mtcanresp;
     
+    private long readcnt = 0;
+    
     public MTDisk[] m_MTDisk = new MTDisk[3];
-    public boolean m_floppy0;
-    public boolean m_floppy1;
+//    private boolean m_floppy0;
+//    private boolean m_floppy1;
     
     public void Init(PZ80Cpu cpu)
     {
@@ -35,7 +37,7 @@ public class PZIO implements IBaseDevice {
     	m_mem = cpu.z80Memory;
     	
     	
-    	String fn = "ptermhelp.mte";  //  kludge TODO
+    	String fn = "porthelp.mte";  //  kludge TODO
     	
 		boolean fexists = MTDisk.Exists(fn);
 		if (!fexists)
@@ -43,7 +45,7 @@ public class PZIO implements IBaseDevice {
 		
 		MTDisk myFile = new MTDisk(fn);
 		
-		this.m_MTDisk[2] = myFile;
+		this.m_MTDisk[0] = myFile;
 
     }
     
@@ -91,9 +93,22 @@ public class PZIO implements IBaseDevice {
                 case 0:
                     // read next byte of data from disk
                     if ( m_MTDisk[m_mtDiskUnit&1] == null)
+                    {
+                    	if (m_MTDisk[2] == null)
+                    	{
+                    		break;
+                    	}
+                    	readcnt = 0;
                     	retval = m_MTDisk[2].ReadByte();
+                        System.out.print(readcnt + "; " + retval + " : ");
+                    	break;
+                    }
                     else
+                    {
+                    	readcnt++;
                     	retval = m_MTDisk[m_mtDiskUnit&1].ReadByte();
+                    }
+                   // System.out.println(readcnt + ", " + retval);
                     break;
                 case 2: // write data to disk - noop
                     break;

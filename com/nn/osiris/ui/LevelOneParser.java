@@ -447,6 +447,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	
 	public PZ80Cpu cpu;
 	public Z80Core z80;
+	public boolean needToBoot = false;
+	public boolean booted = false;
 	
 	//public LevelOneParser mTutorParser;
 
@@ -2286,6 +2288,14 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		if (cpu != null && cpu.mtutor_waiting && (++skipper % skipper_mod) == 0)	//   does the z80 need the cpu?
 		{
 			skipper = 0;
+			
+			if (needToBoot)
+			{
+				needToBoot = false;
+				cpu.BootMtutor("F:\\Downloads\\MtutorFloppys\\KEYB.mte");
+				return 1;
+			}
+			
 			cpu.runWithMtutorCheck(z80.getProgramCounter());
 		}
 		

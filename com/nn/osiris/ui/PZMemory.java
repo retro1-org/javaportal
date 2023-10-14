@@ -6,7 +6,7 @@ import com.codingrodent.microprocessor.IMemory;
 
 public class PZMemory implements IMemory {
 	
-    private final int[] memory = new int[65536];
+    public final int[] memory = new int[65536];
 	
 
     public PZMemory() {
@@ -39,6 +39,14 @@ public class PZMemory implements IMemory {
         address = (address + 1) & 65535;
         data = (data >>> 8);
         writeByte(address, data);
+    }
+    
+    public void ClearRam()
+    {
+    	for (int i = 0 ; i < 65536 ; i++)
+    	{
+    		memory[i] = 0;
+    	}
     }
     
 }

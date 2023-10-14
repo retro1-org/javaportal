@@ -116,7 +116,7 @@ public class PZ80Cpu {
         stopme = false;
         
 	        while (true) {
-                test = z80.getHalt(); 
+                test = z80.getHalt();
 
 	        	if (loops++ > parser.z80_loops || giveupz80)	// limit loops per time slice
 	        	{
@@ -228,7 +228,9 @@ public class PZ80Cpu {
         int release = z80Memory.readByte(0x530b);  // release or year *y1*
         if (release == 8)           // year *y1* 82 - 8?
             release = z80Memory.readByte(0x530a);  // release
-        m_mtPLevel = release;
+        
+        if (!parser.booted)
+        	m_mtPLevel = release;
         
        // runs++;
         
@@ -236,8 +238,8 @@ public class PZ80Cpu {
         
         switch (m_mtPLevel)
         {
-        case 2: break; // PatchL2 (); break;
-        case 3: break; // PatchL3 (); break;
+        case 2: PatchL2 (); break;
+        case 3: PatchL3 (); break;
         case 4: PatchL4 (); break;
         case 5: break; // PatchL5 (); break;
         case 6: break; // PatchL6 (); break;
@@ -260,6 +262,57 @@ public class PZ80Cpu {
 		*/
 	    runZ80();
     }
+    
+    
+    void PatchL2 ()
+    {
+    	z80Memory.writeByte(PortalConsts.Level2Pause, PortalConsts.CALL8080);
+    	z80Memory.writeWord(PortalConsts.Level2Pause + 1, PortalConsts.R_WAIT16);
+    	
+    	z80Memory.writeWord(PortalConsts.Level2Xplato,  0);
+    	z80Memory.writeByte(PortalConsts.Level2Xplato + 2,  0);
+    	
+        // patch xerror tight getkey loop problem in mtutor
+        // top 32K of ram was for memory mapped video on ist 2/3
+        // so that's safe for us to use
+    	z80Memory.writeByte(0x5d26,  0x10);
+    	z80Memory.writeByte(0x5d27,  0x80);
+    	
+
+    	z80Memory.writeByte(0x8010, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8011, 0x2f);
+    	z80Memory.writeByte(0x8012, 0x60);
+
+    	z80Memory.writeByte(0x8013, 0xc3);  // jmp
+    	z80Memory.writeByte(0x8014, 0x22);
+    	z80Memory.writeByte(0x8015, 0x5d);
+
+    	
+    }
+
+    void PatchL3 ()
+    {
+    	
+    	//System.out.println("----------------PatchL4");
+    	
+        // Call resident and wxWidgets for brief pause
+    	z80Memory.writeByte(PortalConsts.Level3Pause, PortalConsts.CALL8080);
+    	z80Memory.writeWord(PortalConsts.Level3Pause + 1, PortalConsts.R_WAIT16);
+    	
+    	//z80Memory.writeWord(0x6958, 2);
+    	//z80Memory.writeWord(0x6962, 3);
+        
+        // remove off-line check for calling r.exec - 
+        // only safe place to give up control..  
+        // was a z80 jr - 2 bytes only
+    	z80Memory.writeWord(PortalConsts.Level3Xplato,  0);
+    	
+        //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
+    	z80Memory.writeByte(0x600d, 0xc9);  // z80 ret
+
+
+    }
+
     
     void PatchL4 ()
     {
@@ -727,9 +780,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_DUMMY3 + 2:
     		// Boot Pterm HELP disk
     		
-    		if (!BootMtutor("ptermhelp.mte"))
-    			return 2;
-		
+//    		parser.needToBoot = true;
     		
     		return	1;
 
@@ -974,17 +1025,27 @@ public class PZ80Cpu {
 			return false;
 		
 		stopme = true;
-		this.z80.reset();
+		z80.halt = true;
+
+
 		MTDisk myFile = new MTDisk(fn);
 		
-		this.z80IO.m_MTDisk[0] = myFile;
+		if (this.z80IO.m_MTDisk[0] != null)
+		{
+			this.z80IO.m_MTDisk[0].Close();
+		}
 		
-		if (myFile.ReadByte(25) == 0)
+		this.z80IO.m_MTDisk[0] = myFile;
+	
+		int it = myFile.ReadByte(25);
+		
+		if (it == 0)
 			return false;   // no router set
-		int m_mtPLevel = myFile.ReadByte(36);
+		m_mtPLevel = myFile.ReadByte(36);
 		int readnum = 0;  	// lth of interp in sectors
 		
-	    if (m_mtPLevel == 2)
+
+		if (m_mtPLevel == 2)
 	    {
 	        readnum = 80;	// lth of interp in sectors
 	    }
@@ -1005,9 +1066,12 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!myFile.ReadSectors(0x5300, 21504, readnum, this))	// read interp to ram
+		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
 			return false;
-		
+
+		parser.needToBoot = false; 
+		parser.booted = true;
+		this.z80.reset();
 		runWithMtutorCheck(0x5306);  					// f.inix - boot entry point
 
 		return true;
