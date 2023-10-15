@@ -2292,7 +2292,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			if (needToBoot)
 			{
 				needToBoot = false;
-				cpu.BootMtutor("drsutil.mte");
+				cpu.BootMtutor(PortalConsts.BootDisk);
 				return 1;
 			}
 			

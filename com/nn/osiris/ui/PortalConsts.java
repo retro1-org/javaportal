@@ -43,6 +43,14 @@ class PortalConsts
 	
 	// The rest of this file is for executing Z80 code - MTUTOR
 	
+	// Initial Mtutor disks to load
+	
+	static final String BootDisk = "drsutil.mte";
+
+	static final String InitDisk0 = "drsutil.mte";
+	static final String InitDisk1 = "ptermhelp.mte";
+	
+	
 	// time slicing initial values
 	static final int skipper_mod = 3;			// number of data processing loops (plato bytes) before giving z80 a time slice.
 	static final long z80_loops = 500000;	// number of z80 instructions / time slice
