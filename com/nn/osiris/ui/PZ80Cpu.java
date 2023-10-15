@@ -1162,8 +1162,8 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-//		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
-//			return false;
+		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
+			return false;
 
 		parser.needToBoot = false; 
 		parser.booted = true;

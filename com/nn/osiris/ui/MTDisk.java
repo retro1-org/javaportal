@@ -80,8 +80,8 @@ public class MTDisk {
 					cpu.z80Memory.writeByte(addr++, mybyte);
 				}
 				// omit check bytes
-				mybyte = raf.read();
-				mybyte = raf.read();
+				mybyte = ReadByte();
+				mybyte = ReadByte();
 			}
 		}
 		catch (Exception e) {
@@ -214,5 +214,19 @@ public class MTDisk {
 	    _chkSum = (((cupper << 8) & 0xff00) | (clower & 0xff));
 	}
 
-	
+	public void Format()
+	{
+		rwflag = "W ";	
+		Seek(0);
+		
+	    for (long i = 0; i < (128L * 64L * 154L); i++)
+		{
+	    	try {
+				raf.write(0);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

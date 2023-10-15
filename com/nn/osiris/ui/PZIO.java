@@ -270,9 +270,9 @@ public class PZIO implements IBaseDevice {
     	                   break;
     	               case 5:
     	                   m_mtDisk2 = acc;
-    	                   // break;
+    	                   break;
     	               default:
-    	                 //  m_MTFiles[m_mtDiskUnit & 1].Format();  // TODO
+    	                   m_MTDisk[m_mtDiskUnit & 1].Format();
     	                   break;
     	               }
     	               break;
