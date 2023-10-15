@@ -513,6 +513,18 @@ public class PZ80Cpu {
                 }
             }
     		return 1;
+    		
+    		
+    	case PortalConsts.R_BLOCK:
+    	{
+    		int hl = z80.getRegisterValue(RegisterNames.HL);
+    		int x1 = z80Memory.readWord(hl);
+    		int y1 = z80Memory.readWord(hl+2);
+    		int x2 = z80Memory.readWord(hl+4);
+    		int y2 = z80Memory.readWord(hl+6);
+    		parser.BlockData(x1, y1, x2, y2);
+    	}
+    		return 1;
 
     	case PortalConsts.R_MODE:
     	{
@@ -527,10 +539,14 @@ public class PZ80Cpu {
     		}
     		if ((mode & 1) == 1)
     		{
-    			parser.screen_mode = LevelOneParser.SCWRITE;
-            	parser.do_repaint = true;		// tell the caller to repaint screen
-            	//giveupz80 = true;
+    			int save = parser.screen_mode;
+    			parser.screen_mode = LevelOneParser.SCERASE;
     			parser.clearScreen();
+    			
+    			parser.BlockData(0,0,511,511);
+    			
+            	parser.do_repaint = true;		// tell the caller to repaint screen
+            	parser.screen_mode = save;
     		}
     	}
     		return 1;

@@ -37,7 +37,7 @@ public class PZIO implements IBaseDevice {
     	m_mem = cpu.z80Memory;
     	
     	
-    	String fn = "porthelp.mte";  //  kludge TODO
+    	String fn = "drsutil.mte";  //  kludge TODO
     	
 		boolean fexists = MTDisk.Exists(fn);
 		if (!fexists)
@@ -47,6 +47,17 @@ public class PZIO implements IBaseDevice {
 		
 		this.m_MTDisk[0] = myFile;
 
+    	fn = "ptermhelp.mte";  //  kludge TODO
+    	
+		if (!fexists)
+			return;
+		
+		myFile = new MTDisk(fn);
+		
+		this.m_MTDisk[1] = myFile;
+
+    
+    
     }
     
     /**

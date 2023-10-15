@@ -69,12 +69,7 @@ public class MTDisk {
 	{
 		int mybyte = -1;
 		
-		try {
-			raf.seek(offset);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		Seek(offset);
 		
 		try {
 			for (int sectors = 0; sectors < scount; sectors++)

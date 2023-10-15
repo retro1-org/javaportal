@@ -2292,7 +2292,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			if (needToBoot)
 			{
 				needToBoot = false;
-				cpu.BootMtutor("ptermhelp.mte");
+				cpu.BootMtutor("drsutil.mte");
 				return 1;
 			}
 			
@@ -6868,6 +6868,72 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		text_size = temp;
 	}
 
+
+	/*
+	 * For MTutor
+	 */
+	public final void BlockData(int x1, int y1, int x2, int y2)
+	{
+	byte	temp;
+
+		clipPlotBlock(x1+center_x,y1+center_y,x2+center_x,y2+center_y);
+
+	int lowx,lowy,sizex,sizey;
+
+		if (x1 < x2)
+		{
+			lowx = x1;
+			sizex = x2 - x1 + 1;
+		}
+		else
+		{
+			lowx = x2;
+			sizex = x1 - x2 + 1;
+		}
+
+		if (y1 < y2)
+		{
+			lowy = y2;
+			sizey = y2 - y1 + 1;
+		}
+		else
+		{
+			lowy = y1;
+			sizey = y1 - y2 + 1;
+		}
+
+		modeClipColor(true,false,true);
+
+		levelone_offscreen.fillRect (
+			xlatX (lowx+center_x),
+			xlatY (lowy+center_y),
+			sizex,
+			sizey);
+
+		if (is_direct_draw)
+		{
+			levelone_graphics.fillRect (
+				xlatX (lowx+center_x),
+				xlatY (lowy+center_y),
+				sizex,
+				sizey);
+		}
+		else
+		{
+			levelone_container.repaint(
+				xlatX (lowx+center_x),
+				xlatY (lowy+center_y),
+				sizex,
+				sizey);
+		}
+
+		temp = text_size;
+		XYAdjust(0,-15);
+		text_size = temp;
+	}
+
+
+	
 	private void ProgMode(int d, int origin)
 	{
 		
