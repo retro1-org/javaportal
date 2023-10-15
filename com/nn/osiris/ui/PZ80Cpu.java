@@ -319,8 +319,70 @@ public class PZ80Cpu {
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x5f5c, 0xc9);  // z80 ret
 
-//        PatchColor (0xe5);
+        PatchColor (0xe5);
     }
+    
+    
+    
+    /*
+     * 
+     * This does wild and crazy stuff patching up Mtutor -color	display- to
+     * make life easier for the resident
+     * 
+     */
+    void PatchColor(int low_getvar)
+    {
+        // color display
+    	z80Memory.writeByte(0x66aa, PortalConsts.JUMP8080);
+    	z80Memory.writeByte(0x66ab, 0x00);
+    	z80Memory.writeByte(0x66ac, 0x80);         // color patch jump
+
+    	z80Memory.writeByte(0x8000, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8001, 0xb0);
+    	z80Memory.writeByte(0x8002, 0x66);         // fcolor
+    	z80Memory.writeByte(0x8003, 0x21);
+    	z80Memory.writeByte(0x8004, 0x25);
+    	z80Memory.writeByte(0x8005, 0x7d);         // floating acc
+    	z80Memory.writeByte(0x8006, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8007, 0x90);
+    	z80Memory.writeByte(0x8008, 0x00);         // r.fcolor + 2
+
+    	z80Memory.writeByte(0x8009, PortalConsts.CALL8080);
+        z80Memory.writeByte(0x800a, low_getvar);
+        z80Memory.writeByte(0x800b, 0x71);         // getvar
+
+        z80Memory.writeByte(0x800c, PortalConsts.CALL8080);
+        z80Memory.writeByte(0x800d, 0xbd);
+        z80Memory.writeByte(0x800e, 0x66);         // bcolor
+
+        z80Memory.writeByte(0x800f, 0x21);
+        z80Memory.writeByte(0x8010, 0x25);
+        z80Memory.writeByte(0x8011, 0x7d);         // floating acc
+
+        z80Memory.writeByte(0x8012, PortalConsts.CALL8080);
+        z80Memory.writeByte(0x8013, 0x93);
+        z80Memory.writeByte(0x8014, 0x00);         // r.bcolor + 2
+
+        z80Memory.writeByte(0x8015, PortalConsts.JUMP8080);
+        z80Memory.writeByte(0x8016, 0x52);
+        z80Memory.writeByte(0x8017, 0x61);         // pincg
+
+                                    // paint - flood fill
+        z80Memory.writeByte(0x66c3, 0x20);
+        z80Memory.writeByte(0x66c4, 0x80);
+
+        z80Memory.writeByte(0x8020, 0x21);
+        z80Memory.writeByte(0x8021, 0);
+        z80Memory.writeByte(0x8022, 0);
+        z80Memory.writeByte(0x8023, PortalConsts.CALL8080);
+        z80Memory.writeByte(0x8024, 0x94);
+        z80Memory.writeByte(0x8025, 0x00);         // r.paint
+        z80Memory.writeByte(0x8026, PortalConsts.JUMP8080);
+        z80Memory.writeByte(0x8027, 0x5d);
+        z80Memory.writeByte(0x8028, 0x61);         // pinc1
+    }
+    
+    
     
     public static int Parity(int x)		// add parity bit if needed
     {
@@ -504,7 +566,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_EXEC:
         	parser.do_repaint = true;		// tell the caller to repaint screen
     		
-        	// r.exec is called very frequently when needed.  If we give up the processor too, much -pause  time- does not work near right
+        	// r.exec is called very frequently when needed.  If we give up the processor too much -pause  time- does not work near right
         	if (++r_execs % 5 == 0)
         	{
         		r_execs = 0;
@@ -606,6 +668,7 @@ public class PZ80Cpu {
     		return 1;
     	
     	case PortalConsts.R_FCOLOR+2:
+    		parser.fg_color = GetColor(z80.getRegisterValue(RegisterNames.HL));
     		return 1;
     	
     	case PortalConsts.R_BCOLOR:
@@ -626,6 +689,11 @@ public class PZ80Cpu {
     			parser.bg_color = new Color(red, green, blue);
     		}
     		return 1;    	
+    	
+    	case PortalConsts.R_BCOLOR+2:
+    		parser.bg_color = GetColor(z80.getRegisterValue(RegisterNames.HL));
+    		return 1;
+
     	
     	case PortalConsts.R_WAIT16:
  
@@ -786,6 +854,20 @@ public class PZ80Cpu {
     	
     }
  
+    Color GetColor (int loc)
+    {
+        int exp = z80Memory.readByte(loc + 1);
+
+        int cb = z80Memory.readByte(loc + 2) << 16;
+        cb |= z80Memory.readByte(loc + 3) << 8;
+        cb |= z80Memory.readByte(loc + 4);
+
+        cb = cb >> (0x18 - exp);
+
+        return new Color((cb>>16) & 0xff, (cb >> 8) & 0xff, (cb) & 0xff);
+    }
+
+    
     // get resident status byte
     public byte getM_KSW()
     {

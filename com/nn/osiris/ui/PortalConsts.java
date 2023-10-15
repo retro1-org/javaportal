@@ -188,5 +188,6 @@ class PortalConsts
 	static final int Level2Xplato = 0x602c;
 	
 	static final int CALL8080 = 0xcd;
+	static final int JUMP8080 = 0xc3;
 	
 }
