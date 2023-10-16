@@ -1116,28 +1116,30 @@ public class PZ80Cpu {
     
     public boolean BootMtutor(String fn)
     {
-		boolean fexists = MTDisk.Exists(fn);
-		if (!fexists)
-			return false;
-		
-		stopme = true;
-		z80.halt = true;
-
-
-		MTDisk myFile = new MTDisk(fn);
-		
-		if (this.z80IO.m_MTDisk[0] != null)
-		{
-			this.z80IO.m_MTDisk[0].Close();
-		}
-		
-		this.z80IO.m_MTDisk[0] = myFile;
+    	if (fn != null)
+    	{
+			boolean fexists = MTDisk.Exists(fn);
+			if (!fexists)
+				return false;
+			
+			stopme = true;
+			z80.halt = true;
 	
-		int it = myFile.ReadByte(25);
+	
+			MTDisk myFile = new MTDisk(fn);
+			
+			if (this.z80IO.m_MTDisk[0] != null)
+			{
+				this.z80IO.m_MTDisk[0].Close();
+			}
+			
+			this.z80IO.m_MTDisk[0] = myFile;
+    	}
+		int it = this.z80IO.m_MTDisk[0].ReadByte(25);
 		
 		if (it == 0)
 			return false;   // no router set
-		m_mtPLevel = myFile.ReadByte(36);
+		m_mtPLevel = this.z80IO.m_MTDisk[0].ReadByte(36);
 		int readnum = 0;  	// lth of interp in sectors
 		
 
@@ -1162,7 +1164,7 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!myFile.ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
+		if (!this.z80IO.m_MTDisk[0].ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
 			return false;
 
 		parser.needToBoot = false; 

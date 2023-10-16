@@ -544,6 +544,14 @@ public class PortalFrame
 		item.addActionListener(this);
 		jMenuSettings.add (item = new JMenuItem("Save Configuration As..."));
 		item.addActionListener(this);
+		
+		
+		jMenuSettings.addSeparator();
+		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0... USE Only BEFORE M-Tutor is running!!"));
+		item.addActionListener(this);
+		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 1... USE Only BEFORE M-Tutor is running!!"));
+		item.addActionListener(this);
+
 		jMenuBar1.add(jMenuSettings);
 
 		jMenuHelp = new javax.swing.JMenu("Help");
@@ -1390,6 +1398,16 @@ public class PortalFrame
 		{
 			doSaveConfiguration();
 		}
+		
+		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 0... USE Only BEFORE M-Tutor is running!!"))
+		{
+			doLoadVDisk0();
+		}
+		
+		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 1... USE Only BEFORE M-Tutor is running!!"))
+		{
+			doLoadVDisk1();
+		}
 	}
 
 	/**
@@ -1546,6 +1564,7 @@ public class PortalFrame
 		}
 	}
 
+	
 	/**
 	 * Invoked when the user wants to save their configuration.
 	 */
@@ -1559,6 +1578,109 @@ public class PortalFrame
 		}
 	}
 
+
+	void doLoadVDisk0()
+	{
+	JFileChooser	fc = new JFileChooser();
+
+		if	(mgi != null)
+		{
+			fc.setFileFilter(new javax.swing.filechooser.FileFilter()
+			{
+				public boolean accept(File fref)
+				{
+					return mgi.isConfigFile(fref);
+				}
+
+				public String getDescription()
+				{
+					return "Portal File Filter";
+				}
+			});
+		}
+
+		if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this))
+		{
+			File x = fc.getSelectedFile();
+		
+			String it = x.getPath();
+			
+			if (it.endsWith(".mte"))
+			{
+				boolean fexists = MTDisk.Exists(it);
+				if (!fexists)
+					return;
+				
+				MTDisk myFile = new MTDisk(it);
+				
+				if (this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] != null)
+				{
+					this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0].Close();
+				}
+				
+				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] = myFile;
+
+				
+				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] = myFile;
+
+				System.out.println(it + " loaded to drive 0!");
+
+			}
+		}
+	}
+
+
+	void doLoadVDisk1()
+	{
+	JFileChooser	fc = new JFileChooser();
+
+		if	(mgi != null)
+		{
+			fc.setFileFilter(new javax.swing.filechooser.FileFilter()
+			{
+				public boolean accept(File fref)
+				{
+					return mgi.isConfigFile(fref);
+				}
+
+				public String getDescription()
+				{
+					return "Portal File Filter";
+				}
+			});
+		}
+
+		if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this))
+		{
+			File x = fc.getSelectedFile();
+		
+			String it = x.getPath();
+			
+			if (it.endsWith(".mte"))
+			{
+				boolean fexists = MTDisk.Exists(it);
+				if (!fexists)
+					return;
+				
+				MTDisk myFile = new MTDisk(it);
+				
+				if (this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] != null)
+				{
+					this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1].Close();
+				}
+				
+				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] = myFile;
+
+				
+				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] = myFile;
+
+				System.out.println(it + " loaded to drive 1!");
+			}
+		}
+	}
+
+
+	
 	/**
 	 * Callback invoked when the window gets mapped.
 	 */

@@ -2292,11 +2292,17 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			if (needToBoot)
 			{
 				needToBoot = false;
-				cpu.BootMtutor(PortalConsts.BootDisk);
+				cpu.BootMtutor(null);    //(PortalConsts.BootDisk);
 				return 1;
 			}
 			
 			cpu.runWithMtutorCheck(z80.getProgramCounter());
+		}
+		else if (cpu == null)
+		{
+			cpu = new PZ80Cpu();
+			cpu.Init(this);
+			z80 = cpu.z80;			// shortcut
 		}
 		
 		return i;
