@@ -656,7 +656,8 @@ public class PZ80Cpu {
     				long mkey2 = (keyBuffer.Dequeue() & 0x3f);
     				long temp = keyBuffer.Dequeue() & 0xf;
     				long mkey3 = (temp)  << 6;
-    				if ((temp & 0x4)  == 0x4)	// just touch keys for now
+    				temp = temp & 0x1c;
+    				if (temp  == 0x4)	// just touch keys
     				{
 	    				long sendit = mkey2 | mkey3;
 	    	      		z80.setRegisterValue(RegisterNames.HL, (int)(sendit));
@@ -856,7 +857,7 @@ public class PZ80Cpu {
            case -1:
                break;
            default:
-        	   // set interrupt mask ??  TODO ??
+        	   // set interrupt mask
         	   
                if (device == 1 && writ == 0)  // touch enable/disable
                {
@@ -1225,7 +1226,7 @@ public class PZ80Cpu {
 		parser.needToBoot = false; 
 		parser.booted = true;
 		
-		((PortalFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Booted MTutor");
+		((PortalFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Micro-Tutor");
 		
 		this.z80.reset();
 		runWithMtutorCheck(0x5306);  					// f.inix - boot entry point
