@@ -689,7 +689,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** System sent centering. */
 	private int sys_y;
 	/** Touch is enabled. */
-	private boolean	is_touch_enabled;
+	public boolean	is_touch_enabled;
 	/** Foreground color. */
 	public Color fg_color;
 	/** Background color. */
@@ -2066,7 +2066,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 						SendPixRes(1,x,y,mods);
 				}
 				else
+				{
 					SendTouch(x>>5,y>>5);
+				
+				//	System.out.println(">>>>>>  TOUCH  ");
+				}
+				
 			}
 		}
 	}
@@ -3008,7 +3013,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 */
 	private final void SendTouch ( int touchX, int touchY)
 	{
-	   SendEsc ( (touchY & 0x0f) + ((touchX & 0x0f) << 4) + 0x0100);
+		SendEsc ( (touchY & 0x0f) + ((touchX & 0x0f) << 4) + 0x0100);
 	}
 
 	/**
@@ -3033,6 +3038,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 */
 	final void SendEcho ( int value)
 	{
+		//System.out.println("--------------------------------ECHO");
 		SendEsc ( (value & 0x7f) | 0x0080);
 	}
 
@@ -3053,6 +3059,10 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		transmit_buffer[1] = (byte) ((value & 0x3f) | 0x40);
 		transmit_buffer[2] = (byte) (((value & 0x3c0) >> 6) | 0x60);
 
+		if ( (value & 0x0100)==0x0100 &&  is_flow_control_on && key2mtutor())		// mtutor touch key
+		{
+ 			cpu.keyBuffer.Enqueue(transmit_buffer, 0, 3);
+		} 
 		if	(null != levelone_network)
 			levelone_network.write (transmit_buffer,0, 3);
 	}

@@ -583,7 +583,7 @@ public class PZ80Cpu {
         	parser.do_repaint = true;		// tell the caller to repaint screen
     		
         	// r.exec is called very frequently when needed.  If we give up the processor too much -pause  time- does not work near right
-        	if (++r_execs % 5 == 0)
+        	if ((++r_execs % PortalConsts.r_exec_mod) == 0)
         	{
         		r_execs = 0;
         		giveupz80 = true;
@@ -650,6 +650,17 @@ public class PZ80Cpu {
     		
     		if ((mkey & 0xff) < 128)
     		{
+    			if (mkey == 0x1b)	// ESC - use next two byte
+    			{
+    				long mkey2 = (keyBuffer.Dequeue() & 0x3f);
+    				long mkey3 = (keyBuffer.Dequeue() & 0xf)  << 6;
+    				
+    				long sendit = mkey2 | mkey3;
+    	      		z80.setRegisterValue(RegisterNames.HL, (int)(sendit));
+    	      		
+    	      		return 1;
+    			}
+    			
     			mkey = portalToMTutor[(int)mkey];
 //    			System.out.println("------------------------R_INPUT post-key: " + mkey);
 
@@ -769,13 +780,13 @@ public class PZ80Cpu {
     	
     	case PortalConsts.R_SSF:
     	{
-    		int hl;
-            int n = hl = z80.getRegisterValue(RegisterNames.HL);
-            int device = (n >> 10) & 0x1f;
+    		int ssftype;
+            int n = z80.getRegisterValue(RegisterNames.HL);
+            int device = ssftype = (n >> 10) & 0x1f;
             int writ = (n >> 9) & 0x1;
             int inter = (n >> 8) & 0x1;
             int data = n & 0xff;
-            z80Memory.writeByte(PortalConsts.M_ENAB, data);
+            z80Memory.writeByte(PortalConsts.M_ENAB, data | 0xd0);
            // remember devices
            if(writ == 1)
            {
@@ -798,7 +809,35 @@ public class PZ80Cpu {
                m_mtincnt++;            // rotating selection of 3 possible responses
                                        // mtutor tries many times
            }
-           
+/*           
+	        switch(ssftype)
+	   		{
+	   			// Slide projector functions (ignored).
+	   			case 0:
+	   				break;
+	   			// Set interrupt mask (touch enable/disable).
+	   			case 1:
+	   				if ((n & 0x20) != 0)
+	   				{
+	   					if (!parser.is_touch_enabled)
+	   						parser.is_touch_enabled = true;
+	   				}
+	   				else if (parser.is_touch_enabled)
+	   				{
+	   					parser.is_touch_enabled = false;
+	   				}
+	   				break;
+	   			// Select input/output.
+	   			default:
+	   				if ((n & 0x0200) == 0)
+	   				{
+	   					//ext_device = ssftype;
+	   	//				if ( 0 == ( word & 0x0100))
+	   	//					ExtData ( word & 0xff);
+	   				}
+	   				break;
+	   		}
+ */          
            // I think this switch is PTerm specific   will leave for now
            
            switch (n)
@@ -816,7 +855,18 @@ public class PZ80Cpu {
         	   
                if (device == 1 && writ == 0)  // touch enable/disable
                {
-//                   m_canvas->ptermTouchPanel((data & 0x20) != 0);  // TODO drs
+            	   parser.is_touch_enabled = ((data & 0x20) != 0);  // TODO drs
+            	   int enab = z80Memory.readByte(PortalConsts.M_ENAB);
+            	   if (parser.is_touch_enabled)
+            	   {
+            		   z80Memory.writeByte(PortalConsts.M_ENAB, enab | (0x20));
+            	   }
+            	   else
+            	   {
+            		   z80Memory.writeByte(PortalConsts.M_ENAB, enab & (0xdf));
+            	   }
+            	   enab = z80Memory.readByte(PortalConsts.M_ENAB);
+            	   //System.out.println("touch: " + parser.is_touch_enabled + "  m.enab: " + (enab & 0x20) + "  data: " + data);
                }
            }
     	}
