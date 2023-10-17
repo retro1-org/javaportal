@@ -650,16 +650,21 @@ public class PZ80Cpu {
     		
     		if ((mkey & 0xff) < 128)
     		{
+    			
     			if (mkey == 0x1b)	// ESC - use next two byte
     			{
     				long mkey2 = (keyBuffer.Dequeue() & 0x3f);
-    				long mkey3 = (keyBuffer.Dequeue() & 0xf)  << 6;
-    				
-    				long sendit = mkey2 | mkey3;
-    	      		z80.setRegisterValue(RegisterNames.HL, (int)(sendit));
-    	      		
-    	      		return 1;
+    				long temp = keyBuffer.Dequeue() & 0xf;
+    				long mkey3 = (temp)  << 6;
+    				if ((temp & 0x4)  == 0x4)	// just touch keys for now
+    				{
+	    				long sendit = mkey2 | mkey3;
+	    	      		z80.setRegisterValue(RegisterNames.HL, (int)(sendit));
+	    	      		
+	    	      		return 1;
+    				}
     			}
+    			
     			
     			mkey = portalToMTutor[(int)mkey];
 //    			System.out.println("------------------------R_INPUT post-key: " + mkey);
@@ -855,7 +860,7 @@ public class PZ80Cpu {
         	   
                if (device == 1 && writ == 0)  // touch enable/disable
                {
-            	   parser.is_touch_enabled = ((data & 0x20) != 0);  // TODO drs
+            	   parser.is_touch_enabled = ((data & 0x20) != 0);
             	   int enab = z80Memory.readByte(PortalConsts.M_ENAB);
             	   if (parser.is_touch_enabled)
             	   {
@@ -1219,6 +1224,9 @@ public class PZ80Cpu {
 
 		parser.needToBoot = false; 
 		parser.booted = true;
+		
+		((PortalFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Booted MTutor");
+		
 		this.z80.reset();
 		runWithMtutorCheck(0x5306);  					// f.inix - boot entry point
 

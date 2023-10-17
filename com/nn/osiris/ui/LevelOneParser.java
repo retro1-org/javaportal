@@ -65,7 +65,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		levelone_offscreen_image = i;
   		levelone_offscreen = g2;
   		levelone_network = n;
-		
+  		
 		if	(PortalConsts.is_applet)
 		{
 			original_dir = "";
@@ -111,7 +111,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		data_pnt = 0;
   		data_proc = TTYDataMode;
 
-  		
+  		need_title = true;
 
   		font_height = 16;
 		
@@ -651,6 +651,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	public int skipper_mod;;	// number of bytes of stream to process before checking z80 for a time slice - uses skipper below
 	private int skipper = 0;	// for time slicing the z80 
 	public long z80_loops;		// instructions per Z80 time slice
+	
+	private boolean need_title = true;
 	
 	public byte m_indev = 0;
 	public byte m_outdev = 0;
@@ -2320,6 +2322,12 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 */ 
 	private final void TTYData(int c)
 	{
+		if (true)
+		{
+			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host);
+			need_title = false;
+		}
+
 		if ( cmd_pending && ESC != c)
 		{
 			if ( c == STX && 0 == data_pnt)
