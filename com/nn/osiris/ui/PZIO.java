@@ -312,7 +312,7 @@ public class PZIO implements IBaseDevice {
     	               case 4:
     	                   m_mtcanresp = 0x4a;
     	                   m_mtsingledata = 0x02;
-    	                 //  if (m_floppy1)
+    	                   if (this.m_MTDisk[1] != null)
     	                   {
     	                       m_mtsingledata |= 0x80;
     	                   }

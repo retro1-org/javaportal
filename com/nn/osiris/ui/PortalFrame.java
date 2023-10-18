@@ -309,18 +309,21 @@ public class PortalFrame
 		{
 			public void run()
 			{
-				lop.endSession();
-				removePanel(lop);
-
-				if	(!ended_session)
+				if (!lop.getParser().booted)
 				{
-					JOptionPane.showMessageDialog(PortalFrame.this,
-						"<html>"+
-						"You are no longer connected, <br>"+
-						"you must choose the Open Connection option <br>"+
-						"in the File menu to continue working.</html>",
-						"Connection Lost",
-						JOptionPane.ERROR_MESSAGE);
+					lop.endSession();
+					removePanel(lop);
+				
+					if	(!ended_session)
+					{
+						JOptionPane.showMessageDialog(PortalFrame.this,
+							"<html>"+
+							"You are no longer connected, <br>"+
+							"you must choose the Open Connection option <br>"+
+							"in the File menu to continue working.</html>",
+							"Connection Lost",
+							JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -550,6 +553,8 @@ public class PortalFrame
 		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0... USE Only BEFORE M-Tutor is running!!"));
 		item.addActionListener(this);
 		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 1... USE Only BEFORE M-Tutor is running!!"));
+		item.addActionListener(this);
+		jMenuSettings.add (item = new JMenuItem("Boot M-Tutor Virtual Disk 0"));
 		item.addActionListener(this);
 
 		jMenuBar1.add(jMenuSettings);
@@ -1408,6 +1413,13 @@ public class PortalFrame
 		{
 			doLoadVDisk1();
 		}
+
+		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
+		{
+			this.currentPanel().getParser().center_x = (PortalConsts.default_width - 512) / 2;
+			this.currentPanel().getParser().cpu.BootMtutor(null);
+		}
+
 	}
 
 	/**
