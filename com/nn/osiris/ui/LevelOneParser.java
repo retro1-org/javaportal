@@ -2328,6 +2328,8 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			need_title = false;
 		}
 
+		if (booted) return;
+		
 		if ( cmd_pending && ESC != c)
 		{
 			if ( c == STX && 0 == data_pnt)
