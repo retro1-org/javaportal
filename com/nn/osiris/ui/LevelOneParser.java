@@ -2265,7 +2265,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		        {
 		        	 m_pending = 0;
 		        }
-		        protocolP(data_proc,c);
+		        if (!booted) protocolP(data_proc,c);
 			}
 			else
 			{
