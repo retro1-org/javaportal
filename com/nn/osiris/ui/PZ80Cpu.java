@@ -780,7 +780,9 @@ public class PZ80Cpu {
        		    		return 1;
        	
     	case PortalConsts.R_ALARM:
-    		CharTest();		// temp
+    		parser.Beep();
+    		
+ //   		CharTest();		// temp
     		
     		return 1;
     	
@@ -975,7 +977,7 @@ public class PZ80Cpu {
     	val |= 1;
     	z80Memory.writeByte(PortalConsts.M_KSW, val);
     }
-    
+/*    
     private void CharTest()
     {
     	parser.current_x = 0;
@@ -994,7 +996,7 @@ public class PZ80Cpu {
     	parser.current_y = 496-48;
     	CharTestx((byte)1, 64);
     }
-    
+*/    
     private void CharTestx(byte set, int start )
     {
     	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor

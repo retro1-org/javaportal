@@ -78,11 +78,20 @@ class Session
 			this.name = "";
 		else
 			this.name = n.getNodeValue();
+		
 		n = nnm.getNamedItem("group");
 		if	(null == n)
 			this.group = "";
 		else
 			this.group = n.getNodeValue();
+
+		n = nnm.getNamedItem("mtutor");
+		if	(null == n)
+			this.mtutor = null;
+		else
+		{
+			this.mtutor = n.getNodeValue();
+		}
 	}
 
 	/**

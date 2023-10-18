@@ -274,6 +274,8 @@ public class PortalFrame
 	public void networkConnected(final LevelOnePanel lop)
 	{
 		setStatus(lop,"Not Signed On");
+		if (lop.getParser().booted)
+			setStatus(lop,"Micro-Tutor");
 		ended_session = false;
 	}
 
@@ -284,7 +286,7 @@ public class PortalFrame
 	 */
 	public void networkConnectFailed(final LevelOnePanel lop,final String s)
 	{
-		setStatus(lop,"Not Connected");
+		if (!lop.getParser().booted) setStatus(lop,"Not Connected");
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -304,7 +306,7 @@ public class PortalFrame
 	 */
 	public void networkDisconnected(final LevelOnePanel lop)
 	{
-		setStatus(lop,"Not Connected");
+		if (!lop.getParser().booted) setStatus(lop,"Not Connected");
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()

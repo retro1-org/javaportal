@@ -2322,14 +2322,18 @@ int PtermHostConnection::AssembleAsciiWord (void)
 	 */ 
 	private final void TTYData(int c)
 	{
+		if (booted) 
+		{
+			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), "Micro-Tutor");
+			return;
+		}
+		
 		if (true)
 		{
 			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host);
 			need_title = false;
 		}
 
-		if (booted) return;
-		
 		if ( cmd_pending && ESC != c)
 		{
 			if ( c == STX && 0 == data_pnt)
@@ -10597,7 +10601,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 			ShiftStop();
 	}
 
-	private void Beep()
+	public void Beep()
 	{
 		java.awt.Toolkit.getDefaultToolkit().beep();
 	}
