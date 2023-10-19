@@ -913,7 +913,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_DUMMY3 + 2:
     		// Boot Pterm HELP disk
     		
-    		parser.needToBoot = true;
+    		//  parser.needToBoot = true;
     		
     		return	1;
 
@@ -1182,8 +1182,7 @@ public class PZ80Cpu {
 			
 			stopme = true;
 			z80.halt = true;
-	
-	
+		
 			MTDisk myFile = new MTDisk(fn);
 			
 			if (this.z80IO.m_MTDisk[0] != null)
@@ -1193,6 +1192,8 @@ public class PZ80Cpu {
 			
 			this.z80IO.m_MTDisk[0] = myFile;
     	}
+
+    	
 		int it = this.z80IO.m_MTDisk[0].ReadByte(25);
 		
 		if (it == 0)
