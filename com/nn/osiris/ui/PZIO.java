@@ -2,7 +2,7 @@ package com.nn.osiris.ui;
 
 import com.codingrodent.microprocessor.IBaseDevice;
 
-// do nothing Z80 IO handler TODO
+// Z80 IO handler
 
 public class PZIO implements IBaseDevice {
     //private int value;
@@ -14,17 +14,17 @@ public class PZIO implements IBaseDevice {
     private int m_mtDiskUnit = 0;
     private int m_mtDiskTrack;
     private int m_mtDiskSector;
-    private int m_mtDisk1;
-    private int m_mtDisk2;
-    private int m_mtDiskCheck1;
-    private int m_mtDiskCheck2;
+    // private int m_mtDisk1;
+    //private int m_mtDisk2;
+    //private int m_mtDiskCheck1;
+    //private int m_mtDiskCheck2;
     private long m_mtSeekPos;
     private boolean m_clockPhase = true;
     private int m_mtDataPhase;
     private int m_mtsingledata;
     private int m_mtcanresp;
     
-    private long readcnt = 0;
+    //private long readcnt = 0;
     
     public MTDisk[] m_MTDisk = new MTDisk[2];
 //    private boolean m_floppy0;
@@ -122,22 +122,12 @@ public class PZIO implements IBaseDevice {
                     // read next byte of data from disk
                     if ( m_MTDisk[m_mtDiskUnit&1] == null)
                     {
-                    	/*
-                    	if (m_MTDisk[2] == null)
-                    	{
-                    		break;
-                    	}
-                    	*/
-                    	readcnt = 0;
-                    	/*
-                    	retval = m_MTDisk[2].ReadByte();
-                        System.out.print(readcnt + "; " + retval + " : ");
-                        */
+                    	//readcnt = 0;
                     	break;
                     }
                     else
                     {
-                    	readcnt++;
+                    	//readcnt++;
                     	retval = m_MTDisk[m_mtDiskUnit&1].ReadByte();
                     }
                    // System.out.println(readcnt + ", " + retval);
@@ -245,16 +235,16 @@ public class PZIO implements IBaseDevice {
     	                       m_mtDiskSector = acc;
     	                       break;
     	                   case 4:
-    	                       m_mtDisk1 = acc;
+    	                       //m_mtDisk1 = acc;
     	                       break;
     	                   case 5:
-    	                       m_mtDisk2 = acc;
+    	                       //m_mtDisk2 = acc;
     	                       break;
     	                   case 6:
-    	                       m_mtDiskCheck1 = acc;
+    	                       //m_mtDiskCheck1 = acc;
     	                       break;
     	                   case 7: // 128 bytes/sector plus two check bytes
-    	                       m_mtDiskCheck2 = acc;
+    	                       //m_mtDiskCheck2 = acc;
 
     	                       m_mtSeekPos = (128 * 64 * m_mtDiskTrack) + (128 * (m_mtDiskSector-1));
     	                       if (m_mtSeekPos < 0)
@@ -271,7 +261,7 @@ public class PZIO implements IBaseDevice {
     	                   default:   // write data
     	                       if ( m_MTDisk[m_mtDiskUnit&1] == null)
     	                    	   break;
-    	                       m_MTDisk[m_mtDiskUnit&1].WriteByte(acc);  // TODO
+    	                       m_MTDisk[m_mtDiskUnit&1].WriteByte(acc);
     	                       m_mtcanresp = 0x50;
     	                       break;
     	               }
@@ -290,10 +280,10 @@ public class PZIO implements IBaseDevice {
     	                   m_mtDiskSector = acc;
     	                   break;
     	               case 4:
-    	                   m_mtDisk1 = acc;
+    	                   //m_mtDisk1 = acc;
     	                   break;
     	               case 5:
-    	                   m_mtDisk2 = acc;
+    	                   //m_mtDisk2 = acc;
     	                   break;
     	               default:
     	                   m_MTDisk[m_mtDiskUnit & 1].Format();
