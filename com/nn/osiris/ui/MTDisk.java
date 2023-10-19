@@ -1,6 +1,9 @@
 package com.nn.osiris.ui;
 
-import java.io.*;  
+import java.io.*;
+import java.nio.channels.FileChannel;
+
+import javax.swing.JOptionPane;  
 
 public class MTDisk {
 	private int _chkSum;
@@ -11,6 +14,7 @@ public class MTDisk {
 	private File file;
 	private RandomAccessFile raf;
 	private String rwflag;
+	private FileChannel channel;
 	
 	
 	
@@ -26,15 +30,23 @@ public class MTDisk {
 		try
 		{
 			file = new File(filename);
-			raf = new RandomAccessFile(file, "rw"); 
-
+			raf = new RandomAccessFile(file, "rw");
+			channel = raf.getChannel();
+			channel.lock();
+			
 			return;
 		}
-		catch(IOException e)  
+		catch(Exception e)  
 		{  
 			e.printStackTrace();
 			filename = null;
 			file = null;
+			
+			JOptionPane.showMessageDialog(PortalFrame.getFrames()[0],
+					"<html>Unable to open MTutor disk:  " + fn +  "</html>",
+					"File Error",
+					JOptionPane.WARNING_MESSAGE);
+			
 		}  
 		file = null;
 	}
