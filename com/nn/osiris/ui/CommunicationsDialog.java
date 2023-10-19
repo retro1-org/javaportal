@@ -28,14 +28,18 @@ public class CommunicationsDialog
 	
 	private boolean			is_host_valid = true;
 	private boolean			is_port_valid = true;
-	private boolean			is_mtutor_valid = true;
+	private boolean			is_mtdisk0_valid = true;
+	private boolean			is_mtdisk1_valid = true;
+	private boolean			is_mtboot_valid = true;
 	private boolean			cancelled = false;
 
 	private JTextField		host_field = new JTextField(20);
 	private JTextField		port_field = new JTextField(10);
 	private JTextField		name_field = new JTextField(25);
 	private JTextField		group_field = new JTextField(15);
-	private JTextField		mtutor_field = new JTextField(15);
+	private JTextField		mtdisk0_field = new JTextField(25);
+	private JTextField		mtdisk1_field = new JTextField(25);
+	private JTextField		mtboot_field = new JTextField(2);
 
 	private JButton			ok_button = new JButton("Ok");
 	private JButton			cancel_button = new JButton("Cancel");
@@ -62,7 +66,7 @@ public class CommunicationsDialog
 
 		JPanel control_panel = new JPanel();
         JPanel button_panel = new JPanel();
-		control_panel.setLayout(new GridLayout(3,2));	// rows, columns
+		control_panel.setLayout(new GridLayout(4,2));	// rows, columns
 		button_panel.setLayout(new FlowLayout(FlowLayout.TRAILING));
 
 		// Add controls to control panel.
@@ -91,16 +95,31 @@ public class CommunicationsDialog
 
 		control_panel.add(
 				new LabeledComponent(
-					mtutor_field,
-					"MTutor Boot:",
+					mtdisk0_field,
+					"MTDisk0:",
 					LabeledComponent.LABEL_ABOVE));
 
+		control_panel.add(
+				new LabeledComponent(
+					mtdisk1_field,
+					"MTDisk1:",
+					LabeledComponent.LABEL_ABOVE));
+
+		control_panel.add(
+				new LabeledComponent(
+					mtboot_field,
+					"MTBoot:",
+					LabeledComponent.LABEL_ABOVE));
+
+		
 		
 		host_field.setText(session.host);
 		port_field.setText(Integer.toString(session.port));
 		name_field.setText(session.name);
 		group_field.setText(session.group);
-		mtutor_field.setText(session.mtutor);
+		mtdisk0_field.setText(session.mtdisk0);
+		mtdisk1_field.setText(session.mtdisk1);
+		mtboot_field.setText(session.mtboot);
 
 		// Limit the number of characters in text fields.
 		try
@@ -123,7 +142,14 @@ public class CommunicationsDialog
 			ff.setFilter(group_field,8);
 
 			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
-			ff.setFilter(mtutor_field,255);
+			ff.setFilter(mtdisk0_field,255);
+		
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
+			ff.setFilter(mtdisk1_field,255);
+			
+			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
+			ff.setFilter(mtboot_field,2);
+
 		
 		}
 		catch (NoClassDefFoundError e1)
@@ -146,7 +172,9 @@ public class CommunicationsDialog
 		port_field.addActionListener(this);
 		name_field.addActionListener(this);
 		group_field.addActionListener(this);
-		mtutor_field.addActionListener(this);
+		mtdisk0_field.addActionListener(this);
+		mtdisk1_field.addActionListener(this);
+		mtboot_field.addActionListener(this);
 		ok_button.addActionListener(this);
 		cancel_button.addActionListener(this);
 
@@ -200,18 +228,48 @@ public class CommunicationsDialog
 					}
 				});
 			
-					mtutor_field.addKeyListener(
+					mtdisk0_field.addKeyListener(
 					new KeyAdapter()
 					{
 						// Length must be > 0 to be valid.
 						public void keyReleased(KeyEvent event)
 						{
-							is_mtutor_valid = false;
-							if (0 < mtutor_field.getText().trim().length())
-								is_mtutor_valid = true;
+							is_mtdisk0_valid = false;
+							if (0 < mtdisk0_field.getText().trim().length())
+								is_mtdisk0_valid = true;
 							resetButtonsEnabling();
 						}
 					});
+
+					mtdisk1_field.addKeyListener(
+					new KeyAdapter()
+					{
+						// Length must be > 0 to be valid.
+						public void keyReleased(KeyEvent event)
+						{
+							is_mtdisk1_valid = false;
+							if (0 < mtdisk1_field.getText().trim().length())
+								is_mtdisk1_valid = true;
+							resetButtonsEnabling();
+						}
+					});
+
+					mtboot_field.addKeyListener(
+					new KeyAdapter()
+					{
+						// Length must be > 0 to be valid.
+						public void keyReleased(KeyEvent event)
+						{
+							is_mtboot_valid = false;
+							if (0 < mtboot_field.getText().trim().length())
+								is_mtboot_valid = true;
+							resetButtonsEnabling();
+						}
+					});
+
+
+		
+		
 		}
 
 		pack();
@@ -253,7 +311,9 @@ public class CommunicationsDialog
 			}
 			session.name = name_field.getText();
 			session.group = group_field.getText();
-			session.mtutor = mtutor_field.getText();
+			session.mtdisk0 = mtdisk0_field.getText();
+			session.mtdisk1 = mtdisk1_field.getText();
+			session.mtboot = mtboot_field.getText();
 			setVisible(false);
 		}
 	}

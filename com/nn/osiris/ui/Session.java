@@ -17,8 +17,12 @@ class Session
 	// for testing/debug of aw stub
 	double local_os_failure_rate;
 	// mtutor boot file
-	String mtutor;
+	String mtdisk0;
+	String mtdisk1;
+	String mtboot;
 
+	
+	
 	public void toXML(StringBuffer sb)
 	{
 		sb.append("<session host=\""+host+"\"");
@@ -27,8 +31,12 @@ class Session
 			sb.append(" name=\""+name+"\"");
 		if	(group != null)
 			sb.append(" group=\""+group+"\"");
-		if	(mtutor != null)
-			sb.append(" mtutor=\""+mtutor+"\"");
+		if	(mtdisk0 != null)
+			sb.append(" mtdisk0=\""+mtdisk0+"\"");
+		if	(mtdisk1 != null)
+			sb.append(" mtdisk1=\""+mtdisk1+"\"");
+		if	(mtboot != null)
+			sb.append(" mtboot=\""+mtboot+"\"");
 		sb.append("/>");
 	}
 
@@ -87,13 +95,31 @@ class Session
 		else
 			this.group = n.getNodeValue();
 
-		n = nnm.getNamedItem("mtutor");
+		n = nnm.getNamedItem("mtdisk0");
 		if	(null == n)
-			this.mtutor = null;
+			this.mtdisk0 = null;
 		else
 		{
-			this.mtutor = n.getNodeValue();
+			this.mtdisk0 = n.getNodeValue();
 		}
+		
+		n = nnm.getNamedItem("mtdisk1");
+		if	(null == n)
+			this.mtdisk1 = null;
+		else
+		{
+			this.mtdisk1 = n.getNodeValue();
+		}
+		
+		n = nnm.getNamedItem("mtboot");
+		if	(null == n)
+			this.mtboot = null;
+		else
+		{
+			this.mtboot = n.getNodeValue();
+		}
+		
+		
 	}
 
 	/**
@@ -107,7 +133,9 @@ class Session
 		this.group = p.getProperty("group");
 		this.lesson = p.getProperty("lesson");
 		this.unit = p.getProperty("unit");
-		this.mtutor = p.getProperty("mtutor");
+		this.mtdisk0 = p.getProperty("mtdisk0");
+		this.mtdisk1 = p.getProperty("mtdisk1");
+		this.mtboot = p.getProperty("mtboot");
 		this.rs_host = p.getProperty("resource_server");
 	}
 
@@ -122,6 +150,8 @@ class Session
 		x.group = this.group;
 		x.lesson = this.lesson;
 		x.unit = this.unit;
-		x.mtutor = this.mtutor;
+		x.mtdisk0 = this.mtdisk0;
+		x.mtdisk1 = this.mtdisk1;
+		x.mtboot = this.mtboot;
 	}
 };

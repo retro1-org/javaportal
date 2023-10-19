@@ -5,11 +5,11 @@ import com.codingrodent.microprocessor.IBaseDevice;
 // do nothing Z80 IO handler TODO
 
 public class PZIO implements IBaseDevice {
-    private int value;
+    //private int value;
     private int m_mtdrivefunc = 0;
     private int m_mtdrivetemp = 0xcb;
-    private PZ80Cpu m_cpu;
-    private PZMemory m_mem;
+    //private PZ80Cpu m_cpu;
+    //private PZMemory m_mem;
     private long init_milli;
     private int m_mtDiskUnit = 0;
     private int m_mtDiskTrack;
@@ -33,8 +33,8 @@ public class PZIO implements IBaseDevice {
     public void Init(PZ80Cpu cpu)
     {
     	init_milli = java.lang.System.currentTimeMillis();
-    	m_cpu = cpu;
-    	m_mem = cpu.z80Memory;
+    	//m_cpu = cpu;
+    	//m_mem = cpu.z80Memory;
     	
 /*
     	if (this.m_MTDisk[0] == null)
@@ -63,6 +63,18 @@ public class PZIO implements IBaseDevice {
 */
     
     
+    }
+    
+    
+    public static MTDisk LoadDisk(String fn)
+    {
+		boolean fexists = MTDisk.Exists(fn);
+		if (!fexists)
+			return null;
+		
+		MTDisk myFile = new MTDisk(fn);
+		
+		return myFile;
     }
     
     /**
