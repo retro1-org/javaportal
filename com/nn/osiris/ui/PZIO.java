@@ -35,18 +35,21 @@ public class PZIO implements IBaseDevice {
     	init_milli = java.lang.System.currentTimeMillis();
     	m_cpu = cpu;
     	m_mem = cpu.z80Memory;
-    	/*
     	
-    	String fn = PortalConsts.InitDisk0;  //  kludge TODO
-    	
-		boolean fexists = MTDisk.Exists(fn);
-		if (!fexists)
-			return;
-		
-		MTDisk myFile = new MTDisk(fn);
-		
-		this.m_MTDisk[0] = myFile;
 
+    	if (this.m_MTDisk[0] == null)
+    	{
+	    	String fn = PortalConsts.InitDisk0;  //  kludge TODO
+	    	
+			boolean fexists = MTDisk.Exists(fn);
+			if (!fexists)
+				return;
+			
+			MTDisk myFile = new MTDisk(fn);
+			
+			this.m_MTDisk[0] = myFile;
+    	}
+		/*
     	fn = PortalConsts.InitDisk1;  //  kludge TODO
     	
 		if (!fexists)
