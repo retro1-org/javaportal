@@ -26,7 +26,7 @@ public class PZIO implements IBaseDevice {
     
     private long readcnt = 0;
     
-    public MTDisk[] m_MTDisk = new MTDisk[3];
+    public MTDisk[] m_MTDisk = new MTDisk[2];
 //    private boolean m_floppy0;
 //    private boolean m_floppy1;
     
@@ -110,13 +110,17 @@ public class PZIO implements IBaseDevice {
                     // read next byte of data from disk
                     if ( m_MTDisk[m_mtDiskUnit&1] == null)
                     {
+                    	/*
                     	if (m_MTDisk[2] == null)
                     	{
                     		break;
                     	}
+                    	*/
                     	readcnt = 0;
+                    	/*
                     	retval = m_MTDisk[2].ReadByte();
                         System.out.print(readcnt + "; " + retval + " : ");
+                        */
                     	break;
                     }
                     else
@@ -244,9 +248,12 @@ public class PZIO implements IBaseDevice {
     	                       if (m_mtSeekPos < 0)
     	                           break;
     	                       if ( m_MTDisk[m_mtDiskUnit&1] == null)
-        	                       m_MTDisk[2].Seek(m_mtSeekPos);
+    	                       {
+    	                    	//   System.out.println(">>>>>>> DISK NOT LOADED");
+        	                       //m_MTDisk[2].Seek(m_mtSeekPos);
+    	                       }
     	                       else
-    	                       m_MTDisk[m_mtDiskUnit&1].Seek(m_mtSeekPos);
+    	                    	   m_MTDisk[m_mtDiskUnit&1].Seek(m_mtSeekPos);
     	                       break;
 
     	                   default:   // write data

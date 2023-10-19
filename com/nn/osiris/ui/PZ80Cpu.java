@@ -30,6 +30,9 @@ public class PZ80Cpu {
     public boolean stopme;
     /* is mtutor running flag */
     public boolean mtutor_waiting = false;
+    
+    private long xmits = 0;
+    
     /* internal stop processing flag for z80 - */
     private boolean giveupz80;
     /* internal counter */
@@ -620,12 +623,17 @@ public class PZ80Cpu {
             byte temp_hold = getM_KSW();
             if (k != 0x3a)
                 setM_KSW(0);
-           
+ 
+            //System.out.print("XMIT: " + String.format("%h", k)+"  count: " + ++xmits);
+            
+            
         	parser.SendRawKey(0x1b);
         	
         	x = Parity(0x40+(k & 0x3f));
+            //System.out.print("  >>   1: " + String.format("%h", (k & 0x3f)));
         	parser.SendRawKey(x);
         	x = Parity(0x60+(k >> 6));
+            //System.out.println("  >>   2: " + String.format("%h", (k >> 6)));
         	parser.SendRawKey(x);
         	
         	setM_KSW(temp_hold);   
