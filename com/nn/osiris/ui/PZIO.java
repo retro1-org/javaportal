@@ -35,7 +35,7 @@ public class PZIO implements IBaseDevice {
     	init_milli = java.lang.System.currentTimeMillis();
     	m_cpu = cpu;
     	m_mem = cpu.z80Memory;
-    	
+    	/*
     	
     	String fn = PortalConsts.InitDisk0;  //  kludge TODO
     	
@@ -55,7 +55,7 @@ public class PZIO implements IBaseDevice {
 		myFile = new MTDisk(fn);
 		
 		this.m_MTDisk[1] = myFile;
-
+*/
     
     
     }
