@@ -66,7 +66,7 @@ public class CommunicationsDialog
 
 		JPanel control_panel = new JPanel();
         JPanel button_panel = new JPanel();
-		control_panel.setLayout(new GridLayout(4,2));	// rows, columns
+		control_panel.setLayout(new GridLayout(3,2));	// rows, columns
 		button_panel.setLayout(new FlowLayout(FlowLayout.TRAILING));
 
 		// Add controls to control panel.
@@ -82,6 +82,8 @@ public class CommunicationsDialog
 				"Port:",
 				'p',
 				LabeledComponent.LABEL_ABOVE));
+		
+		/*
 		control_panel.add(
 			new LabeledComponent(
 				name_field,
@@ -92,7 +94,7 @@ public class CommunicationsDialog
 				group_field,
 				"Group:",
 				LabeledComponent.LABEL_ABOVE));
-
+*/
 		control_panel.add(
 				new LabeledComponent(
 					mtdisk0_field,
