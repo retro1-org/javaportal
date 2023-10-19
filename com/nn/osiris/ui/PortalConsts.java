@@ -47,8 +47,8 @@ class PortalConsts
 	
 //	static final String BootDisk = "drsutil.mte";  // no longer used
 
-	static final String InitDisk0 = "drsutil.mte";
-	static final String InitDisk1 = "ptermhelp.mte";
+//	static final String InitDisk0 = "drsutil.mte";
+//	static final String InitDisk1 = "ptermhelp.mte";
 	
 	
 	// time slicing initial values

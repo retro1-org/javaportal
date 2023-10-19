@@ -552,9 +552,9 @@ public class PortalFrame
 		
 		
 		jMenuSettings.addSeparator();
-		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0... USE Only BEFORE M-Tutor is running!!"));
+		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0..."));
 		item.addActionListener(this);
-		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 1... USE Only BEFORE M-Tutor is running!!"));
+		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 1..."));
 		item.addActionListener(this);
 		jMenuSettings.add (item = new JMenuItem("Boot M-Tutor Virtual Disk 0"));
 		item.addActionListener(this);
@@ -1406,12 +1406,12 @@ public class PortalFrame
 			doSaveConfiguration();
 		}
 		
-		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 0... USE Only BEFORE M-Tutor is running!!"))
+		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 0..."))
 		{
 			doLoadVDisk0();
 		}
 		
-		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 1... USE Only BEFORE M-Tutor is running!!"))
+		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 1..."))
 		{
 			doLoadVDisk1();
 		}
