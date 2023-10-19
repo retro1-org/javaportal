@@ -36,7 +36,7 @@ public class PZIO implements IBaseDevice {
     	m_cpu = cpu;
     	m_mem = cpu.z80Memory;
     	
-
+/*
     	if (this.m_MTDisk[0] == null)
     	{
 	    	String fn = PortalConsts.InitDisk0;  //  kludge TODO
@@ -49,6 +49,8 @@ public class PZIO implements IBaseDevice {
 			
 			this.m_MTDisk[0] = myFile;
     	}
+ */
+    	
 		/*
     	fn = PortalConsts.InitDisk1;  //  kludge TODO
     	

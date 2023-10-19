@@ -197,7 +197,7 @@ public class JPortal extends javax.swing.JFrame
 		global_jportal = this;
 	}
 
-
+/*
 	public void CreateAppletUI()
 	{
 	LevelOnePanel	lop = new LevelOnePanel(null,frame_width);
@@ -206,7 +206,8 @@ public class JPortal extends javax.swing.JFrame
 		getContentPane().add(lop,BorderLayout.CENTER);
 		this.pack();
 	}
-
+*/
+	
   public void pack() {
     Container cp = getContentPane();
     Dimension d = cp.getLayout().preferredLayoutSize(cp);
