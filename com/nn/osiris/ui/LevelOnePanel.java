@@ -291,15 +291,17 @@ public class LevelOnePanel
 			
 			if (this.session.mtutor != null)
 			{
-				level_one_parser.cpu = new PZ80Cpu();
-				level_one_parser.cpu.Init(level_one_parser);
-				level_one_parser.z80 = level_one_parser.cpu.z80;			// shortcut
-				
-				level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
-
-				level_one_parser.cpu.BootMtutor(this.session.mtutor);
-			}
+				if (this.session.mtutor.length() > 4)
+				{
+					level_one_parser.cpu = new PZ80Cpu();
+					level_one_parser.cpu.Init(level_one_parser);
+					level_one_parser.z80 = level_one_parser.cpu.z80;			// shortcut
 					
+					level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
+	
+					level_one_parser.cpu.BootMtutor(this.session.mtutor);
+				}
+			}
 
 			return true;
 		}

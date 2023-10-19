@@ -27,6 +27,8 @@ class Session
 			sb.append(" name=\""+name+"\"");
 		if	(group != null)
 			sb.append(" group=\""+group+"\"");
+		if	(mtutor != null)
+			sb.append(" mtutor=\""+mtutor+"\"");
 		sb.append("/>");
 	}
 
@@ -120,5 +122,6 @@ class Session
 		x.group = this.group;
 		x.lesson = this.lesson;
 		x.unit = this.unit;
+		x.mtutor = this.mtutor;
 	}
 };
