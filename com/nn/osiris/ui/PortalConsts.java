@@ -16,7 +16,7 @@ class PortalConsts
 {
 	// version string displayed in dialog and sent to system via -local-
 	static public String	short_version = "3.4.3";
-	static public String	options_file = "portopt.cfg";
+	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
 	static public String	user_config_file = "portal.cfg";
 	// global configuration file name
