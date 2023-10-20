@@ -12,10 +12,13 @@ package com.nn.osiris.ui;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 //import java.lang.*;
 import java.awt.event.*;
 //import java.util.*;
 //import java.lang.reflect.*;
+import java.io.File;
 
 /**
  * This class represents the dialog used to change the host and port settings.
@@ -229,7 +232,27 @@ public class CommunicationsDialog
 						resetButtonsEnabling();
 					}
 				});
-			
+
+					mtdisk0_field.addFocusListener(
+					new FocusAdapter()
+					{
+						public void focusGained(FocusEvent e)
+						{
+							host_field.grabFocus();
+							JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+							FileNameExtensionFilter filter = new FileNameExtensionFilter(
+							        "Portal Disk Files", "mte");
+							    fc.setFileFilter(filter);
+
+								if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(JPortal.global_jportal.frame))
+								{
+									mtdisk0_field.setText(fc.getSelectedFile().getAbsolutePath());
+								}
+							host_field.grabFocus();
+						}
+					});
+	
+
 					mtdisk0_field.addKeyListener(
 					new KeyAdapter()
 					{
@@ -242,7 +265,26 @@ public class CommunicationsDialog
 							resetButtonsEnabling();
 						}
 					});
+					
+					mtdisk1_field.addFocusListener(
+							new FocusAdapter()
+							{
+								public void focusGained(FocusEvent e)
+								{
+									host_field.grabFocus();
+									JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+									FileNameExtensionFilter filter = new FileNameExtensionFilter(
+									        "Portal Disk Files", "mte");
+									    fc.setFileFilter(filter);
 
+										if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(JPortal.global_jportal.frame))
+										{
+											mtdisk1_field.setText(fc.getSelectedFile().getAbsolutePath());
+										}
+									host_field.grabFocus();
+								}
+							});
+			
 					mtdisk1_field.addKeyListener(
 					new KeyAdapter()
 					{
@@ -259,6 +301,7 @@ public class CommunicationsDialog
 					mtboot_field.addKeyListener(
 					new KeyAdapter()
 					{
+						
 						// Length must be > 0 to be valid.
 						public void keyReleased(KeyEvent event)
 						{
