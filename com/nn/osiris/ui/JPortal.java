@@ -33,6 +33,8 @@ public class JPortal extends javax.swing.JFrame
 	ScormInterface		scorminterface = null;
 
 	PortalFrame			frame = null;
+	
+	static String		current_dir = null;
 
 	/** 
 	 * Applet initialization function, invoked by the JVM
@@ -157,6 +159,7 @@ public class JPortal extends javax.swing.JFrame
 	 */
 	static void initializeConstants(boolean is_applet)
 	{
+		current_dir = System.getProperty("user.dir");
 
 		if	(is_applet)
 		{

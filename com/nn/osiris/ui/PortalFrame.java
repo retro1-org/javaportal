@@ -11,6 +11,8 @@ import java.awt.*;
 //import java.awt.image.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.util.*;
 import java.awt.print.*;
 import java.io.*;
@@ -1554,7 +1556,10 @@ public class PortalFrame
 	 */
 	void doLoadConfiguration()
 	{
-	JFileChooser	fc = new JFileChooser();
+	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+	FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Portal Configuration Files", "cfg");
+	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
 		{
@@ -1584,7 +1589,10 @@ public class PortalFrame
 	 */
 	void doSaveConfiguration()
 	{
-	JFileChooser	fc = new JFileChooser();
+		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Portal Configuration Files", "cfg");
+	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
 		{
@@ -1595,7 +1603,10 @@ public class PortalFrame
 
 	void doLoadVDisk0()
 	{
-	JFileChooser	fc = new JFileChooser();
+		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Portal Disk Files", "mte");
+	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
 		{
@@ -1646,7 +1657,10 @@ public class PortalFrame
 
 	void doLoadVDisk1()
 	{
-	JFileChooser	fc = new JFileChooser();
+		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "Portal Disk Files", "mte");
+	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
 		{
