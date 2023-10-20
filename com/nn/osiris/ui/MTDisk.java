@@ -56,11 +56,11 @@ public class MTDisk {
 		try
 		{
 			File filex = new File(fn);
-			FileInputStream br=new FileInputStream(filex); 
-			br.close();
-			return filex != null;
+//			FileInputStream br=new FileInputStream(filex); 
+//			br.close();
+			return filex.exists();
 		}
-		catch(IOException e)  
+		catch(Exception e)  
 		{  
 			return false;
 		}

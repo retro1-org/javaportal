@@ -153,7 +153,7 @@ public class CommunicationsDialog
 			ff.setFilter(mtdisk1_field,255);
 			
 			ff = (FieldFilterInterface) cls.getDeclaredConstructor().newInstance();
-			ff.setFilter(mtboot_field,2);
+			ff.setFilter(mtboot_field,25);
 
 		
 		}
@@ -284,10 +284,6 @@ public class CommunicationsDialog
 							resetButtonsEnabling();
 						}
 					});
-
-
-		
-		
 		}
 
 		pack();

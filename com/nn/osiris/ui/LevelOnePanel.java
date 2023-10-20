@@ -69,7 +69,7 @@ public class LevelOnePanel
 	 */
 	void getOfflineImage()
 	{
-	java.net.URL	imgURL = getClass().getResource("/com/nn/images/offline.jpg");
+	java.net.URL	imgURL = getClass().getResource("/com/nn/images/noffline.jpg");
 
 		if	(null != imgURL)
 			offlineIcon = new ImageIcon(imgURL);
@@ -304,20 +304,22 @@ public class LevelOnePanel
 				level_one_parser.cpu = new PZ80Cpu();
 				level_one_parser.cpu.Init(level_one_parser);
 				level_one_parser.z80 = level_one_parser.cpu.z80;			// shortcut
-				level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
 
-				if (this.session.mtdisk1 != null && this.session.mtdisk1.length() > 4)
-				{
-					level_one_parser.cpu.z80IO.m_MTDisk[1] = PZIO.LoadDisk(this.session.mtdisk1)  ;
-				}				
-				
 				if (this.session.mtdisk0 != null && this.session.mtdisk0.length() > 4)
 				{
 					level_one_parser.cpu.z80IO.m_MTDisk[0] = PZIO.LoadDisk(this.session.mtdisk0)  ;
 				}
 				
-				if (this.session.mtboot != null && this.session.mtboot.length() > 0)
+				if (this.session.mtdisk1 != null && this.session.mtdisk1.length() > 4)
+				{
+					level_one_parser.cpu.z80IO.m_MTDisk[1] = PZIO.LoadDisk(this.session.mtdisk1)  ;
+				}				
+				
+				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO.m_MTDisk[0] != null)
+				{
+					level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
 					level_one_parser.cpu.BootMtutor(null);
+				}
 
 			}
 

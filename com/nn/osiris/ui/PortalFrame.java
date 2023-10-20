@@ -245,7 +245,7 @@ public class PortalFrame
 	    	// File list dialog
 	      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	    	        "Portal Configuration Files", "cfg");
+	    	        "JPTerm Configuration Files", "cfg");
 	    	fc.setFileFilter(filter);
 	    	fc.setDialogTitle("Choose a configuration file to connect...");
 	    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
@@ -272,7 +272,7 @@ public class PortalFrame
 	 */
 	private void setPortalIcon()
 	{
-	java.net.URL	imgURL = getClass().getResource("/com/nn/images/nnlogo.jpg");
+	java.net.URL	imgURL = getClass().getResource("/com/nn/images/noffline.jpg");
 
 		if	(null != imgURL)
 			setIconImage(new ImageIcon(imgURL).getImage());
@@ -808,7 +808,7 @@ public class PortalFrame
 	 */
 	public PortalFrame(Properties startup_props)
 	{
-		super ("Portal");
+		super ("JPTerm");
 		setPortalIcon();
 		setResizable(false);
 		this.startup_properties = startup_props;
@@ -862,7 +862,7 @@ public class PortalFrame
 
 
 //	Create lower layer
-	java.net.URL	imgURL = getClass().getResource("/com/nn/images/offline.jpg");
+	java.net.URL	imgURL = getClass().getResource("/com/nn/images/noffline.jpg");
 	ImageIcon		offlineIcon;
 
 		if	(null != imgURL)
@@ -875,7 +875,7 @@ public class PortalFrame
 			cp.add(logo_label,BorderLayout.CENTER);
 		}
 		else if (PortalConsts.is_debugging)
-			System.out.println("could not read logo com/nn/images/offline.jpg");
+			System.out.println("could not read logo com/nn/images/noffline.jpg");
 
 //	Create tabbed pane
 		portal_pane = new JTabbedPane();
@@ -1593,7 +1593,7 @@ public class PortalFrame
 	{
 	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "Portal Configuration Files", "cfg");
+	        "JPTerm Configuration Files", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
@@ -1626,7 +1626,7 @@ public class PortalFrame
 	{
 		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "Portal Configuration Files", "cfg");
+	        "JPTerm Configuration Files", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
