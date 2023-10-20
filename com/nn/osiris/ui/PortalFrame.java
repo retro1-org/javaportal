@@ -615,7 +615,7 @@ public class PortalFrame
 
 		if	(!PortalConsts.is_macintosh)
 		{
-			jMenuHelp.add (item = new JMenuItem("About Portal..."));
+			jMenuHelp.add (item = new JMenuItem("About JPTerm..."));
 			item.addActionListener(this);
 		}
 		jMenuBar1.add(jMenuHelp);
@@ -1024,8 +1024,8 @@ public class PortalFrame
 	public void aboutBox()
 	{
 	JOptionPane.showMessageDialog(this,
-		"Portal Version "+PortalConsts.short_version+", Copyright 2010 Pearson Education",
-		"About Portal",
+		"JPTerm Version "+PortalConsts.short_version+", Copyright 2010 Pearson Education",
+		"About JPTerm",
 		JOptionPane.PLAIN_MESSAGE);
 	}
 
@@ -1351,7 +1351,7 @@ public class PortalFrame
 
 		if	(PortalConsts.is_debugging)
 	    	System.out.println ("actionPerformed: "+cmd);
-		if	(cmd.equals("About Portal..."))
+		if	(cmd.equals("About JPTerm..."))
 			aboutBox();
 		if	(cmd.equals("About Multimedia..."))
 		{
