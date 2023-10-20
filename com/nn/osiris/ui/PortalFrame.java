@@ -219,6 +219,62 @@ public class PortalFrame
 				user_config_fn = user_prop;
 		}
 
+	// set user_config_fn from a dialog of available configs
+		
+		File directoryPath = new File(JPortal.current_dir);
+
+		FilenameFilter textFilefilter = new FilenameFilter(){
+	         public boolean accept(File dir, String name) {
+	            String lowercaseName = name.toLowerCase();
+	            if (lowercaseName.endsWith(".cfg")) {
+	               return true;
+	            } else {
+	               return false;
+	            }
+	         }
+	      };
+		
+	      String filesList[] = directoryPath.list(textFilefilter);
+	      
+	      for(String fileName : filesList) {
+	          System.out.println(fileName);
+	       }	      
+	      
+	      if (filesList != null && filesList.length == 1 )
+	      {
+	    	  user_config_fn = filesList[0];
+	      }
+	      else if (filesList != null && filesList.length > 1 )
+	      {
+	    	  // File list dialog  TODO
+	      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+	    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	    	        "Portal Configuration Files", "cfg");
+	    	    fc.setFileFilter(filter);
+
+	    		if	(mgi != null)
+	    		{
+	    			fc.setFileFilter(new javax.swing.filechooser.FileFilter()
+	    			{
+	    				public boolean accept(File fref)
+	    				{
+	    					return mgi.isConfigFile(fref);
+	    				}
+
+	    				public String getDescription()
+	    				{
+	    					return "Portal File Filter";
+	    				}
+	    			});
+	    		}
+
+	    		if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this))
+	    		{
+	    			user_config_fn = fc.getSelectedFile().getAbsolutePath();
+	    		}
+
+	      }
+	      
 	// user-specific config file
 	File	uref = new File(user_config_fn);
 	// global config file

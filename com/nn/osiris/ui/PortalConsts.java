@@ -33,12 +33,12 @@ class PortalConsts
 	static public boolean	is_threaded = false;		// for Z80  -- currently ignored
 	static public boolean	is_macintosh = false;
 	static public boolean	is_windows = false;
-	static public boolean	is_debugging = true;
+	static public boolean	is_debugging = false;
 	static public boolean	is_applet = false;
 	static public boolean	is_quicktime = false;
 	// Default tcp host & port to connect to:
 	static final String	default_host = "nohost.nn.com";
-	static final int default_port = 6005;
+	static final int default_port = 8005;
 	
 	
 	// The rest of this file is for executing Z80 code - MTUTOR
