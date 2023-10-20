@@ -35,7 +35,7 @@ public class LevelOnePanel
 	/** The frame that holds this panel. */
 	private Frame parent_frame;
 	/** The level one parser. */
-	private LevelOneParser level_one_parser;
+	public LevelOneParser level_one_parser;
 	/** List of registered network listeners. */
 	private Vector<ONetworkListener> network_listeners = new Vector<ONetworkListener>();
 	/** The level one network to use for connecting to novaNET. */
@@ -371,6 +371,16 @@ public class LevelOnePanel
 		closeConnectDialog();
 		// erase backing store on disconnect
 		level_one_parser.clearScreen();
+		/*
+		if (level_one_parser.cpu != null)
+		{
+			LevelOneParser p = level_one_parser;
+			if (p.cpu.z80IO.m_MTDisk[0] != null)
+				p.cpu.z80IO.m_MTDisk[0].Close();
+			if (p.cpu.z80IO.m_MTDisk[1] != null)
+				p.cpu.z80IO.m_MTDisk[1].Close();
+		}
+		*/
 		// Take the network away from protocol interpreter.
 		level_one_parser.setNetwork(null);
 		level_one_parser.setResourceServer(null, null);

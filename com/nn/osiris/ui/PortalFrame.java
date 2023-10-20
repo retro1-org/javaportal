@@ -1211,6 +1211,15 @@ public class PortalFrame
 	{
 		if	(null != currentPanel())
 		{
+			if (currentPanel().level_one_parser.cpu != null)
+			{
+				LevelOneParser p = currentPanel().level_one_parser;
+				if (p.cpu.z80IO.m_MTDisk[0] != null)
+					p.cpu.z80IO.m_MTDisk[0].Close();
+				if (p.cpu.z80IO.m_MTDisk[1] != null)
+					p.cpu.z80IO.m_MTDisk[1].Close();
+			}
+
 			currentPanel().endSession();
 			removePanel(currentPanel());
 			ended_session = true;
