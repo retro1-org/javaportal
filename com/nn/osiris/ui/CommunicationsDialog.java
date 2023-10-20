@@ -252,20 +252,6 @@ public class CommunicationsDialog
 						}
 					});
 	
-
-					mtdisk0_field.addKeyListener(
-					new KeyAdapter()
-					{
-						// Length must be > 0 to be valid.
-						public void keyReleased(KeyEvent event)
-						{
-							is_mtdisk0_valid = false;
-							if (0 < mtdisk0_field.getText().trim().length())
-								is_mtdisk0_valid = true;
-							resetButtonsEnabling();
-						}
-					});
-					
 					mtdisk1_field.addFocusListener(
 							new FocusAdapter()
 							{
@@ -284,19 +270,6 @@ public class CommunicationsDialog
 									host_field.grabFocus();
 								}
 							});
-			
-					mtdisk1_field.addKeyListener(
-					new KeyAdapter()
-					{
-						// Length must be > 0 to be valid.
-						public void keyReleased(KeyEvent event)
-						{
-							is_mtdisk1_valid = false;
-							if (0 < mtdisk1_field.getText().trim().length())
-								is_mtdisk1_valid = true;
-							resetButtonsEnabling();
-						}
-					});
 
 					mtboot_field.addKeyListener(
 					new KeyAdapter()
