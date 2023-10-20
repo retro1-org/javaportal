@@ -236,45 +236,24 @@ public class PortalFrame
 		
 	      String filesList[] = directoryPath.list(textFilefilter);
 	      
-	      for(String fileName : filesList) {
-	          System.out.println(fileName);
-	       }	      
-	      
 	      if (filesList != null && filesList.length == 1 )
 	      {
 	    	  user_config_fn = filesList[0];
 	      }
 	      else if (filesList != null && filesList.length > 1 )
 	      {
-	    	  // File list dialog  TODO
+	    	// File list dialog
 	      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	    	        "Portal Configuration Files", "cfg");
-	    	    fc.setFileFilter(filter);
-
-	    		if	(mgi != null)
-	    		{
-	    			fc.setFileFilter(new javax.swing.filechooser.FileFilter()
-	    			{
-	    				public boolean accept(File fref)
-	    				{
-	    					return mgi.isConfigFile(fref);
-	    				}
-
-	    				public String getDescription()
-	    				{
-	    					return "Portal File Filter";
-	    				}
-	    			});
-	    		}
-
-	    		if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this))
-	    		{
-	    			user_config_fn = fc.getSelectedFile().getAbsolutePath();
-	    		}
-
-	      }
-	      
+	    	fc.setFileFilter(filter);
+	    	fc.setDialogTitle("Choose a configuration file to connect...");
+	    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
+	    	if	(isOk)
+	    		user_config_fn = fc.getSelectedFile().getAbsolutePath();
+	    	else
+	    		System.exit(0);
+	      }   
 	// user-specific config file
 	File	uref = new File(user_config_fn);
 	// global config file
