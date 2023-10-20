@@ -358,7 +358,7 @@ public class PortalFrame
 						JOptionPane.showMessageDialog(PortalFrame.this,
 							"<html>"+
 							"You are no longer connected, <br>"+
-							"you must choose the Open Connection option <br>"+
+							"you must choose the ReOpen Connection option <br>"+
 							"in the File menu to continue working.</html>",
 							"Connection Lost",
 							JOptionPane.ERROR_MESSAGE);
@@ -523,7 +523,7 @@ public class PortalFrame
 		jMenuFile = new javax.swing.JMenu("File");
 		if	(!PortalConsts.is_macintosh)
 			jMenuFile.setMnemonic('F');
-		jMenuFile.add (item = new JMenuItem("Open Connection"));
+		jMenuFile.add (item = new JMenuItem("ReOpen Connection"));
 		item.addActionListener(this);
 		jMenuFile.add (item = new JMenuItem("Close Connection"));
 		item.addActionListener(this);
@@ -534,6 +534,14 @@ public class PortalFrame
 		jMenuFile.add (item = new JMenuItem("Page Setup..."));
 		item.addActionListener(this);
 */
+
+		jMenuFile.add (item = new JMenuItem("Load Configuration..."));
+		item.addActionListener(this);
+		jMenuFile.add (item = new JMenuItem("Save Configuration As..."));
+		item.addActionListener(this);
+		
+		
+		jMenuFile.addSeparator();
 		jMenuFile.add (item = new JMenuItem("Print Screen..."));
 		item.addActionListener(this);
 
@@ -581,12 +589,14 @@ public class PortalFrame
 			jMenuSettings.add (item = new JMenuItem("Options..."));
 			item.addActionListener(this);
 		}
+		
+		/*
 		jMenuSettings.addSeparator();
 		jMenuSettings.add (item = new JMenuItem("Load Configuration..."));
 		item.addActionListener(this);
 		jMenuSettings.add (item = new JMenuItem("Save Configuration As..."));
 		item.addActionListener(this);
-		
+		*/
 		
 		jMenuSettings.addSeparator();
 		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0..."));
@@ -1406,7 +1416,7 @@ public class PortalFrame
 			doPrint();
 		}
 
-		if	(e.getActionCommand().equals("Open Connection"))
+		if	(e.getActionCommand().equals("ReOpen Connection"))
 			doOpenConnection(last_session);
 
 		if	(e.getActionCommand().equals("Close Connection"))
