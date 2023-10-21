@@ -15,37 +15,45 @@ import java.awt.Color;
 import com.codingrodent.microprocessor.Z80.*;
 import com.codingrodent.microprocessor.Z80.CPUConstants.*;
 
+/**
+ * 
+ * Contains the Z80 object, the memory object, and the IO object,
+ * Provides Terminal Resident emulation and mtutor interp. patching function.
+ * Also "clocks" the Z80 through each instruction and intercepts calls to the
+ * Resident.  Provides part of the time slicing function and control of Z80.
+ * 
+ */
 public class PZ80Cpu {
-    /* z80 cpu */
+    /** z80 cpu */
 	public Z80Core z80;
-	/* ram for z80 */
+	/** ram for z80 */
     public PZMemory z80Memory;
-    /* IO for the z80 */
+    /** IO for the z80 */
     public PZIO z80IO;
-    /* LevelOneParser that owns us */
+    /** LevelOneParser that owns us */
     public LevelOneParser parser;
-    /* mtutor level of the interpreter */
+    /** mtutor level of the interpreter */
     public int m_mtPLevel;
-    /* flag indicating z80 should stop */ 
+    /** flag indicating z80 should stop */ 
     public boolean stopme;
-    /* is mtutor running flag */
+    /** is mtutor running flag */
     public boolean mtutor_waiting = false;
     
     private long xmits = 0;
     
-    /* internal stop processing flag for z80 - */
+    /** internal stop processing flag for z80 - */
     private boolean giveupz80;
-    /* internal counter */
+    /** internal counter */
     private int m_mtincnt = 0;
     
     private int r_execs = 0;
     
     //private boolean timer_off = false;
     
-    // circular buffer for accumulating keys */
+    /** circular buffer for accumulating keys */
     public CircularBuffer keyBuffer;
     
-    /* translates portal (non flow control) keys to mtutor keys */
+    /** translates portal (non flow control) keys to mtutor keys */
     private static final long[] portalToMTutor = new long[]		
     {
     		60,   18,   24,   27,   17,   49,   52,   18,		// 0..7     ACCESS, ??, BACK, COPY, SUB, SUB1, ??, ANS,
@@ -71,7 +79,7 @@ public class PZ80Cpu {
 
     }
 
-    /* Initializes the object */
+    /** Initializes the object */
     public Z80Core Init(LevelOneParser x)
     {
     	parser = x;
@@ -89,15 +97,26 @@ public class PZ80Cpu {
     	return z80;
     }
     
-    /* main z80 instruction loop */
+    /**
+     * 
+     *  main z80 instruction loop with test for call to Resident
+     * 
+     * Also saves and restores parser state vars we mess with on
+     * entry and exit
+     * 
+     *  */
     public void runZ80() { //
-        // Ok, run the program
+        // Ok, run the program for a while
     	
+    	/*
+    	 * We save and restore parser vars we mess with at the beginning
+    	 * and end of each time slice
+    	 */
         saveParserState();
         
         if(mtutor_waiting)
         {
-        	// restore local state except for first time through loop
+        	/** restore local (mtutor) state except for first time through loop */
         	restoreLocalState();
         }
         else {
@@ -107,15 +126,13 @@ public class PZ80Cpu {
         mtutor_waiting = true;	// mark mtutor/z80 running
         
         int pc;					// Program counter
-        long tstates = z80.getTStates();
-        
         long loops = 0;
         
         pc = z80.getProgramCounter();
         z80.resetTStates();
         //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 New time slice...Starting PC= "+String.format("%x", pc));
 
-        boolean test;  // = z80.getHalt();
+        boolean test;
         stopme = false;
         
 	        while (true) {
@@ -129,14 +146,16 @@ public class PZ80Cpu {
 	        	}
 	            try {
 	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
-	                pc =  z80.reg_PC; // z80.getProgramCounter();	// Check if PC is calling Resident
+	                pc =  z80.reg_PC; // z80.getProgramCounter();	
+	                
+	                // Check if PC is calling Resident
 	                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 + 3) && !stopme)
 	                {
 	                	// need to process resident calls here.
 	                	int result = Resident(pc);
 	                	
 	                	if (result == 1)
-	                		z80.ret();
+	                		z80.ret();	// execute a z80 return following resident work
 	                	else if (result == 0)
 	                		continue;
 	                	else if (result == 2)
@@ -149,7 +168,7 @@ public class PZ80Cpu {
 	                }
 	                if (!test && !stopme && !giveupz80 )
 	                {
-	                	z80.executeOneInstruction();
+	                	z80.executeOneInstruction();	// finally we get to execute one z80 instruction
 	                }
 	                else
 	                	
@@ -185,8 +204,6 @@ public class PZ80Cpu {
 	                	
 	                		break;
 	                
-	                //test = z80.getHalt();		// for test at top of loop 
-	                
 	                
 	            } catch (Exception e) {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
@@ -216,7 +233,7 @@ public class PZ80Cpu {
     }
     
     
-    /* 
+    /** 
      * 
      * Do checks and setup before running the z80
      * 
@@ -239,6 +256,11 @@ public class PZ80Cpu {
         
         stopme = true;
         
+        /**
+         * There are some thing in Mtutor interp. we need to patch for our
+         * emulated environment.  Do that BEFORE allowing the Z80 to run it's 
+         * time slice.
+         */
         switch (m_mtPLevel)
         {
         case 2: PatchL2 (); break;
@@ -250,7 +272,7 @@ public class PZ80Cpu {
         }
         
         z80.setResetAddress(address);
-        z80.setProgramCounter(address);
+        z80.setProgramCounter(address);	// where to start
   
         /*
 		if (PortalConsts.is_threaded && !has_been_started)
@@ -263,10 +285,10 @@ public class PZ80Cpu {
 		else
 		
 		*/
-	    runZ80();
+	    runZ80();	// Call the z80 exec loop controller
     }
     
-    /*
+    /**
      * These patches were determined by examining the disassembled mtutor interpreter.
      * 
      * Mtutor pause WAS a loop tuned to the speed of the processors in each terminal.
@@ -279,6 +301,9 @@ public class PZ80Cpu {
      * 
      */
     
+    /**
+     * Patch Level 2 mtutor
+     */
     void PatchL2 ()
     {
         // Call resident for brief pause
@@ -306,6 +331,9 @@ public class PZ80Cpu {
     	z80Memory.writeByte(0x8015, 0x5d);	// back to loop - getkey
     }
 
+    /**
+     * Patch Level 3 mtutor
+     */
     void PatchL3 ()
     {
         // Call resident for brief pause
@@ -322,6 +350,9 @@ public class PZ80Cpu {
     }
 
     
+    /**
+     * Patch Level 4 mtutor
+     */
     void PatchL4 ()
     {
         // Call resident for brief pause
@@ -344,11 +375,13 @@ public class PZ80Cpu {
     
     
     
-    /*
+    /**
      * 
      * This does wild and crazy stuff patching up Mtutor -color	display- to
      * make life easier for the resident.  Info to do this was gathered from
-     * disassembling the mtutor interpreter and long inspection. 
+     * disassembling the mtutor interpreter and long inspection.  Also
+     * stuffed some extra code in high memory  to do some pre-processing
+     * in z80 code
      * 
      */
     void PatchColor(int low_getvar)
@@ -404,8 +437,8 @@ public class PZ80Cpu {
     }
     
     
-    
-    public static int Parity(int x)		// add parity bit if needed
+    /** add parity bit if needed */
+    public static int Parity(int x)		
     {
     	
     	boolean p = CPUConstants.PARITY_TABLE[x];
@@ -416,13 +449,13 @@ public class PZ80Cpu {
     		return x + 0x80;
     }
     
- // This emulates the "ROM resident".  Return values:
+ /** This emulates the "ROM resident".  Return values:
  // 0: PC is not special (not in resident), proceed normally.
  // 1: PC is ROM function entry point, it has been emulated,
 //     do a RET now.
  // 2: PC is either the z80 emulation exit magic value, or R_INIT,
 //     or an invalid resident value.  Exit z80 emulation.
-
+*/
     private int Resident(int val)
     {
     	
@@ -459,7 +492,7 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_CHARS:
         	int cpointer = z80.getRegisterValue(RegisterNames.HL);
-        	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
+        	byte[] cbuf =  new byte[100];	// I've never seen more than one char at a time from mtutor
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
         	int charM;
@@ -494,35 +527,45 @@ public class PZ80Cpu {
                 	}
      // Char code converter
                 	parser.text_charset = 1;	// assume lower case alpha -> M1 (ASCII)
-
-                	if (charM  == 0 )			// unSHIFTed char code
+                	
+                	switch (charM)
                 	{
-                		byte cv = convert0[pv];
-                		cbuf[0] = cv;
-                		parser.text_charset =newchrset0[pv];
-                	}
-
-                	else if (charM  == 1 )		// SHIFTed char code
-                	{
-                		byte cv = convert1[pv];
-                		cbuf[0] = cv;
-                		parser.text_charset =newchrset1[pv];
-                	}
-                	else if (charM  == 2 )	// font char code
-                	{
-                		byte cv = convert0[pv];
-                		cbuf[0] = cv;
-                		parser.text_charset =(byte) (newchrset0[pv]+ 2);
-                	}
-                	else if (charM  == 3 )	// SHIFTed font char code
-                	{
-                		byte cv = convert1[pv];
-                		cbuf[0] = cv;
-                		parser.text_charset = (byte)(newchrset1[pv] +2);
+                	case 0: 		// unSHIFTed char code
+	                	{
+	                		byte cv = convert0[pv];
+	                		cbuf[0] = cv;
+	                		parser.text_charset =newchrset0[pv];
+	                	}
+                		break;
+                		
+                	case 1:			// SHIFTed char code
+	                	{
+	                		byte cv = convert1[pv];
+	                		cbuf[0] = cv;
+	                		parser.text_charset =newchrset1[pv];
+	                		
+	                	}
+	                	break;
+	                	
+                	case 2:			// font char code
+	                	{
+	                		byte cv = convert0[pv];
+	                		cbuf[0] = cv;
+	                		parser.text_charset =(byte) (newchrset0[pv] + 2);
+	                	}
+                		break;
+                		
+                	case 3:			// SHIFTed font char code
+	                	{
+	                		byte cv = convert1[pv];
+	                		cbuf[0] = cv;
+	                		parser.text_charset = (byte)(newchrset1[pv] + 2);
+	                	}
+                		break;
+	                	
                 	}
      // end char converter
                 	parser.AlphaDataM(cbuf);
-                	parser.FlushText();
                 	
                 	//parser.drawString(cbuf, lth, fgcolor, bgcolor, parser.current_x, 512-parser.current_y, wrMode, 1, 0, 0);
                 
@@ -533,6 +576,8 @@ public class PZ80Cpu {
                     }
                 }
             }
+        	parser.FlushText();
+
     		return 1;
     		
     		
@@ -564,7 +609,7 @@ public class PZ80Cpu {
     			parser.screen_mode = LevelOneParser.SCERASE;
     			parser.clearScreen();
     			
-    			parser.BlockData(0,0,511,511);
+    			parser.BlockData(0,0,511,511);	// clearScreen is not quite getting the job done here
     			
             	parser.do_repaint = true;		// tell the caller to repaint screen
             	parser.screen_mode = save;

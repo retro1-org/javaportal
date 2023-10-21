@@ -301,22 +301,25 @@ public class LevelOnePanel
 			
 			if (this.session.mtdisk0 != null || this.session.mtdisk1 != null)
 			{
-				level_one_parser.cpu = new PZ80Cpu();
+				level_one_parser.cpu = new PZ80Cpu();		// We need a CPU and its friends first
 				level_one_parser.cpu.Init(level_one_parser);
 				level_one_parser.z80 = level_one_parser.cpu.z80;			// shortcut
 
 				if (this.session.mtdisk0 != null && this.session.mtdisk0.length() > 4)
 				{
+					// load Vdisk  0
 					level_one_parser.cpu.z80IO.m_MTDisk[0] = PZIO.LoadDisk(this.session.mtdisk0)  ;
 				}
 				
 				if (this.session.mtdisk1 != null && this.session.mtdisk1.length() > 4)
 				{
+					// load Vdisk  1
 					level_one_parser.cpu.z80IO.m_MTDisk[1] = PZIO.LoadDisk(this.session.mtdisk1)  ;
 				}				
 				
 				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO.m_MTDisk[0] != null)
 				{
+					// start mtutor boot process using loaded disk(s)
 					level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
 					level_one_parser.cpu.BootMtutor(null);
 				}
