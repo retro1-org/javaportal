@@ -198,5 +198,6 @@ class PortalConsts
 	
 	static final int CALL8080 = 0xcd;
 	static final int JUMP8080 = 0xc3;
+	static final int RET8080 =  0xc9;
 	
 }

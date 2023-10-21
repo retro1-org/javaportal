@@ -269,9 +269,12 @@ public class PZ80Cpu {
     
     void PatchL2 ()
     {
+        // Call resident for brief pause
     	z80Memory.writeByte(PortalConsts.Level2Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level2Pause + 1, PortalConsts.R_WAIT16);
     	
+        // remove off-line check for calling r.exec - 
+        // only safe place to give up control..
     	z80Memory.writeWord(PortalConsts.Level2Xplato,  0);
     	z80Memory.writeByte(PortalConsts.Level2Xplato + 2,  0);
     	
@@ -279,20 +282,21 @@ public class PZ80Cpu {
         // top 32K of ram was for memory mapped video on ist 2/3
         // so that's safe for us to use
     	z80Memory.writeByte(0x5d26,  0x10);
-    	z80Memory.writeByte(0x5d27,  0x80);
+    	z80Memory.writeByte(0x5d27,  0x80);		// jmp just above interp
     	
 
     	z80Memory.writeByte(0x8010, PortalConsts.CALL8080);
     	z80Memory.writeByte(0x8011, 0x2f);
-    	z80Memory.writeByte(0x8012, 0x60);
+    	z80Memory.writeByte(0x8012, 0x60);	// xplato
 
-    	z80Memory.writeByte(0x8013, 0xc3);  // jmp
+    	z80Memory.writeByte(0x8013, PortalConsts.JUMP8080);  // jmp
     	z80Memory.writeByte(0x8014, 0x22);
-    	z80Memory.writeByte(0x8015, 0x5d);
+    	z80Memory.writeByte(0x8015, 0x5d);	// back to loop - getkey
     }
 
     void PatchL3 ()
     {
+        // Call resident for brief pause
     	z80Memory.writeByte(PortalConsts.Level3Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level3Pause + 1, PortalConsts.R_WAIT16);
     	
@@ -302,12 +306,13 @@ public class PZ80Cpu {
     	z80Memory.writeWord(PortalConsts.Level3Xplato,  0);
     	
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
-    	z80Memory.writeByte(0x600d, 0xc9);  // z80 ret
+    	z80Memory.writeByte(0x600d, PortalConsts.RET8080);  // z80 ret
     }
 
     
     void PatchL4 ()
     {
+        // Call resident for brief pause
     	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
     	
@@ -320,7 +325,7 @@ public class PZ80Cpu {
     	z80Memory.writeWord(PortalConsts.Level4Xplato,  0);
     	
         //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
-    	z80Memory.writeByte(0x5f5c, 0xc9);  // z80 ret
+    	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
 
         PatchColor (0xe5);
     }
