@@ -3073,7 +3073,7 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		transmit_buffer[1] = (byte) ((value & 0x3f) | 0x40);
 		transmit_buffer[2] = (byte) (((value & 0x3c0) >> 6) | 0x60);
 
-		if ( (value & 0x0100)==0x0100 &&  is_flow_control_on && key2mtutor())		// mtutor touch key
+		if ( (value & 0x0100)==0x0100 && key2mtutor())		// mtutor touch key
 		{
  			cpu.keyBuffer.Enqueue(transmit_buffer, 0, 3);
 		} 
