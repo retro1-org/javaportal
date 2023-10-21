@@ -4,6 +4,14 @@ import com.codingrodent.microprocessor.IBaseDevice;
 
 // Z80 IO handler
 
+
+/**
+ * 
+ * This class emulates the DISK resident for CDC-110 disk drives.
+ * It handles all Z80 IN and OUT instructions.  Additionally it provides access
+ * to a 1 seconds mtutor clock.
+ * 
+ */
 public class PZIO implements IBaseDevice {
     //private int value;
     private int m_mtdrivefunc = 0;
@@ -26,46 +34,23 @@ public class PZIO implements IBaseDevice {
     
     //private long readcnt = 0;
     
+    /**
+     * Represents the two possible cdc-110 disk drives
+     */
     public MTDisk[] m_MTDisk = new MTDisk[2];
 //    private boolean m_floppy0;
 //    private boolean m_floppy1;
     
     public void Init(PZ80Cpu cpu)
     {
+    	// initialize the clock
     	init_milli = java.lang.System.currentTimeMillis();
-    	//m_cpu = cpu;
-    	//m_mem = cpu.z80Memory;
-    	
-/*
-    	if (this.m_MTDisk[0] == null)
-    	{
-	    	String fn = PortalConsts.InitDisk0;  //  kludge TODO
-	    	
-			boolean fexists = MTDisk.Exists(fn);
-			if (!fexists)
-				return;
-			
-			MTDisk myFile = new MTDisk(fn);
-			
-			this.m_MTDisk[0] = myFile;
-    	}
- */
-    	
-		/*
-    	fn = PortalConsts.InitDisk1;  //  kludge TODO
-    	
-		if (!fexists)
-			return;
-		
-		myFile = new MTDisk(fn);
-		
-		this.m_MTDisk[1] = myFile;
-*/
-    
-    
     }
     
-    
+    /**
+     * Check for existence of a virtual disk image and return an MTDisk object
+     * iff the file exists.
+     */
     public static MTDisk LoadDisk(String fn)
     {
 		boolean fexists = MTDisk.Exists(fn);
@@ -78,24 +63,25 @@ public class PZIO implements IBaseDevice {
     }
     
     /**
-     * Just return the latest value output
+     * Handle IN instructions
      */
     @Override
     public int IORead(int address) {
-    	int retval = 0;
+    	int retval = 0;		// default return value
     	int port = address >> 8 & 0xff;
 //    	if (port == 0)
-    		port = address & 0xff;
-    	int data = port;
+   		port = address & 0xff;
+    	int data = port;  // just for convenience using copied code below
 
         switch (data)
         {
 
-        //***********************************************************************
-        //*   If the value of the z80's memory, RAM[PC], is equal to 1 or 2,
-        //* then first or second player input is requested.
-        //***********************************************************************
-            case 1:
+        /***********************************************************************
+        *   If the value of the z80's memory, RAM[PC], is equal to 1 or 2,
+        * then first or second player input is requested.
+        ***********************************************************************
+        */
+        	case 1:
             case 2:
                 retval = 0;
                 break;
@@ -114,7 +100,7 @@ public class PZIO implements IBaseDevice {
                 retval = 0x01;
                 break;
 
-            case 0xae:          // cdc disk data port
+            case 0xae:          // cdc disk DATA port
                 retval = 0;     // default
                 switch (m_mtdrivefunc)
                 {
@@ -122,15 +108,14 @@ public class PZIO implements IBaseDevice {
                     // read next byte of data from disk
                     if ( m_MTDisk[m_mtDiskUnit&1] == null)
                     {
-                    	//readcnt = 0;
+                    	// No disk loaded - return 0
                     	break;
                     }
                     else
                     {
-                    	//readcnt++;
+                    	// read a byte from disk and return it
                     	retval = m_MTDisk[m_mtDiskUnit&1].ReadByte();
                     }
-                   // System.out.println(readcnt + ", " + retval);
                     break;
                 case 2: // write data to disk - noop
                     break;
@@ -144,7 +129,7 @@ public class PZIO implements IBaseDevice {
                     break;
                     
                 case 4:
-                    retval = m_mtsingledata;  // d.rcid
+                    retval = m_mtsingledata;  // d.rcid - Disk system status?
                     break;
                 case 8:     // d.clear
                     break;
@@ -155,7 +140,7 @@ public class PZIO implements IBaseDevice {
  
                 // printf("CDC drive DATA responding to: %02x  with:  %02x\n", m_mtdrivefunc, retval);
                 
-            case 0xaf:          // cdc disk control port
+            case 0xaf:          // cdc disk CONTROL port
                 retval = m_mtcanresp;
                 // printf("CDC drive control responding to: %02x  with:  %02x\n", m_mtdrivefunc, retval);
                 switch (m_mtdrivefunc)
@@ -173,11 +158,11 @@ public class PZIO implements IBaseDevice {
 
                 break;
             
-        ///***********************************************************************
-        //*   If the value of the z80's memory, RAM[PC], is not equal to any of
-        //* the above cases, then the program requested bad input data. Debug
-        //* information containing the value of the data is printed to STDOUT.
-        //***********************************************************************
+        /***********************************************************************
+        *   If the value of the z80's memory, RAM[PC], is not equal to any of
+        * the above cases, then the program requested bad input data. Debug
+        * information containing the value of the data is printed to STDOUT.
+        ***********************************************************************/
             default:
             	System.out.println("INp BAD -> Data = " + data);
 
@@ -189,7 +174,9 @@ public class PZIO implements IBaseDevice {
     }
 
 
-    
+    /*
+     * Handler for OUT instructions
+     */
     @Override
     public void IOWrite(int address, int acc) {
 
@@ -198,7 +185,7 @@ public class PZIO implements IBaseDevice {
     	
     	int port = address;  //   >> 8 & 0xff;
     	//if (port == 0)
-    		port = address & 0xff;
+   		port = address & 0xff;
 
     	   switch (port)
     	   {
@@ -207,7 +194,7 @@ public class PZIO implements IBaseDevice {
     	   *   If the value of the z80's memory, RAM[PC], is equal to 2, the
     	   * content of the A register is moved into the left shift amount.
     	   ***********************************************************************/
-    	       case 2:
+    	       case 2:		// TODO ??
     	       // below used by mtutor 
     	       case 0x2b:
     	           break;
@@ -216,13 +203,11 @@ public class PZIO implements IBaseDevice {
 
     	           break;
 
-    	       case 0xae:      // CDC drive data port
+    	       case 0xae:      // CDC drive DATA port
     	           switch (m_mtdrivefunc)
     	           {
     	           case 0: // read disk
     	           case 2: // write data to disk - and recieve setup data
-    	               // if (m_mtdrivefunc == 10)
-    	               //    printf("CDC drive DATA WRITE");
     	               switch (m_mtDataPhase++)
     	               {
     	                   case 1:
@@ -246,6 +231,7 @@ public class PZIO implements IBaseDevice {
     	                   case 7: // 128 bytes/sector plus two check bytes
     	                       //m_mtDiskCheck2 = acc;
 
+    	                	   // Do a seek on the disk
     	                       m_mtSeekPos = (128 * 64 * m_mtDiskTrack) + (128 * (m_mtDiskSector-1));
     	                       if (m_mtSeekPos < 0)
     	                           break;
@@ -261,7 +247,7 @@ public class PZIO implements IBaseDevice {
     	                   default:   // write data
     	                       if ( m_MTDisk[m_mtDiskUnit&1] == null)
     	                    	   break;
-    	                       m_MTDisk[m_mtDiskUnit&1].WriteByte(acc);
+    	                       m_MTDisk[m_mtDiskUnit&1].WriteByte(acc);	// write a byte to disk
     	                       m_mtcanresp = 0x50;
     	                       break;
     	               }
@@ -306,7 +292,7 @@ public class PZIO implements IBaseDevice {
     	           // printf("CDC drive DATA recieving for: %02x  data:  %02x\n", m_mtdrivefunc, acc);
     	           break;
 
-    	       case 0xaf:      // CDC drive control port
+    	       case 0xaf:      // CDC drive CONTROL port
     	           if (ok)     // accept function
     	           {
     	               m_mtdrivefunc = m_mtdrivetemp;
@@ -326,7 +312,7 @@ public class PZIO implements IBaseDevice {
     	               case 4:
     	                   m_mtcanresp = 0x4a;
     	                   m_mtsingledata = 0x02;
-    	                   if (this.m_MTDisk[1] != null)
+    	                   if (this.m_MTDisk[1] != null)	// iff Vdisk 1 loaded set an extra disk status bit
     	                   {
     	                       m_mtsingledata |= 0x80;
     	                   }

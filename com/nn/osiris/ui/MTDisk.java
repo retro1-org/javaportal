@@ -5,6 +5,12 @@ import java.nio.channels.FileChannel;
 
 import javax.swing.JOptionPane;  
 
+
+/*
+ * 
+ * Emulates the function of a disk using a virtual image
+ * 
+ */
 public class MTDisk {
 	private int _chkSum;
 	private long position;
@@ -17,7 +23,9 @@ public class MTDisk {
 	private FileChannel channel;
 	
 	
-	
+	/*
+	 * Construct Object and open a virtual disk file
+	 */
 	public MTDisk(String fn)
 	{
 		rwflag = "  ";
@@ -32,7 +40,7 @@ public class MTDisk {
 			file = new File(filename);
 			raf = new RandomAccessFile(file, "rw");
 			channel = raf.getChannel();
-			channel.lock();
+			channel.lock();	// lock the disk for exclusive access
 			
 			return;
 		}
@@ -50,14 +58,15 @@ public class MTDisk {
 		}  
 		file = null;
 	}
-	
+
+	/*
+	 * Check for existence of a file
+	 */
 	public static boolean Exists(String fn)
 	{
 		try
 		{
 			File filex = new File(fn);
-//			FileInputStream br=new FileInputStream(filex); 
-//			br.close();
 			return filex.exists();
 		}
 		catch(Exception e)  
@@ -67,6 +76,9 @@ public class MTDisk {
 
 	}
 	
+	/*
+	 * Close a disk image file 
+	 */
 	public void Close()
 	{
 		try {
@@ -76,7 +88,11 @@ public class MTDisk {
 			e.printStackTrace();
 		}
 	}
+
 	
+	/*
+	 * Read the mtutor interp. into ram from disk
+	 */
 	public boolean ReadSectorsForBoot(int addr, long offset, int scount, PZ80Cpu cpu) 
 	{
 		int mybyte = -1;
@@ -105,11 +121,15 @@ public class MTDisk {
 		return true;
 	}
 	
+	
+	/*
+	 * Read a single byte from disk
+	 */
 	public int ReadByte()
 	{
 		int myByte;
 		
-		// return checksum
+		// return calculated checksum (not actually on Vdisk) 
         if (rcnt == 129)                              
         {                                           
             rcnt++;                                 
@@ -126,7 +146,7 @@ public class MTDisk {
 			myByte  = raf.read();
 	        position++;
 	        rcnt++;
-	        CalcCheck (myByte);
+	        CalcCheck (myByte);	// accumulate check word
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -137,8 +157,12 @@ public class MTDisk {
 		return myByte;
 	}
 
+	/*
+	 * write a songle byte to disk
+	 */
 	public void WriteByte(int w)
 	{
+		// Check bytes not written to disk
 	    if (wcnt > 129)
 	    {
 	        WriteReset ();
@@ -165,7 +189,9 @@ public class MTDisk {
 
 	}
 
-	
+	/*
+	 * Read byte at an address on disk - used for patching mtutor
+	 */
 	public int ReadByte(long offset)
 	{
 		int mybyte = -1;
@@ -206,7 +232,9 @@ public class MTDisk {
 		} 
 	}
 		
-	
+	/*
+	 * Calc the check bytes as we read - my this is fun!!
+	 */
 	void CalcCheck (int b)
 	{
 	    int cupper = ((_chkSum >> 8) & 0xff);
@@ -226,6 +254,9 @@ public class MTDisk {
 	    _chkSum = (((cupper << 8) & 0xff00) | (clower & 0xff));
 	}
 
+	/*
+	 * Format a Vdisk image
+	 */
 	public void Format()
 	{
 		rwflag = "W ";	
