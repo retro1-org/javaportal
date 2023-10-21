@@ -266,6 +266,18 @@ public class PZ80Cpu {
 	    runZ80();
     }
     
+    /*
+     * These patches were determined by examining the disassembled mtutor interpreter.
+     * 
+     * Mtutor pause WAS a loop tuned to the speed of the processors in each terminal.
+     * That has been replaced with a new resident call that uses native waiting tech.
+     * >> LevelNPause
+     * 
+     * Calls the the resident r.exec entry point are skipped altogether >> NOOPs.
+     * 
+     * Calls to the  SCREEN PRINT function are aborted.
+     * 
+     */
     
     void PatchL2 ()
     {
@@ -335,7 +347,8 @@ public class PZ80Cpu {
     /*
      * 
      * This does wild and crazy stuff patching up Mtutor -color	display- to
-     * make life easier for the resident
+     * make life easier for the resident.  Info to do this was gathered from
+     * disassembling the mtutor interpreter and long inspection. 
      * 
      */
     void PatchColor(int low_getvar)
@@ -941,17 +954,27 @@ public class PZ80Cpu {
     	
     }
  
+    /*
+     * 
+     * Get color from 48 bit mtutor floating point var in ram starting at *loc*
+     * 
+     */
     Color GetColor (int loc)
     {
-        int exp = z80Memory.readByte(loc + 1);
-
-        int cb = z80Memory.readByte(loc + 2) << 16;
+    	// grab a floating point color value
+        int exp = z80Memory.readByte(loc + 1);	// exponent
+        // 24 bit mantissa
+        long cb = z80Memory.readByte(loc + 2) << 16;
         cb |= z80Memory.readByte(loc + 3) << 8;
         cb |= z80Memory.readByte(loc + 4);
 
-        cb = cb >> (0x18 - exp);
+        cb = cb >> (0x18 - exp);	// adjust to be sure color bits in lower 24 bits
+        // get component 8 bit values  r,g,b
+        int red = (int)(cb>>16) & 0xff;
+        int green = (int)(cb >> 8) & 0xff;
+        int blue = (int)(cb) & 0xff;
 
-        return new Color((cb>>16) & 0xff, (cb >> 8) & 0xff, (cb) & 0xff);
+        return new Color(red, green, blue);
     }
 
     
