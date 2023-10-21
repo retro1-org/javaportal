@@ -590,19 +590,19 @@ public class PortalFrame
 			item.addActionListener(this);
 		}
 		
-		/*
-		jMenuSettings.addSeparator();
-		jMenuSettings.add (item = new JMenuItem("Load Configuration..."));
-		item.addActionListener(this);
-		jMenuSettings.add (item = new JMenuItem("Save Configuration As..."));
-		item.addActionListener(this);
-		*/
-		
 		jMenuSettings.addSeparator();
 		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 0..."));
 		item.addActionListener(this);
 		jMenuSettings.add (item = new JMenuItem("Load M-Tutor Virtual Disk 1..."));
 		item.addActionListener(this);
+		jMenuSettings.addSeparator();
+
+		jMenuSettings.add (item = new JMenuItem("Eject M-Tutor Virtual Disk 0"));
+		item.addActionListener(this);
+		jMenuSettings.add (item = new JMenuItem("Eject M-Tutor Virtual Disk 1"));
+		item.addActionListener(this);
+		
+		jMenuSettings.addSeparator();
 		jMenuSettings.add (item = new JMenuItem("Boot M-Tutor Virtual Disk 0"));
 		item.addActionListener(this);
 
@@ -1472,6 +1472,16 @@ public class PortalFrame
 			doLoadVDisk1();
 		}
 
+		if	(e.getActionCommand().equals("Eject M-Tutor Virtual Disk 0"))
+		{
+			doEjectVDisk(0);
+		}
+		
+		if	(e.getActionCommand().equals("Eject M-Tutor Virtual Disk 1"))
+		{
+			doEjectVDisk(1);
+		}
+		
 		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
 		{
 			this.currentPanel().getParser().center_x = (PortalConsts.default_width - 512) / 2;
@@ -1480,6 +1490,16 @@ public class PortalFrame
 
 	}
 
+	public void doEjectVDisk(int drive)
+	{
+		LevelOneParser lop = this.currentPanel().getParser();
+		if (lop != null && lop.cpu != null && lop.cpu.z80IO.m_MTDisk[drive] != null)
+		{
+			lop.cpu.z80IO.m_MTDisk[drive].Close();
+			lop.cpu.z80IO.m_MTDisk[drive] = null;
+		}
+	}
+	
 	/**
 	 * Reads an old properties configuration file
 	 */
