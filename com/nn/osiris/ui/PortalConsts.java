@@ -18,9 +18,9 @@ class PortalConsts
 	static public String	short_version = "3.4.3";
 	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
-	static public String	user_config_file = "portal.cfg";
+	static public String	user_config_file = "jpterm.cfg";
 	// global configuration file name
-	static public String	global_config_file = "portal.cfg";
+	static public String	global_config_file = "jpterm.cfg";
 	// macintosh creator code for portal
 	static public String	creator_string = "L2pP";
 	static public int		creator_code = 0x4c327050;	// L2pP
