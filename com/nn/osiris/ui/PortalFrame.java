@@ -872,7 +872,7 @@ public class PortalFrame
 
 
 //	Create lower layer
-	java.net.URL	imgURL = getClass().getResource("/com/nn/images/mylogo.jpg");
+	java.net.URL	imgURL = getClass().getResource("/com/nn/images/notes.jpg");
 	ImageIcon		offlineIcon;
 
 		if	(null != imgURL)
@@ -885,7 +885,7 @@ public class PortalFrame
 			cp.add(logo_label,BorderLayout.CENTER);
 		}
 		else if (PortalConsts.is_debugging)
-			System.out.println("could not read logo com/nn/images/mylogo.jpg");
+			System.out.println("could not read logo com/nn/images/notes.jpg");
 
 //	Create tabbed pane
 		portal_pane = new JTabbedPane();
