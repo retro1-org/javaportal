@@ -2186,64 +2186,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			b = buffer[offset + (i++)] & 0xff;
 			c = b & 0x7f;
 		
-			// the following is needed only for Cybis/Cyber1.
-			// it is based on the following code from PTerm:
-			/*
-			 * 
-int PtermHostConnection::AssembleAsciiWord (void)
-{
-    int i;
-    
-    for (;;)
-    {
-        i = dtReado (m_fet);
-        if (i == -1)
-        {
-            if (dtConnected (m_fet))
-            {
-                return C_NODATA;
-            }
-            m_connActive = false;
-            dtClose (m_fet, TRUE);
-            m_fet = NULL;
-            return C_DISCONNECT;
-        }
-        else if (m_pending == 0 && i == 0377)
-        {
-            // 0377 is used by Telnet to introduce commands (IAC).
-            // We recognize only IAC IAC for now.
-            // Note that the check has to be made before the sign
-            // bit is stripped off.
-            m_pending = 0377;
-            continue;
-        }
-
-        i &= 0177;
-        if (i == 033)
-        {
-            m_pending = 033;
-            continue;
-        }
-        if (m_pending == 033)
-        {
-            m_pending = 0;
-            return (033 << 8) + i;
-        }
-        else
-        {
-            m_pending = 0;
-            if (i == 0)
-            {
-                // NUL is for -delay-
-                i = 1 << 19;
-            }
-            return i;
-        }
-    }
-}
-			 * 
-			 */
+			if (cpu.mtutor_waiting && !cpu.in_r_exec)
+			{
+				return 1;
+			}
 			
+			// the following IF is needed only for Cybis/Cyber1.
 			if (sub_type == 16 && L1PPDataMode == data_proc)  // needed only for Cybis/Cyber1.
 			{
 				if (m_pending == 0 && b == 0xff)
@@ -7023,19 +6971,19 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		
 		cpu.stopme = true;
 		
-		if (PortalConsts.is_threaded)
-		{
-			for (int z = 0 ; z < 100000; z++)  // wait for stop
-				z++;
-			//cpu = new PZ80Cpu(cpu);
-		}
 		cpu.runWithMtutorCheck(xaddr);
-		
 	}
 
 	/**
 	 *
 	 * Mode 6 (user mode).
+	 *
+	 ***
+	 ** THIS IS AN INTERRUPT!  STATE MUST BE SAVED AND RESTORED!!
+	 ** BUT THE z80 RET INSTRUCTIONS WILL NOT RETURN HERE!!
+	 ** z80 WILL JUST CONTINUE TO RUN.  BUT IT WILL NO LONGER
+	 ** BE DOING THE RIGHT THINGS.  OR ONLY ALLOW THIS TO BE CALLED
+	 ** WHEN EMULATOR IS EXPECTING ALL REGS TO BE CLOBBERED --> R.EXEC
 	 *
 	 */
 
@@ -7044,6 +6992,27 @@ int PtermHostConnection::AssembleAsciiWord (void)
 		int val = ExtractWord(0);
 
 		//System.out.println("UserData6:   Data: 0x" + String.format("%x",val));
+
+
+		cpu.z80.SaveState();
+		
+		// Load C/D/E with data word
+		z80.setRegisterValue(RegisterNames.C, (val >> 16) & 0xff);
+		z80.setRegisterValue(RegisterNames.D, (val >> 8) & 0xff);
+		z80.setRegisterValue(RegisterNames.E, (val & 0xff));
+		
+		   //// Push the return address onto the
+		   //// stack, as if we just did a CALL instruction
+		
+		z80.push(z80.getProgramCounter());
+		int xaddr = cpu.z80Memory.readWord(PortalConsts.M6ORIGIN);
+		
+		cpu.stopme = true;
+		
+		cpu.runWithMtutorCheck(xaddr);
+
+		cpu.z80.RestoreState();
+
 	}
 
 	/**

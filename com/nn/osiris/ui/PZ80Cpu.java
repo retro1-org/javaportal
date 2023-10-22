@@ -48,6 +48,8 @@ public class PZ80Cpu {
     
     private int r_execs = 0;
     
+    public boolean in_r_exec = false;
+    
     //private boolean timer_off = false;
     
     /** circular buffer for accumulating keys */
@@ -114,7 +116,7 @@ public class PZ80Cpu {
     	 */
         saveParserState();
         
-        if(mtutor_waiting)
+        if(mtutor_waiting || in_r_exec)
         {
         	/** restore local (mtutor) state except for first time through loop */
         	restoreLocalState();
@@ -124,6 +126,7 @@ public class PZ80Cpu {
         }
         
         mtutor_waiting = true;	// mark mtutor/z80 running
+		in_r_exec = false;
         
         int pc;					// Program counter
         long loops = 0;
@@ -140,6 +143,12 @@ public class PZ80Cpu {
 
 	        	if (loops++ > parser.z80_loops || giveupz80)	// limit loops per time slice
 	        	{
+	        		if (giveupz80)
+	        		{
+	        			parser.screen_mode = LevelOneParser.SCWRITE;
+	        			in_r_exec = true;
+	        		}
+	        		
 	        		giveupz80 = false;
 	        		mtutor_waiting = true;		// tell owner we need more time slices
 	        		break;
@@ -166,7 +175,7 @@ public class PZ80Cpu {
 	                	}
 	                	
 	                }
-	                if (!test && !stopme && !giveupz80 )
+	                if (!test && !stopme)  //&& !giveupz80 )
 	                {
 	                	z80.executeOneInstruction();	// finally we get to execute one z80 instruction
 	                }
@@ -650,14 +659,14 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_EXEC:
         	parser.do_repaint = true;		// tell the caller to repaint screen
-    		
+        	
         	// r.exec is called very frequently when needed.  If we give up the processor too much -pause  time- does not work near right
         	if ((++r_execs % PortalConsts.r_exec_mod) == 0)
         	{
         		r_execs = 0;
         		giveupz80 = true;
         	}
-    		return 1;
+        	return 1;
     		
         case PortalConsts.R_GJOB:
             return 1;
