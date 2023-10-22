@@ -69,7 +69,7 @@ public class LevelOnePanel
 	 */
 	void getOfflineImage()
 	{
-	java.net.URL	imgURL = getClass().getResource("/com/nn/images/xoffline.jpg");
+	java.net.URL	imgURL = getClass().getResource("/com/nn/images/mylogo.jpg");
 
 		if	(null != imgURL)
 			offlineIcon = new ImageIcon(imgURL);
