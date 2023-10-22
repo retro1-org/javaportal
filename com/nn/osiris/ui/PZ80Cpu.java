@@ -496,6 +496,9 @@ public class PZ80Cpu {
         	int chr = z80Memory.readByte(cpointer++);
         	int lth = 0;
         	int charM;
+        	
+        	parser.text_margin =  z80Memory.readWord(PortalConsts.M_MARGIN);
+
             for (;;)
             {
             	if (chr == 0x3f && 0 == z80Memory.readByte(cpointer))
@@ -672,7 +675,7 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_OUTX:
         	parser.current_x = z80.getRegisterValue(RegisterNames.HL);
-        	parser.text_margin = parser.current_x;
+//        	parser.text_margin = parser.current_x;
         	return 1;
         	
     	case PortalConsts.R_OUTY:

@@ -1632,7 +1632,7 @@ public class PortalFrame
 	{
 	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPTerm Configuration Files", "cfg");
+	        "JPTerm Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
@@ -1665,7 +1665,7 @@ public class PortalFrame
 	{
 		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPTerm Configuration Files", "cfg");
+	        "JPTerm Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
