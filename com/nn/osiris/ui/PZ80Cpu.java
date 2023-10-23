@@ -862,6 +862,24 @@ public class PZ80Cpu {
        		   */ 		
        		    		return 1;
        	
+       	case PortalConsts.R_CHRCV: 
+            int numchars = z80.getRegisterValue(RegisterNames.HL);
+       		int fwa = z80.getRegisterValue(RegisterNames.DE);
+       		byte[] chardata = new byte[16];
+       		
+       		int slot = (fwa - PortalConsts.M2ADDR) >> 4;
+       		
+       		for (int i = 0 ; i < numchars ; i++)
+       		{
+       			for (int j = 0 ; j < 16 ; j++)
+       			{
+       				chardata[j] = (byte) (z80Memory.readByte(fwa + j + (i << 4 )) & 0xff);
+       			} 
+       			parser.LoadAddrChar( chardata , slot++);
+       		}
+       		
+    		return 1;
+       		
     	case PortalConsts.R_ALARM:
     		parser.Beep();
     		

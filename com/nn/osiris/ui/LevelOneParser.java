@@ -9475,6 +9475,22 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}         
 	}
 
+	final void LoadAddrChar (byte[] charData, int loadnum)
+	{   
+	int 	i;
+
+		if (loadnum < 0 || loadnum > 384)
+		{
+			return;
+		}
+
+		for (i=0; i<16; i++)
+		{
+			m2m3[384*i + loadnum] = charData[i];
+		}         
+	}
+
+	
 	/**
 	 *
 	 *	OkDraw()
