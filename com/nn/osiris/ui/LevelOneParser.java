@@ -9462,7 +9462,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			loadnum = ((mem_addr - 0x3800) >> 4);
 
 		if (loadnum < 0 || loadnum > 384)
-			return;
+		{
+			if ( loadnum >= -332 && loadnum < 53)
+				loadnum += 332;
+			else
+				return;
+		}
 
 		for (i=0; i<16; i++)
 		{
