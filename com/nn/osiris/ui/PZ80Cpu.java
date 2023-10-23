@@ -881,7 +881,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_ALARM:
     		parser.Beep();
     		
-    		CharTest();		// temp
+    		//CharTest();		// temp
     		
     		return 1;
     	
