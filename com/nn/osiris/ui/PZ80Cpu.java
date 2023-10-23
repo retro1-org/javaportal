@@ -561,17 +561,15 @@ public class PZ80Cpu {
 	                	
                 	case 2:			// font char code
 	                	{
-	                		byte cv = convert0[pv];
-	                		cbuf[0] = cv;
-	                		parser.text_charset =(byte) (newchrset0[pv] + 2);
+	                		cbuf[0] = (byte)(pv + 32);
+	                		parser.text_charset = 2;
 	                	}
                 		break;
                 		
                 	case 3:			// SHIFTed font char code
 	                	{
-	                		byte cv = convert1[pv];
-	                		cbuf[0] = cv;
-	                		parser.text_charset = (byte)(newchrset1[pv] + 2);
+	                		cbuf[0] = (byte)(pv + 32);
+	                		parser.text_charset = 3;
 	                	}
                 		break;
 	                	
@@ -883,7 +881,7 @@ public class PZ80Cpu {
     	case PortalConsts.R_ALARM:
     		parser.Beep();
     		
- //   		CharTest();		// temp
+    		CharTest();		// temp
     		
     		return 1;
     	
@@ -1088,26 +1086,26 @@ public class PZ80Cpu {
     	val |= 1;
     	z80Memory.writeByte(PortalConsts.M_KSW, val);
     }
-/*    
+    
     private void CharTest()
     {
     	parser.current_x = 0;
     	parser.current_y = 496;
-    	CharTestx((byte)0,0);
+    	CharTestx((byte)2,0);
 
     	parser.current_x = 0;
     	parser.current_y = 496-16;
-    	CharTestx((byte)0,64);
+    	CharTestx((byte)2,64);
 
     	parser.current_x = 0;
     	parser.current_y = 496-32;
-    	CharTestx((byte)1, 0);
+    	CharTestx((byte)3, 0);
 
     	parser.current_x = 0;
     	parser.current_y = 496-48;
-    	CharTestx((byte)1, 64);
+    	CharTestx((byte)3, 64);
     }
-*/    
+
     private void CharTestx(byte set, int start )
     {
     	byte[] cbuf =  new byte[5];	// never seen more than one char at a time from mtutor
