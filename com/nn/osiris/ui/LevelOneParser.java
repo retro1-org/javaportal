@@ -3116,7 +3116,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			}
 		}
 	}
-
+	
 	/**
 	 * Selects PLATO mode operation.
 	 */
@@ -9474,8 +9474,16 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			m2m3[384*i + loadnum] = charData[i];
 		}         
 	}
+	
+	final void BuildMChar( int[] b)
+	{
+		for (int i = 0 ; i < 8 ; i++)
+			build_char[i] = b[i];
+		
+		CharFlip();	
+	}
 
-	final void LoadAddrChar (byte[] charData, int loadnum)
+	final void LoadAddrCharFlip (int loadnum)
 	{   
 	int 	i;
 
@@ -9486,7 +9494,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		for (i=0; i<16; i++)
 		{
-			m2m3[384*i + loadnum] = charData[i];
+			m2m3[384*i + loadnum] = char_bitmap[i];
 		}         
 	}
 

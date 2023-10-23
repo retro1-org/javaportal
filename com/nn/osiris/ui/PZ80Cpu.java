@@ -863,17 +863,19 @@ public class PZ80Cpu {
        	case PortalConsts.R_CHRCV: 
             int numchars = z80.getRegisterValue(RegisterNames.HL);
        		int fwa = z80.getRegisterValue(RegisterNames.DE);
-       		byte[] chardata = new byte[16];
+       		int[] chardata = new int[8];
        		
        		int slot = (fwa - PortalConsts.M2ADDR) >> 4;
        		
        		for (int i = 0 ; i < numchars ; i++)
        		{
-       			for (int j = 0 ; j < 16 ; j++)
+       			for (int j = 0 ; j < 8 ; j++)
        			{
-       				chardata[j] = (byte) (z80Memory.readByte(fwa + j + (i << 4 )) & 0xff);
+       				chardata[j] = (z80Memory.readWord(fwa + j*2 + (i << 4 )) & 0xffff);
        			} 
-       			parser.LoadAddrChar( chardata , slot++);
+     			
+       			parser.BuildMChar(chardata);
+       			parser.LoadAddrCharFlip(slot++);
        		}
        		
     		return 1;
