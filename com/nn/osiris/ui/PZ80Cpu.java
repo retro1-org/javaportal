@@ -145,7 +145,7 @@ public class PZ80Cpu {
 	        	{
 	        		if (giveupz80)
 	        		{
-	        			parser.screen_mode = LevelOneParser.SCWRITE;
+	        			// parser.screen_mode = LevelOneParser.SCWRITE;
 	        			in_r_exec = true;
 	        		}
 	        		

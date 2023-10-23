@@ -6681,9 +6681,22 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			}
 			// System.out.println("Char load at: 0x" + String.format("%x",mem_addr) );
 		}
-		else if (mem_addr == 0x2306 || mem_addr == 0x2308)
+		else if (mem_addr == PortalConsts.M6ORIGIN || mem_addr == PortalConsts.M7ORIGIN)
 		{
-			// ignore these for now drs
+			// ignore these for now drs  TODO ??
+			if (cpu == null)
+			{
+				//mTutorParser = new LevelOneParser(this);
+				
+				cpu = new PZ80Cpu();
+				cpu.Init(this);
+				z80 = cpu.z80;			// shortcut
+			}
+
+			int val = ExtractWord ( 0);
+			
+			cpu.z80Memory.writeWord(mem_addr, val);
+		
 		}
 		else
 		{

@@ -38,16 +38,86 @@ public class Z80Core implements ICPUData {
     private int reg_B, reg_C, reg_D, reg_E, reg_H, reg_L;
     private int reg_B_ALT, reg_C_ALT, reg_D_ALT, reg_E_ALT, reg_H_ALT, reg_L_ALT;
     private int reg_IX, reg_IY; 
-    public int reg_PC; 
-    private int reg_SP;
     private int reg_A, reg_A_ALT, reg_F, reg_F_ALT, reg_I, reg_R, reg_R8;
     private int reg_index;
+    public int reg_PC; 
+    private int reg_SP;
     private boolean EIDIFlag;
     private boolean IFF1, IFF2;
     private boolean NMI_FF;
     private boolean blockMove;
     private int resetAddress;
 
+    /* save registers */
+    private int Sreg_B, Sreg_C, Sreg_D, Sreg_E, Sreg_H, Sreg_L;
+    private int Sreg_B_ALT, Sreg_C_ALT, Sreg_D_ALT, Sreg_E_ALT, Sreg_H_ALT, Sreg_L_ALT;
+    private int Sreg_IX, Sreg_IY; 
+    private int Sreg_A, Sreg_A_ALT, Sreg_F, Sreg_F_ALT, Sreg_I, Sreg_R, Sreg_R8;
+
+    
+    
+    
+    public void SaveState()
+    {
+    	Sreg_B = reg_B;
+    	Sreg_C = reg_C;
+    	Sreg_D = reg_D;
+    	Sreg_E = reg_E;
+    	Sreg_H = reg_H;
+    	Sreg_L = reg_L;
+    	
+    	Sreg_B_ALT = reg_B_ALT;
+    	Sreg_C_ALT = reg_C_ALT;
+    	Sreg_D_ALT = reg_D_ALT;
+    	Sreg_E_ALT = reg_E_ALT;
+    	Sreg_H_ALT = reg_H_ALT;
+    	Sreg_L_ALT = reg_L_ALT;
+
+    	Sreg_IX = reg_IX;
+    	Sreg_IY = reg_IY;
+
+    	Sreg_A = reg_A;
+    	Sreg_A_ALT = reg_A_ALT;
+    	Sreg_F = reg_F;
+    	Sreg_F_ALT = reg_F_ALT;
+    	Sreg_I = reg_I;
+    	Sreg_R = reg_R;
+    	Sreg_R8 = reg_R8;
+
+    }
+
+    public void RestoreState()
+    {
+    	reg_B = Sreg_B;
+    	reg_C = Sreg_C;
+    	reg_D = Sreg_D;
+    	reg_E = Sreg_E;
+    	reg_H = Sreg_H;
+    	reg_L = Sreg_L;
+    	
+    	reg_B_ALT = Sreg_B_ALT;
+    	reg_C_ALT = Sreg_C_ALT;
+    	reg_D_ALT = Sreg_D_ALT;
+    	reg_E_ALT = Sreg_E_ALT;
+    	reg_H_ALT = Sreg_H_ALT;
+    	reg_L_ALT = Sreg_L_ALT;
+    	
+    	reg_IX = Sreg_IX;
+    	reg_IY = Sreg_IY;
+
+    	reg_A = Sreg_A;
+    	reg_A_ALT = Sreg_A_ALT;
+    	reg_F = Sreg_F;
+    	reg_F_ALT = Sreg_F_ALT;
+    	reg_I = Sreg_I;
+    	reg_R = Sreg_R;
+    	reg_R8 = Sreg_R8;
+    	
+
+    	
+    }
+
+    
     /**
      * Standard constructor. Set the processor up with a memory and I/O interface.
      *
