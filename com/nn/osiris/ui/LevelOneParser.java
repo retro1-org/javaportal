@@ -3765,7 +3765,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			case 0x71:
 				is_signed_on = true;
 				
-				if (levelone_network.port > 7000)
+				if (levelone_network.port  != 6005)
 					sub_type = 16;
 				SendEcho ( sub_type);
 				break;
