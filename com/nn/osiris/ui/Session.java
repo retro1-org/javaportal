@@ -16,7 +16,7 @@ class Session
 	String	rs_host;
 	// for testing/debug of aw stub
 	double local_os_failure_rate;
-	// mtutor boot file
+	// mtutor boot files and flag
 	String mtdisk0;
 	String mtdisk1;
 	String mtboot;
@@ -27,15 +27,18 @@ class Session
 	{
 		sb.append("<session host=\""+host+"\"");
 		sb.append(" port=\""+port+"\"");
+		/*
+		
 		if	(name != null)
 			sb.append(" name=\""+name+"\"");
 		if	(group != null)
 			sb.append(" group=\""+group+"\"");
-		if	(mtdisk0 != null)
+	*/
+		if	(mtdisk0 != null && mtdisk0.length() > 0)
 			sb.append(" mtdisk0=\""+mtdisk0+"\"");
-		if	(mtdisk1 != null)
+		if	(mtdisk1 != null  && mtdisk1.length() > 0)
 			sb.append(" mtdisk1=\""+mtdisk1+"\"");
-		if	(mtboot != null)
+		if	(mtboot != null  && mtboot.length() > 0)
 			sb.append(" mtboot=\""+mtboot+"\"");
 		sb.append("/>");
 	}
