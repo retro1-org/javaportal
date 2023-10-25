@@ -2052,6 +2052,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (is_touch_enabled)
 		{
+			if (PortalConsts.SCALE == 2)
+			{
+				x >>= 1;
+				y >>= 1;
+			}
+
 			y = unxlatY(y);
 			x = unxlatX(x);
 			

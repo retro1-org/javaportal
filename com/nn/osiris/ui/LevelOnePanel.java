@@ -11,6 +11,7 @@ package com.nn.osiris.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.lang.reflect.Constructor;
 import java.util.Vector;
 import javax.swing.*;
@@ -46,6 +47,7 @@ public class LevelOnePanel
 	private int panel_width;
 	/** Offscreen image for doing our own double buffering. */
 	Image offscreen;
+
 	/** Version of java this is running on. */
 	private String java_version = System.getProperty("java.version");
 	/** Vector to keep track of threads that need cleanup */
@@ -94,7 +96,7 @@ public class LevelOnePanel
 		getOfflineImage();
 
 		// Setup our dimensions as we want them.
-		Dimension panel_dim = new Dimension(panel_width, PANEL_HEIGHT);
+		Dimension panel_dim = new Dimension(panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE);
 
 		setMinimumSize(panel_dim);
 		setMaximumSize(panel_dim);
@@ -106,10 +108,10 @@ public class LevelOnePanel
 		setBackground(Color.black);
 
 		offscreen = new BufferedImage(
-			panel_width,
-			PANEL_HEIGHT,
+			panel_width * PortalConsts.SCALE,
+			PANEL_HEIGHT * PortalConsts.SCALE,
 			BufferedImage.TYPE_INT_RGB);
-
+	
 		// Get ourselves an appropriate protocol interpreter depending on
 		// the java version.
 		createProtocolInterpreter();
@@ -209,7 +211,7 @@ public class LevelOnePanel
 			if (PortalConsts.is_debugging) System.out.println("--- mtutor boot : " + this.session.mtboot );
 		}
 		
-		
+/*		
 		if (session.mtboot != null && session.mtboot.length() > 0)
 		{
 			level_one_network = new LevelOneNetwork(this);
@@ -241,6 +243,8 @@ public class LevelOnePanel
 			return true;
 		}
 		else
+*/			
+			
 		{
 		// Create a level one network to be used for this session.
 		level_one_network = new LevelOneNetwork(this);
@@ -529,7 +533,23 @@ public class LevelOnePanel
 			return;
 		}
 		// Draw from the backing store.
-		graphics.drawImage(offscreen, 0, 0, this);
+		
+		if (PortalConsts.SCALE != 2)
+		{
+			graphics.drawImage(offscreen, 0, 0, this);
+		}
+		else
+		{
+			
+			Graphics gc = graphics.create();
+			
+			
+			
+			boolean retval = gc.drawImage(offscreen, 0, 0, panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE, 0, 0, panel_width, PANEL_HEIGHT, this);
+			
+			if (!retval)
+				System.out.println(">> scaling unfinished...");
+		}
 
 		// Draw cursor
 		level_one_parser.ShowCursor(graphics);
@@ -995,8 +1015,8 @@ public class LevelOnePanel
 			{
 				exception.printStackTrace();
 			}
-		}				
-
+		}	
+		
 		// If we still don't have a level one parser, we need to get one.
 		if (null == level_one_parser)
 		{

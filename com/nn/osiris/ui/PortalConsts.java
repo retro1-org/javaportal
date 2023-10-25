@@ -29,6 +29,8 @@ class PortalConsts
 	static public int		config_code = 0x4c327046;	// L2pF
 	// default width of portal window
 	static final int		default_width = 640;
+	
+	static final int 		SCALE = 1; 
 
 	static public boolean	is_threaded = false;		// for Z80  -- currently ignored
 	static public boolean	is_macintosh = false;
