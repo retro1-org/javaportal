@@ -2186,7 +2186,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			b = buffer[offset + (i++)] & 0xff;
 			c = b & 0x7f;
 		
-			if (cpu.mtutor_waiting && !cpu.in_r_exec)
+			if (cpu != null && cpu.mtutor_waiting && !cpu.in_r_exec)
 			{
 				return 1;
 			}
