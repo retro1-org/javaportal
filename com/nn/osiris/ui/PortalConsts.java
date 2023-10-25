@@ -37,7 +37,7 @@ class PortalConsts
 	static public boolean	is_applet = false;
 	static public boolean	is_quicktime = false;
 	// Default tcp host & port to connect to:
-	static final String	default_host = "nohost.nn.com";
+	static final String	default_host = "cybis.retro1.net";
 	static final int default_port = 8005;
 	
 	

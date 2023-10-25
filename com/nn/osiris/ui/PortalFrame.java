@@ -1172,8 +1172,8 @@ public class PortalFrame
 		session.copyTo(last_session);
 
 	// don't try it if using default bogus host
-		if	(session.host.equals(PortalConsts.default_host))
-			return;
+//		if	(session.host.equals(PortalConsts.default_host))
+//			return;
 
 	LevelOnePanel	lop = new LevelOnePanel(this,JPortal.frame_width);
 	double			rate = 0.0;
