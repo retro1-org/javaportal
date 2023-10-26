@@ -60,8 +60,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		parent_frame = the_frame;
   		levelone_container = a;
-  		levelone_base_graphics = bg;
-  		levelone_graphics = g1;
+  	//	levelone_base_graphics = bg;
+  	//	levelone_graphics = g1;
   		levelone_offscreen_image = i;
   		levelone_offscreen = g2;
   		levelone_network = n;

@@ -540,15 +540,7 @@ public class LevelOnePanel
 		}
 		else
 		{
-			
-			Graphics gc = graphics.create();
-			
-			
-			
-			boolean retval = gc.drawImage(offscreen, 0, 0, panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE, 0, 0, panel_width, PANEL_HEIGHT, this);
-			
-			if (!retval)
-				System.out.println(">> scaling unfinished...");
+			graphics.drawImage(offscreen, 0, 0, panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE, 0, 0, panel_width, PANEL_HEIGHT, this);
 		}
 
 		// Draw cursor
