@@ -15,7 +15,7 @@ package com.nn.osiris.ui;
 class PortalConsts
 {
 	
-	static final public String	theName = "JPTerm";
+	static final public String	theName = "PlatoAccess";
 	
 	// version string displayed in dialog and sent to system via -local-
 	static public String	short_version = "3.4.3";
