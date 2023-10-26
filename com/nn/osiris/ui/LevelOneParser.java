@@ -7032,6 +7032,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		cpu.z80.RestoreState();
 
+		cpu.runWithMtutorCheck(cpu.z80.reg_PC);
 	}
 
 	/**

@@ -108,8 +108,8 @@ public class LevelOnePanel
 		setBackground(Color.black);
 
 		offscreen = new BufferedImage(
-			panel_width * PortalConsts.SCALE,
-			PANEL_HEIGHT * PortalConsts.SCALE,
+			panel_width,
+			PANEL_HEIGHT,
 			BufferedImage.TYPE_INT_RGB);
 		
 		// Get ourselves an appropriate protocol interpreter depending on

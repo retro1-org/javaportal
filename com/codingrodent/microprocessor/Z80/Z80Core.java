@@ -53,6 +53,8 @@ public class Z80Core implements ICPUData {
     private int Sreg_B_ALT, Sreg_C_ALT, Sreg_D_ALT, Sreg_E_ALT, Sreg_H_ALT, Sreg_L_ALT;
     private int Sreg_IX, Sreg_IY; 
     private int Sreg_A, Sreg_A_ALT, Sreg_F, Sreg_F_ALT, Sreg_I, Sreg_R, Sreg_R8;
+    public int Sreg_PC; 
+    private int Sreg_SP;
 
     
     
@@ -83,6 +85,8 @@ public class Z80Core implements ICPUData {
     	Sreg_I = reg_I;
     	Sreg_R = reg_R;
     	Sreg_R8 = reg_R8;
+    	Sreg_PC = reg_PC;
+    	Sreg_SP = reg_SP;
 
     }
 
@@ -112,8 +116,8 @@ public class Z80Core implements ICPUData {
     	reg_I = Sreg_I;
     	reg_R = Sreg_R;
     	reg_R8 = Sreg_R8;
-    	
-
+    	reg_PC = Sreg_PC;
+    	reg_SP = Sreg_SP;
     	
     }
 
