@@ -15,7 +15,7 @@ package com.nn.osiris.ui;
 class PortalConsts
 {
 	
-	static public String	theName = "JPTerm";
+	static final public String	theName = "JPTerm";
 	
 	// version string displayed in dialog and sent to system via -local-
 	static public String	short_version = "3.4.3";
@@ -33,7 +33,7 @@ class PortalConsts
 	// default width of portal window
 	static final int		default_width = 640;
 	
-	static final int 		SCALE = 2; 
+	static  int  			SCALE = 1; 
 
 	static public boolean	is_threaded = false;		// for Z80  -- currently ignored
 	static public boolean	is_macintosh = false;

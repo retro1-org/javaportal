@@ -32,6 +32,7 @@ public class OptionsDialog
 	private JCheckBox		lock_button = new JCheckBox("Lock Configuration");
 	private JCheckBox		disable_name_button = new JCheckBox("Disable Signon in Title");
 	private JCheckBox		multi_connect_button = new JCheckBox("Allow Multiple Connections");
+	private JCheckBox		scale2x_button = new JCheckBox("Scale to twice normal size");
 	private JButton			ok_button = new JButton("Ok");
 	private JButton			cancel_button = new JButton("Cancel");
 	private boolean			cancelled;
@@ -63,13 +64,15 @@ public class OptionsDialog
 		control_panel.add(disconnect_button);
 		control_panel.add(disable_name_button);
 		control_panel.add(multi_connect_button);
+		control_panel.add(scale2x_button);
 		control_panel.add(lock_button);
 
 		disconnect_button.setSelected(options.disconnect_at_signoff);
 		lock_button.setSelected(options.lock_configuration);
 		disable_name_button.setSelected(options.disable_signon_display);
 		multi_connect_button.setSelected(options.multi_connect);
-
+		scale2x_button.setSelected(options.scale2x);
+		
 		// Add buttons to button panel.
 		button_panel.add(ok_button);
 		button_panel.add(cancel_button);
@@ -88,6 +91,7 @@ public class OptionsDialog
 			disconnect_button.setEnabled(false);
 			multi_connect_button.setEnabled(false);
 			lock_button.setEnabled(false);
+			scale2x_button.setEnabled(false);
 		}
 		else
 		{
@@ -95,6 +99,7 @@ public class OptionsDialog
 			disconnect_button.setEnabled(true);
 			lock_button.setEnabled(true);
 			multi_connect_button.setEnabled(true);
+			scale2x_button.setEnabled(true);
 		}
 
 		pack();
@@ -122,6 +127,7 @@ public class OptionsDialog
 			options.lock_configuration = lock_button.isSelected();
 			options.disable_signon_display = disable_name_button.isSelected();
 			options.multi_connect = multi_connect_button.isSelected();
+			options.scale2x = scale2x_button.isSelected();
 			cancelled = false;
 			setVisible(false);
 		}

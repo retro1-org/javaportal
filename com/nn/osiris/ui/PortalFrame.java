@@ -1580,6 +1580,9 @@ public class PortalFrame
 			{
 				options.readNode(nl.item(i));
 			}
+			
+			if (options.scale2x)
+				PortalConsts.SCALE = 2;
 		}
 		catch (java.lang.Exception e1)
 		{
