@@ -541,7 +541,6 @@ public class LevelOnePanel
 		else
 		{
 			graphics.drawImage(offscreen, 0, 0, (panel_width * PortalConsts.SCALE), (PANEL_HEIGHT * PortalConsts.SCALE), 0, 0, panel_width, PANEL_HEIGHT, this);
-			
 			this.repaint();
 		}
 

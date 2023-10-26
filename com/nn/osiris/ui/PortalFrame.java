@@ -245,7 +245,7 @@ public class PortalFrame
 	    	// File list dialog
 	      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	    	        "JPTerm Configuration Files", "cfg");
+	    	       PortalConsts.theName + " Configuration Files", "cfg");
 	    	fc.setFileFilter(filter);
 	    	fc.setDialogTitle("Choose a configuration file to connect...");
 	    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
@@ -625,7 +625,7 @@ public class PortalFrame
 
 		if	(!PortalConsts.is_macintosh)
 		{
-			jMenuHelp.add (item = new JMenuItem("About JPTerm..."));
+			jMenuHelp.add (item = new JMenuItem("About " + PortalConsts.theName + "..."));
 			item.addActionListener(this);
 		}
 		jMenuBar1.add(jMenuHelp);
@@ -818,7 +818,7 @@ public class PortalFrame
 	 */
 	public PortalFrame(Properties startup_props)
 	{
-		super ("JPTerm");
+		super (PortalConsts.theName);
 		setPortalIcon();
 		setResizable(false);
 		this.startup_properties = startup_props;
@@ -1034,8 +1034,8 @@ public class PortalFrame
 	public void aboutBox()
 	{
 	JOptionPane.showMessageDialog(this,
-		"JPTerm Version "+PortalConsts.short_version+", Copyright 2010 Pearson Education",
-		"About JPTerm",
+			PortalConsts.theName + " Version "+PortalConsts.short_version+", Copyright 2010 Pearson Education",
+		"About " + PortalConsts.theName,
 		JOptionPane.PLAIN_MESSAGE);
 	}
 
@@ -1370,7 +1370,7 @@ public class PortalFrame
 
 		if	(PortalConsts.is_debugging)
 	    	System.out.println ("actionPerformed: "+cmd);
-		if	(cmd.equals("About JPTerm..."))
+		if	(cmd.equals("About " + PortalConsts.theName + "..."))
 			aboutBox();
 		if	(cmd.equals("About Multimedia..."))
 		{
@@ -1632,7 +1632,7 @@ public class PortalFrame
 	{
 	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPTerm Configuration Files - .cfg", "cfg");
+			PortalConsts.theName + " Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
@@ -1665,7 +1665,7 @@ public class PortalFrame
 	{
 		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPTerm Configuration Files - .cfg", "cfg");
+				PortalConsts.theName + " Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
