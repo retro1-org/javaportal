@@ -111,7 +111,7 @@ public class LevelOnePanel
 			panel_width * PortalConsts.SCALE,
 			PANEL_HEIGHT * PortalConsts.SCALE,
 			BufferedImage.TYPE_INT_RGB);
-	
+		
 		// Get ourselves an appropriate protocol interpreter depending on
 		// the java version.
 		createProtocolInterpreter();
@@ -540,7 +540,9 @@ public class LevelOnePanel
 		}
 		else
 		{
-			graphics.drawImage(offscreen, 0, 0, panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE, 0, 0, panel_width, PANEL_HEIGHT, this);
+			graphics.drawImage(offscreen, 0, 0, (panel_width * PortalConsts.SCALE), (PANEL_HEIGHT * PortalConsts.SCALE), 0, 0, panel_width, PANEL_HEIGHT, this);
+			
+			this.repaint();
 		}
 
 		// Draw cursor
