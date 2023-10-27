@@ -119,7 +119,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		
   		initEngine(
   		   width,	// Terminal width.
-  		   LevelOnePanel.PANEL_HEIGHT,		// Terminal height.
+  		   LevelOnePanel.PANEL_STD,		// Terminal height.
   		   stype,	// Terminal subtype.
   		   1,		// Color flag.
   		   14);		// Colors supported
@@ -2153,8 +2153,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		int ncolors)
 	{
 		is_flow_control_avail = true;
-		terminalWidth = (width > LevelOnePanel.PANEL_HEIGHT-1 ? width : LevelOnePanel.PANEL_HEIGHT);
-		terminalHeight = (height > LevelOnePanel.PANEL_HEIGHT-1 ? height : LevelOnePanel.PANEL_HEIGHT);
+		terminalWidth = (width > LevelOnePanel.PANEL_STD-1 ? width : LevelOnePanel.PANEL_STD);
+		terminalHeight = (height > LevelOnePanel.PANEL_STD-1 ? height : LevelOnePanel.PANEL_STD);
 		sub_type = sub;
 		colorAvail = true;
 		terminalColors = 0;		// never used drs 2023/10/3
@@ -3364,13 +3364,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			levelone_graphics.setClip(
 				xlatX(0),
-				xlatY(LevelOnePanel.PANEL_HEIGHT-1),
+				xlatY(LevelOnePanel.PANEL_STD-1),
 				xlatX(terminalWidth),
 				xlatY(0)+1);
 			levelone_graphics.setColor (bg_color);
 			levelone_graphics.fillRect(
 				xlatX(0),
-				xlatY(LevelOnePanel.PANEL_HEIGHT-1),
+				xlatY(LevelOnePanel.PANEL_STD-1),
 				xlatX(terminalWidth),
 				xlatY(0)+1);
 		}
@@ -3379,14 +3379,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		levelone_offscreen.setClip
 		(
-			xlatX(0),xlatY(LevelOnePanel.PANEL_HEIGHT-1),xlatX(terminalWidth),xlatY(0)+1
+			xlatX(0),xlatY(LevelOnePanel.PANEL_STD-1),xlatX(terminalWidth),xlatY(0)+1
 		);
 
 
 		levelone_offscreen.setColor (bg_color);
 		levelone_offscreen.fillRect
 		(
-			xlatX(0),xlatY(LevelOnePanel.PANEL_HEIGHT-1),xlatX(terminalWidth),xlatY(0)+1
+			xlatX(0),xlatY(LevelOnePanel.PANEL_STD-1),xlatX(terminalWidth),xlatY(0)+1
 		);
 	}
 
@@ -8961,8 +8961,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	void initPlatoMode()
 	{
-	   	center_x = ( terminalWidth - LevelOnePanel.PANEL_HEIGHT) >> 1;
-		center_y = ( terminalHeight - LevelOnePanel.PANEL_HEIGHT) >> 1;
+	   	center_x = ( terminalWidth - LevelOnePanel.PANEL_STD) >> 1;
+		center_y = ( terminalHeight - LevelOnePanel.PANEL_STD) >> 1;
 
 		wrap_x = terminalWidth - 1 - (center_x<<1);
 		wrap_y = terminalHeight - 1 - (center_y<<1);
@@ -9968,7 +9968,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	protected final int xlatY(int y)
 	{
-		return (LevelOnePanel.PANEL_HEIGHT-1-y);
+		return (LevelOnePanel.PANEL_STD-1-y);
 	}
 
 	/**
@@ -9988,7 +9988,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	protected int unxlatY(int y)
 	{
-		return (LevelOnePanel.PANEL_HEIGHT-1-y);
+		return (LevelOnePanel.PANEL_STD-1-y);
 	}
 
 	/**

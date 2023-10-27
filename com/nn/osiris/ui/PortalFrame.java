@@ -469,14 +469,14 @@ public class PortalFrame
 		if (save != PortalConsts.SCALE)
 		{	// rescale on fly
 			// Setup our dimensions as we want them.
-			Dimension panel_dim = new Dimension(PortalConsts.default_width * PortalConsts.SCALE, LevelOnePanel.PANEL_HEIGHT * PortalConsts.SCALE);
+			Dimension panel_dim = new Dimension(PortalConsts.default_width * PortalConsts.SCALE, LevelOnePanel.PANEL_STD * PortalConsts.SCALE);
 			Dimension frame_dim = this.getSize();
 
 			int h = frame_dim.height;
 			if (h > 1000)
-				h -= LevelOnePanel.PANEL_HEIGHT;
+				h -= LevelOnePanel.PANEL_STD;
 			else
-				h += LevelOnePanel.PANEL_HEIGHT;
+				h += LevelOnePanel.PANEL_STD;
 			
 			this.setSize(panel_dim.width, h);
 			
@@ -1518,7 +1518,7 @@ public class PortalFrame
 		
 		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
 		{
-			this.currentPanel().getParser().center_x = (PortalConsts.default_width - LevelOnePanel.PANEL_HEIGHT) / 2;
+			this.currentPanel().getParser().center_x = (PortalConsts.default_width - LevelOnePanel.PANEL_STD) / 2;
 			this.currentPanel().getParser().cpu.BootMtutor(null);
 		}
 

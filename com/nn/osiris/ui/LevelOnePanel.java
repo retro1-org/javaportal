@@ -30,8 +30,8 @@ public class LevelOnePanel
 	 */
 	private static final long serialVersionUID = -151L;
 
-	/** Level one panel height. */
-	public static final int PANEL_HEIGHT = 512;		// Height AND WIDTH of the standard plato terminal (Square)
+	/** Height AND WIDTH of the standard PLATO terminal (Square)  */
+	public static final int PANEL_STD = 512;
 
 	/** The frame that holds this panel. */
 	private Frame parent_frame;
@@ -96,7 +96,7 @@ public class LevelOnePanel
 		getOfflineImage();
 
 		// Setup our dimensions as we want them.
-		Dimension panel_dim = new Dimension(panel_width * PortalConsts.SCALE, PANEL_HEIGHT * PortalConsts.SCALE);
+		Dimension panel_dim = new Dimension(panel_width * PortalConsts.SCALE, PANEL_STD * PortalConsts.SCALE);
 
 		setMinimumSize(panel_dim);
 		setMaximumSize(panel_dim);
@@ -109,7 +109,7 @@ public class LevelOnePanel
 
 		offscreen = new BufferedImage(
 			panel_width,
-			PANEL_HEIGHT,
+			PANEL_STD,
 			BufferedImage.TYPE_INT_RGB);
 		
 		// Get ourselves an appropriate protocol interpreter depending on
@@ -321,7 +321,7 @@ public class LevelOnePanel
 				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO.m_MTDisk[0] != null)
 				{
 					// start mtutor boot process using loaded disk(s)
-					level_one_parser.center_x = (PortalConsts.default_width -LevelOnePanel.PANEL_HEIGHT) / 2;
+					level_one_parser.center_x = (PortalConsts.default_width -LevelOnePanel.PANEL_STD) / 2;
 					level_one_parser.cpu.BootMtutor(null);
 				}
 
@@ -479,11 +479,11 @@ public class LevelOnePanel
 		if	(null == level_one_network)
 		{
 			graphics.setColor(Color.white);
-			graphics.fillRect(0,0,panel_width,PANEL_HEIGHT);
+			graphics.fillRect(0,0,panel_width,PANEL_STD);
 			if	(null == offlineIcon)
 			{
 				graphics.setColor(Color.blue);
-				for (int i=0; i<PANEL_HEIGHT; i+=5)
+				for (int i=0; i<PANEL_STD; i+=5)
 					graphics.drawLine(0,i,panel_width,i);
 				graphics.setColor(Color.black);
 				graphics.drawString("You are not connected to the host",
@@ -494,7 +494,7 @@ public class LevelOnePanel
 			int	w = offlineIcon.getIconWidth();
 			int	h = offlineIcon.getIconHeight();
 
-				offlineIcon.paintIcon(this,graphics,(panel_width-w)>>1,(PANEL_HEIGHT-h)>>1);
+				offlineIcon.paintIcon(this,graphics,(panel_width-w)>>1,(PANEL_STD-h)>>1);
 			}
 			return;
 		}
@@ -506,7 +506,7 @@ public class LevelOnePanel
 		}
 		else
 		{
-			graphics.drawImage(offscreen, 0, 0, (panel_width * PortalConsts.SCALE), (PANEL_HEIGHT * PortalConsts.SCALE), 0, 0, panel_width, PANEL_HEIGHT, this);
+			graphics.drawImage(offscreen, 0, 0, (panel_width * PortalConsts.SCALE), (PANEL_STD * PortalConsts.SCALE), 0, 0, panel_width, PANEL_STD, this);
 			this.repaint();
 		}
 
