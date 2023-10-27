@@ -2153,8 +2153,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		int ncolors)
 	{
 		is_flow_control_avail = true;
-		terminalWidth = (width > 511 ? width : LevelOnePanel.PANEL_HEIGHT);
-		terminalHeight = (height > 511 ? height : LevelOnePanel.PANEL_HEIGHT);
+		terminalWidth = (width > LevelOnePanel.PANEL_HEIGHT-1 ? width : LevelOnePanel.PANEL_HEIGHT);
+		terminalHeight = (height > LevelOnePanel.PANEL_HEIGHT-1 ? height : LevelOnePanel.PANEL_HEIGHT);
 		sub_type = sub;
 		colorAvail = true;
 		terminalColors = 0;		// never used drs 2023/10/3
@@ -3364,13 +3364,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			levelone_graphics.setClip(
 				xlatX(0),
-				xlatY(511),
+				xlatY(LevelOnePanel.PANEL_HEIGHT-1),
 				xlatX(terminalWidth),
 				xlatY(0)+1);
 			levelone_graphics.setColor (bg_color);
 			levelone_graphics.fillRect(
 				xlatX(0),
-				xlatY(511),
+				xlatY(LevelOnePanel.PANEL_HEIGHT-1),
 				xlatX(terminalWidth),
 				xlatY(0)+1);
 		}
@@ -3379,14 +3379,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		levelone_offscreen.setClip
 		(
-			xlatX(0),xlatY(511),xlatX(terminalWidth),xlatY(0)+1
+			xlatX(0),xlatY(LevelOnePanel.PANEL_HEIGHT-1),xlatX(terminalWidth),xlatY(0)+1
 		);
 
 
 		levelone_offscreen.setColor (bg_color);
 		levelone_offscreen.fillRect
 		(
-			xlatX(0),xlatY(511),xlatX(terminalWidth),xlatY(0)+1
+			xlatX(0),xlatY(LevelOnePanel.PANEL_HEIGHT-1),xlatX(terminalWidth),xlatY(0)+1
 		);
 	}
 
@@ -9968,7 +9968,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	protected final int xlatY(int y)
 	{
-		return (511-y);
+		return (LevelOnePanel.PANEL_HEIGHT-1-y);
 	}
 
 	/**
@@ -9988,7 +9988,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	protected int unxlatY(int y)
 	{
-		return (511-y);
+		return (LevelOnePanel.PANEL_HEIGHT-1-y);
 	}
 
 	/**

@@ -617,7 +617,7 @@ public class PZ80Cpu {
     			parser.screen_mode = LevelOneParser.SCERASE;
     			parser.clearScreen();
     			
-    			parser.BlockData(0,0,511,511);	// clearScreen is not quite getting the job done here
+    			//parser.BlockData(0,0,511,511);	// clearScreen is not quite getting the job done here
     			
             	parser.do_repaint = true;		// tell the caller to repaint screen
             	parser.screen_mode = save;

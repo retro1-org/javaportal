@@ -258,7 +258,7 @@ public class LevelOneParser2 extends LevelOneParser
 				}
 			}
 
-			Rectangle rect = new Rectangle(xlatX(0), xlatY(511), 8, 8);
+			Rectangle rect = new Rectangle(xlatX(0), xlatY(LevelOnePanel.PANEL_HEIGHT-1), 8, 8);
 
 			return new TexturePaint(bimage, rect);
 		}
