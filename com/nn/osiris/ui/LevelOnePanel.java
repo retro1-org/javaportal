@@ -31,7 +31,7 @@ public class LevelOnePanel
 	private static final long serialVersionUID = -151L;
 
 	/** Level one panel height. */
-	public static final int PANEL_HEIGHT = 512;
+	public static final int PANEL_HEIGHT = 512;		// Height AND WIDTH of the standard plato terminal (Square)
 
 	/** The frame that holds this panel. */
 	private Frame parent_frame;
@@ -210,40 +210,6 @@ public class LevelOnePanel
 		{
 			if (PortalConsts.is_debugging) System.out.println("--- mtutor boot : " + this.session.mtboot );
 		}
-		
-/*		
-		if (session.mtboot != null && session.mtboot.length() > 0)
-		{
-			level_one_network = new LevelOneNetwork(this);
-			level_one_parser.setNetwork(level_one_network);
-
-			level_one_parser.cpu = new PZ80Cpu();		// We need a CPU and its friends first
-			level_one_parser.cpu.Init(level_one_parser);
-			level_one_parser.z80 = level_one_parser.cpu.z80;			// shortcut
-
-			if (this.session.mtdisk0 != null && this.session.mtdisk0.length() > 4)
-			{
-				// load Vdisk  0
-				level_one_parser.cpu.z80IO.m_MTDisk[0] = PZIO.LoadDisk(this.session.mtdisk0)  ;
-			}
-			
-			if (this.session.mtdisk1 != null && this.session.mtdisk1.length() > 4)
-			{
-				// load Vdisk  1
-				level_one_parser.cpu.z80IO.m_MTDisk[1] = PZIO.LoadDisk(this.session.mtdisk1)  ;
-			}				
-			
-			if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO.m_MTDisk[0] != null)
-			{
-				// start mtutor boot process using loaded disk(s)
-				level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
-				level_one_parser.cpu.BootMtutor(null);
-			}
-			
-			return true;
-		}
-		else
-*/			
 			
 		{
 		// Create a level one network to be used for this session.
@@ -355,7 +321,7 @@ public class LevelOnePanel
 				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO.m_MTDisk[0] != null)
 				{
 					// start mtutor boot process using loaded disk(s)
-					level_one_parser.center_x = (PortalConsts.default_width -512) / 2;
+					level_one_parser.center_x = (PortalConsts.default_width -LevelOnePanel.PANEL_HEIGHT) / 2;
 					level_one_parser.cpu.BootMtutor(null);
 				}
 

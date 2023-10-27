@@ -576,8 +576,6 @@ public class PZ80Cpu {
                 	}
      // end char converter
                 	parser.AlphaDataM(cbuf);
-                	
-                	//parser.drawString(cbuf, lth, fgcolor, bgcolor, parser.current_x, 512-parser.current_y, wrMode, 1, 0, 0);
                 
                 	if (chr0 > 0x3F )
                     {

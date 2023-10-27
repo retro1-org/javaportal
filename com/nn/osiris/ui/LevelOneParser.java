@@ -119,7 +119,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		
   		initEngine(
   		   width,	// Terminal width.
-  		   512,		// Terminal height.
+  		   LevelOnePanel.PANEL_HEIGHT,		// Terminal height.
   		   stype,	// Terminal subtype.
   		   1,		// Color flag.
   		   14);		// Colors supported
@@ -2153,8 +2153,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		int ncolors)
 	{
 		is_flow_control_avail = true;
-		terminalWidth = (width > 511 ? width : 512);
-		terminalHeight = (height > 511 ? height : 512);
+		terminalWidth = (width > 511 ? width : LevelOnePanel.PANEL_HEIGHT);
+		terminalHeight = (height > 511 ? height : LevelOnePanel.PANEL_HEIGHT);
 		sub_type = sub;
 		colorAvail = true;
 		terminalColors = 0;		// never used drs 2023/10/3
@@ -8961,8 +8961,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	void initPlatoMode()
 	{
-	   	center_x = ( terminalWidth - 512) >> 1;
-		center_y = ( terminalHeight - 512) >> 1;
+	   	center_x = ( terminalWidth - LevelOnePanel.PANEL_HEIGHT) >> 1;
+		center_y = ( terminalHeight - LevelOnePanel.PANEL_HEIGHT) >> 1;
 
 		wrap_x = terminalWidth - 1 - (center_x<<1);
 		wrap_y = terminalHeight - 1 - (center_y<<1);

@@ -459,6 +459,40 @@ public class PortalFrame
 				"IO Exception",
 				JOptionPane.ERROR_MESSAGE);
 		}
+		
+		int save = PortalConsts.SCALE;
+		if (options.scale2x)
+			PortalConsts.SCALE = 2;
+		else
+			PortalConsts.SCALE = 1;		
+			
+		if (save != PortalConsts.SCALE)
+		{	// rescale on fly
+			// Setup our dimensions as we want them.
+			Dimension panel_dim = new Dimension(PortalConsts.default_width * PortalConsts.SCALE, LevelOnePanel.PANEL_HEIGHT * PortalConsts.SCALE);
+			Dimension frame_dim = this.getSize();
+
+			int h = frame_dim.height;
+			if (h > 1000)
+				h -= LevelOnePanel.PANEL_HEIGHT;
+			else
+				h += LevelOnePanel.PANEL_HEIGHT;
+			
+			this.setSize(panel_dim.width, h);
+			
+			int	cnt = portal_pane.getTabCount();
+			LevelOnePanel lop;
+			for (int i=0;i<cnt; i++)
+			{
+				lop = ((LevelOnePanel) portal_pane.getComponentAt(i));
+				lop.setMinimumSize(panel_dim);
+				lop.setMaximumSize(panel_dim);
+				lop.setPreferredSize(panel_dim);
+				lop.setSize(panel_dim);
+				adjustBounds();
+				lop.repaint();
+			}
+		}
 	}
 
 /*
@@ -1484,7 +1518,7 @@ public class PortalFrame
 		
 		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
 		{
-			this.currentPanel().getParser().center_x = (PortalConsts.default_width - 512) / 2;
+			this.currentPanel().getParser().center_x = (PortalConsts.default_width - LevelOnePanel.PANEL_HEIGHT) / 2;
 			this.currentPanel().getParser().cpu.BootMtutor(null);
 		}
 
@@ -1580,13 +1614,14 @@ public class PortalFrame
 			{
 				options.readNode(nl.item(i));
 			}
-			
-			if (options.scale2x)
-				PortalConsts.SCALE = 2;
 		}
 		catch (java.lang.Exception e1)
 		{
 		}
+		
+		if (options.scale2x)
+			PortalConsts.SCALE = 2;
+
 	}
 
 
