@@ -59,6 +59,11 @@ public class MTDisk {
 		file = null;
 	}
 
+	public String GetFileName()
+	{
+		return filename;
+	}
+	
 	/*
 	 * Check for existence of a file
 	 */

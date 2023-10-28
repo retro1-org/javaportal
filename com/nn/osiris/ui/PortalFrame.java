@@ -637,6 +637,10 @@ public class PortalFrame
 		item.addActionListener(this);
 		
 		jMenuSettings.addSeparator();
+		jMenuSettings.add (item = new JMenuItem("Show Loaded Disks"));
+		item.addActionListener(this);
+		
+		jMenuSettings.addSeparator();
 		jMenuSettings.add (item = new JMenuItem("Boot M-Tutor Virtual Disk 0"));
 		item.addActionListener(this);
 
@@ -1514,6 +1518,25 @@ public class PortalFrame
 		if	(e.getActionCommand().equals("Eject M-Tutor Virtual Disk 1"))
 		{
 			doEjectVDisk(1);
+		}
+
+		if	(e.getActionCommand().equals("Show Loaded Disks"))
+		{
+			LevelOneParser lop = this.currentPanel().getParser();
+	
+			String disk0 = "";
+			String disk1 = "";
+			if (lop.cpu != null && lop.cpu.z80IO.m_MTDisk[0] != null)
+				disk0 = lop.cpu.z80IO.m_MTDisk[0].GetFileName();
+			
+			if (lop.cpu != null && lop.cpu.z80IO.m_MTDisk[1] != null)
+				disk1 = lop.cpu.z80IO.m_MTDisk[1].GetFileName();
+			
+			JOptionPane.showMessageDialog(this,
+					"<html>Disk 0: " + disk0 + "<br>Disk1: " + disk1 +  "</html>",
+					"Loaded Disks",
+					JOptionPane.PLAIN_MESSAGE);
+
 		}
 		
 		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
