@@ -666,6 +666,13 @@ public class LevelOnePanel
 			return;
 		x1=lastMark.x; y1=lastMark.y;
 		x2=x1+lastMark.width;y2=y1+lastMark.height;
+		if (PortalConsts.SCALE == 2)
+		{
+			x1 >>= 1;
+			x2 >>= 1;
+			y1 >>= 1;
+			y2 >>= 1;
+		}
 
 	StringBuffer	sb = getParser().clipToMemory(y1>>4,y2>>4,x1>>3,x2>>3);
 /*

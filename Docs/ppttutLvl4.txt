@@ -1684,6 +1684,8 @@
 5973 f9        ld      sp,hl
 5974 c9        ret     
 
+
+; MODE 6 data handler
 5975 2af17f    ld      hl,(7ff1h)
 5978 7c        ld      a,h
 5979 b5        or      l
