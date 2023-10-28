@@ -348,7 +348,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	}
 
 	/** Draw directly to container. */
-	protected static final boolean is_direct_draw = false;
+	//protected static final boolean is_direct_draw = false;
 	/** The dimensions of the novanet system font. */
 	private static final int CHARWIDTH = 8;
 	private static final int CHARHEIGHT = 16;
@@ -3360,22 +3360,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		((LevelOnePanel)levelone_container).clearMark();
 		LocalOSWatchReset();
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.setClip(
-				xlatX(0),
-				xlatY(LevelOnePanel.PANEL_STD-1),
-				xlatX(terminalWidth),
-				xlatY(0)+1);
-			levelone_graphics.setColor (bg_color);
-			levelone_graphics.fillRect(
-				xlatX(0),
-				xlatY(LevelOnePanel.PANEL_STD-1),
-				xlatX(terminalWidth),
-				xlatY(0)+1);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 
 		levelone_offscreen.setClip
 		(
@@ -4705,16 +4690,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		modeClipColor(false,false,false);
 
 	// render image on screen
-		if (is_direct_draw)
-		{
-			levelone_base_graphics.drawImage(
-				image_handle,
-				dest_rect.x,dest_rect.y,dest_rect.x+dest_rect.width,dest_rect.y+dest_rect.height,
-				source_rect.x,source_rect.y,source_rect.x+source_rect.width,source_rect.y+source_rect.height,
-				levelone_container);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 
 	// render image on backing store
 		levelone_offscreen.drawImage(
@@ -5004,16 +4980,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			0,0,source_rect.width,source_rect.height,
 			nil_observer);
 
-		if (is_direct_draw)
-		{
-			levelone_base_graphics.drawImage(
-				si,
-				dest_rect.x,dest_rect.y,dest_rect.x+dest_rect.width,dest_rect.y+dest_rect.height,
-				0,0,source_rect.width,source_rect.height,
-				levelone_container);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 	}
 
 	/**
@@ -6375,19 +6342,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		levelone_offscreen.setColor (bg_color);
 		levelone_offscreen.fillRect(fill.x,fill.y,fill.width,fill.height);
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.copyArea(
-				x1+CHARWIDTH*charsin,y1,	// source
-				width,CHARHEIGHT,			// width, height
-				-CHARWIDTH*charsin,0);		// deltax, deltay
-
-			levelone_graphics.setColor (bg_color);
-
-			levelone_graphics.fillRect(fill.x,fill.y,fill.width,fill.height);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 	}
 
 	/**
@@ -6416,19 +6371,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		levelone_offscreen.setColor (bg_color);
 		levelone_offscreen.fillRect(fill.x,fill.y,fill.width,fill.height);
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.copyArea(
-				x1,y1,	// source
-				width,CHARHEIGHT,			// width, height
-				CHARWIDTH*charsout,0);		// deltax, deltay
-
-			levelone_graphics.setColor (bg_color);
-
-			levelone_graphics.fillRect(fill.x,fill.y,fill.width,fill.height);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 	}
 
 	/**
@@ -6464,20 +6407,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		levelone_offscreen.setColor (bg_color);
 		levelone_offscreen.fillRect(fill.x,fill.y,fill.width,fill.height);
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.copyArea(
-				x1,y1,
-				CHARWIDTH*chars,CHARHEIGHT*lines,
-				0,-CHARHEIGHT*deltay);
-
-
-			levelone_graphics.setColor (bg_color);
-
-			levelone_graphics.fillRect(fill.x,fill.y,fill.width,fill.height);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 	}
 
 	/**
@@ -6632,16 +6562,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			xlatX (load_x+center_x),
 			xlatY (load_y+center_y));
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.drawLine (
-				xlatX (load_x+center_x),
-				xlatY (load_y+center_y),
-				xlatX (load_x+center_x),
-				xlatY (load_y+center_y));
-		}
-		else
-			levelone_container.repaint(xlatX(load_x+center_x),xlatY(load_y+center_y),1,1);
+		levelone_container.repaint(xlatX(load_x+center_x),xlatY(load_y+center_y),1,1);
 	}
 
 	/**
@@ -6843,22 +6764,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			sizex,
 			sizey);
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.fillRect (
+		levelone_container.repaint(
 				xlatX (lowx+center_x),
 				xlatY (lowy+center_y),
 				sizex,
 				sizey);
-		}
-		else
-		{
-			levelone_container.repaint(
-				xlatX (lowx+center_x),
-				xlatY (lowy+center_y),
-				sizex,
-				sizey);
-		}
 
 		temp = text_size;
 		XYAdjust(0,-15);
@@ -6907,22 +6817,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			sizex,
 			sizey);
 
-		if (is_direct_draw)
-		{
-			levelone_graphics.fillRect (
+		levelone_container.repaint(
 				xlatX (lowx+center_x),
 				xlatY (lowy+center_y),
 				sizex,
 				sizey);
-		}
-		else
-		{
-			levelone_container.repaint(
-				xlatX (lowx+center_x),
-				xlatY (lowy+center_y),
-				sizex,
-				sizey);
-		}
 
 		temp = text_size;
 		XYAdjust(0,-15);
@@ -8898,8 +8797,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		local_font = new Font(fontname,java_style2,fontsize*85/100);
 		local_font_metrics = levelone_offscreen.getFontMetrics(local_font);
 
-		if (is_direct_draw)
-			levelone_graphics.setFont(local_font);
 		levelone_offscreen.setFont(local_font);
 		local_font_descent = local_font_metrics.getDescent();
 		font_height = local_font_metrics.getHeight();
@@ -9275,16 +9172,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		modeClipColor (false,false,false);
 		levelone_offscreen.drawImage (img,plotx,ploty-16*relsize+1,null);
 
-		if (is_direct_draw)
-			levelone_base_graphics.drawImage (img,plotx,ploty-16*relsize+1,null);
-		else
-		{
-/*			if	(false)
-				do_repaint = true;
-			else */
-				levelone_container.repaint(plotx,ploty-16*relsize+1,
-					plotx+8*stringlength*relsize,ploty-16*relsize+1+16*relsize);
-		}
+		levelone_container.repaint(plotx,ploty-16*relsize+1,
+			plotx+8*stringlength*relsize,ploty-16*relsize+1+16*relsize);
 	}
 
 
@@ -9351,24 +9240,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				break;
 		}
 
-		if (is_direct_draw)
-		{
-			current_x = quick_text_x + local_fnt.drawString (
-				quick_text_data,
-				quick_text_length,
-				forecolor,
-				backcolor,
-				xlatX (quick_text_x+center_x),
-				xlatY (quick_text_y+center_y),
-				levelone_container,
-				levelone_base_graphics,
-				levelone_offscreen,
-				clip_rect);
-		}
-		else
-		{
-			do_repaint = true;
-			current_x = quick_text_x + local_fnt.drawString (
+		do_repaint = true;
+		current_x = quick_text_x + local_fnt.drawString (
 				quick_text_data,
 				quick_text_length,
 				forecolor,
@@ -9379,7 +9252,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				null,
 				levelone_offscreen,
 				clip_rect);
-		}
 	}
 
 	final void FlushLocalFont()
@@ -9388,10 +9260,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	int y = xlatY (quick_text_y+center_y) - local_font_descent;
 
 		modeClipColor(true,true,true);
-		if (is_direct_draw)
-			levelone_graphics.drawBytes(quick_text_data,0,quick_text_length,x,y);
-		else
-			do_repaint = true;
+		do_repaint = true;
 		levelone_offscreen.drawBytes(quick_text_data,0,quick_text_length,x,y);
 
 	// update screen x location
@@ -9447,22 +9316,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 			if (style_fill != 0)
 			{
-				if (is_direct_draw)
-				{
-					levelone_graphics.fillPolygon (polygon);
-					levelone_graphics.drawPolygon (polygon);
-				}
-				else
-					do_repaint = true;
+				do_repaint = true;
 				levelone_offscreen.fillPolygon (polygon);
 				levelone_offscreen.drawPolygon (polygon);
 			}
 			else
 			{
-				if (is_direct_draw)
-					levelone_graphics.drawPolyline(polygon.xpoints,polygon.ypoints,polygon.npoints);
-				else
-					do_repaint = true;
+				do_repaint = true;
 				levelone_offscreen.drawPolyline(polygon.xpoints,polygon.ypoints,polygon.npoints);
 			}
 			polygon = null;
@@ -10043,14 +9903,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			case SCWRITE:
 			case SCREWRITE:
 			case SCXOR:
-				if (is_direct_draw)
-					levelone_graphics.setColor (fg_color);
 				levelone_offscreen.setColor (fg_color);
 				break;
 			case SCERASE:
 			case SCINVERSE:
-				if (is_direct_draw)
-					levelone_graphics.setColor (bg_color);
 				levelone_offscreen.setColor (bg_color);
 				break;
 		}
@@ -10103,15 +9959,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	protected void applyClipping()
 	{
-		if (is_direct_draw)
-			levelone_graphics.setClip(clip_rect);
 		levelone_offscreen.setClip (clip_rect);
 	}
 
 	void UnapplyClipping()
 	{
-		if (is_direct_draw)
-			levelone_graphics.setClip(sys_clip_rect);
 		levelone_offscreen.setClip(sys_clip_rect);
 	}
 
@@ -10131,14 +9983,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (allow_xor && screen_mode == SCXOR)
 		{
-			if (is_direct_draw)
-				levelone_graphics.setXORMode(Color.white);
 			levelone_offscreen.setXORMode(Color.white);
 		}
 		else
 		{
-			if (is_direct_draw)
-				levelone_graphics.setPaintMode();
 			levelone_offscreen.setPaintMode();
 		}
 
@@ -10178,14 +10026,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 			modeClipColor(true,true,false);
 			levelone_offscreen.drawLine (x1,y1,x2,y2);
-			if (is_direct_draw)
-				levelone_graphics.drawLine (x1,y1,x2,y2);
-			else
-			{
 			Rectangle	r = MakeRectLegal(x1,y1,x2,y2);
 
-				levelone_container.repaint(r.x,r.y,r.width,r.height);
-			}
+			levelone_container.repaint(r.x,r.y,r.width,r.height);
 		}
 
 	}
@@ -10246,10 +10089,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	// by the points:
 		if (fillflag != 0)
 		{
-			if (is_direct_draw)
-				levelone_graphics.fillRect (x1,y1,x2-x1+1,y2-y1+1);
-			else
-				do_repaint = true;
+			do_repaint = true;
 			levelone_offscreen.fillRect (x1,y1,x2-x1+1,y2-y1+1);
 		}
 	// otherwise draw rectangles for the points:
@@ -10270,15 +10110,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 			for (i=0; i<thickness; i++)
 			{
-				if (is_direct_draw)
-				{
-					levelone_graphics.drawLine (x1,y1,x2,y1);
-					levelone_graphics.drawLine (x2,y1,x2,y2);
-					levelone_graphics.drawLine (x2,y2,x1,y2);
-					levelone_graphics.drawLine (x1,y2,x1,y1);
-				}
-				else
-					do_repaint = true;
+				do_repaint = true;
 				levelone_offscreen.drawLine (x1,y1,x2,y1);
 				levelone_offscreen.drawLine (x2,y1,x2,y2);
 				levelone_offscreen.drawLine (x2,y2,x1,y2);
@@ -10310,26 +10142,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		if (sfill != 0)
 		{
-			if (is_direct_draw)
-			{
-				levelone_graphics.fillOval (
-					x1,y1,xRadius*2,yRadius*2);
-			}
-			else
-				do_repaint = true;
+			do_repaint = true;
 
 			levelone_offscreen.fillOval (
 				x1,y1,xRadius*2,yRadius*2);
 		}
 		else
 		{
-			if (is_direct_draw)
-			{
-				levelone_graphics.drawOval (
-					x1,y1,xRadius*2,yRadius*2);
-			}
-			else
-				do_repaint = true;
+			do_repaint = true;
 
 			levelone_offscreen.drawOval (
 				x1,y1,xRadius*2,yRadius*2);
@@ -10372,26 +10192,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		if (sfill != 0)
 		{
-			if (is_direct_draw)
-			{
-				levelone_graphics.fillArc (
-					x1,y1,xRadius*2,yRadius*2,startAngle,arcLength);
-			}
-			else
-				do_repaint = true;
+			do_repaint = true;
 
 			levelone_offscreen.fillArc (
 				x1,y1,xRadius*2,yRadius*2,startAngle,arcLength);
 		}
 		else
 		{
-			if (is_direct_draw)
-			{
-				levelone_graphics.drawArc (
-					x1,y1,xRadius*2,yRadius*2,startAngle,arcLength);
-			}
-			else
-				do_repaint = true;
+			do_repaint = true;
 
 			levelone_offscreen.drawArc (
 				x1,y1,xRadius*2,yRadius*2,startAngle,arcLength);

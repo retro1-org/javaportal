@@ -343,13 +343,6 @@ public class LevelOneParser2 extends LevelOneParser
 	{
 		Graphics2D g2d;
 
-		if (is_direct_draw)
-		{
-			g2d = (Graphics2D)levelone_graphics;
-
-			old_paint = g2d.getPaint();
-			old_stroke = g2d.getStroke();
-		}
 
 		g2d = (Graphics2D)levelone_offscreen;
 		old_paint2 = g2d.getPaint();
@@ -362,14 +355,6 @@ public class LevelOneParser2 extends LevelOneParser
 	private void restoreState()
 	{
 		Graphics2D g2d;
-
-		if (is_direct_draw)
-		{
-			g2d = (Graphics2D)levelone_graphics;
-
-			g2d.setPaint(old_paint);
-			g2d.setStroke(old_stroke);
-		}
 
 		g2d = (Graphics2D)levelone_offscreen;
 		g2d.setPaint(old_paint2);
@@ -402,19 +387,7 @@ public class LevelOneParser2 extends LevelOneParser
 		saveState();
 		modeClipColor(true, true, false);
 
-		if (is_direct_draw)
-		{
-			g2d = (Graphics2D)levelone_graphics;
-			g2d.setPaint(paint);
-			g2d.setStroke(stroke);
-
-			if (fill && style_fill != 0)
-				g2d.fill(obj);
-			else
-				g2d.draw(obj);
-		}
-		else
-			do_repaint = true;
+		do_repaint = true;
 
 		g2d = (Graphics2D)levelone_offscreen;
 		g2d.setPaint(paint);
@@ -450,19 +423,7 @@ public class LevelOneParser2 extends LevelOneParser
 				
   				saveState();
   				modeClipColor(true, true, false);
-  				if (is_direct_draw)
-  				{
-  					g2d = (Graphics2D) levelone_graphics;
-  					g2d.setPaint(paint);
-  					g2d.setStroke(stroke);
-					
-  					levelone_graphics.drawPolyline(
-  						polygon.xpoints,
-  						polygon.ypoints,
-  						polygon.npoints);
-  				}
-  				else
-  					do_repaint = true;
+				do_repaint = true;
 				
   				g2d = (Graphics2D)levelone_offscreen;
   				g2d.setPaint(paint);
@@ -565,12 +526,6 @@ public class LevelOneParser2 extends LevelOneParser
 			modeClipColor(true, true, false);
 			
 			// Setup graphics state for drawing.
-			if (is_direct_draw)
-			{
-				g2d = (Graphics2D)levelone_graphics;
-				g2d.setPaint(paint);
-				g2d.setStroke(stroke);
-			}
 
 			g2d = (Graphics2D)levelone_offscreen;
 			g2d.setPaint(paint);
@@ -589,10 +544,7 @@ public class LevelOneParser2 extends LevelOneParser
 				polyx[4] = polyx[0];
 				polyy[4] = polyy[0];
 				
-				if (is_direct_draw)
-					levelone_graphics.drawPolyline(polyx, polyy, 5);
-				else
-					do_repaint = true;
+				do_repaint = true;
 
 				levelone_offscreen.drawPolyline(polyx, polyy, 5);
 				x1 -= delta; y1 -= delta;
