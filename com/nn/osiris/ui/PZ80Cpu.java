@@ -39,7 +39,7 @@ public class PZ80Cpu {
     /** is mtutor running flag */
     public boolean mtutor_waiting = false;
     
-    private long xmits = 0;
+    //private long xmits = 0;
     
     /** internal stop processing flag for z80 - */
     private boolean giveupz80;
@@ -93,9 +93,7 @@ public class PZ80Cpu {
     	setM_KSW(0);	// init send keys to plato/host
     	
     	keyBuffer = new CircularBuffer(200);
-    	
     	giveupz80 = false;
-    	
     	return z80;
     }
     
@@ -110,7 +108,7 @@ public class PZ80Cpu {
     public void runZ80() { //
         // Ok, run the program for a while
     	
-    	/*
+    	/**
     	 * We save and restore parser vars we mess with at the beginning
     	 * and end of each time slice
     	 */
@@ -133,7 +131,6 @@ public class PZ80Cpu {
         
         pc = z80.getProgramCounter();
         z80.resetTStates();
-        //System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 New time slice...Starting PC= "+String.format("%x", pc));
 
         boolean test;
         stopme = false;
@@ -143,9 +140,8 @@ public class PZ80Cpu {
 
 	        	if (loops++ > parser.z80_loops || giveupz80)	// limit loops per time slice
 	        	{
-	        		if (giveupz80)
+	        		if (giveupz80)  // set only in R_EXEC
 	        		{
-	        			// parser.screen_mode = LevelOneParser.SCWRITE;
 	        			in_r_exec = true;
 	        		}
 	        		
@@ -154,7 +150,6 @@ public class PZ80Cpu {
 	        		break;
 	        	}
 	            try {
-	                //System.out.println("------------------------ Z80 Running... PC=0x"+Utilities.getWord(z80.getRegisterValue(RegisterNames.PC)));
 	                pc =  z80.reg_PC; // z80.getProgramCounter();	
 	                
 	                // Check if PC is calling Resident
@@ -170,10 +165,8 @@ public class PZ80Cpu {
 	                	else if (result == 2)
 	                	{
 	                		mtutor_waiting = false;
-	                		
 	                		stopme = true;
 	                	}
-	                	
 	                }
 	                if (!test && !stopme)  //&& !giveupz80 )
 	                {
@@ -183,11 +176,8 @@ public class PZ80Cpu {
 	                		z80.RestoreState();
 	                		in_mode6 = false;
 	                		if (z80.reg_PC == PortalConsts.R_MAIN) 			// Mtutor no longer running	
-	                			z80.reg_PC = PortalConsts.Level4MainLoop;	// it back in main loop!
+	                			z80.reg_PC = PortalConsts.Level4MainLoop;	// put it back in main loop!
 	                	}
-//	                	int xaddr = z80Memory.readWord(PortalConsts.M6ORIGIN);
-//	                	xaddr = z80Memory.readWord(xaddr);
-//	            		System.out.println(xaddr);
 	            		
 	                	z80.executeOneInstruction();	// finally we get to execute one z80 instruction
 	                }
@@ -200,27 +190,13 @@ public class PZ80Cpu {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
 	            }
 	        }
-	        
 	        if ( mtutor_waiting)
 	        {
 	        	// save local state for resume
-	        	
 	        	parser.do_repaint = true;	// the caller to repaint screen
-	        	
 	        	saveLocalState();			// save the local state
 	        }
-	        
 	        restoreParserState();			// restore the parsers state
-	        
-	        /*
-	        tstates = z80.getTStates();
-	        z80.resetTStates();
-	        if (!mtutor_waiting)
-	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program stopped...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	        else
-	        	System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 program WAITING...End PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	        	*/
-
     }
     
     
@@ -236,14 +212,12 @@ public class PZ80Cpu {
         // find mtutor release level
         // unfortunately cdc put it in different places in different
         // releases - but only off by 1 byte.
-        int release = z80Memory.readByte(0x530b);  // release or year *y1*
+        int release = z80Memory.readByte(PortalConsts.MTUTLVL + 1);  // release or year *y1*
         if (release == 8)           // year *y1* 82 - 8?
-            release = z80Memory.readByte(0x530a);  // release
+            release = z80Memory.readByte(PortalConsts.MTUTLVL); 	 // release
         
         if (!parser.booted)
         	m_mtPLevel = release;
-        
-       // runs++;
         
         stopme = true;
         
@@ -265,17 +239,6 @@ public class PZ80Cpu {
         z80.setResetAddress(address);
         z80.setProgramCounter(address);	// where to start
   
-        /*
-		if (PortalConsts.is_threaded && !has_been_started)
-		{
-			has_been_started = true;
-			start();
-		}
-		else if (PortalConsts.is_threaded && has_been_started)
-			stopme = false;
-		else
-		
-		*/
 	    runZ80();	// Call the z80 exec loop controller
     }
     
@@ -286,7 +249,7 @@ public class PZ80Cpu {
      * That has been replaced with a new resident call that uses native waiting tech.
      * >> LevelNPause
      * 
-     * Calls the the resident r.exec entry point are skipped altogether >> NOOPs.
+     * Calls to the resident r.exec entry point are skipped altogether >> NOOPs.
      * 
      * Calls to the  SCREEN PRINT function are aborted.
      * 
@@ -311,12 +274,10 @@ public class PZ80Cpu {
         // so that's safe for us to use
     	z80Memory.writeByte(0x5d26,  0x10);
     	z80Memory.writeByte(0x5d27,  0x80);		// jmp just above interp
-    	
-
+    	// here is the patch
     	z80Memory.writeByte(0x8010, PortalConsts.CALL8080);
     	z80Memory.writeByte(0x8011, 0x2f);
     	z80Memory.writeByte(0x8012, 0x60);	// xplato
-
     	z80Memory.writeByte(0x8013, PortalConsts.JUMP8080);  // jmp
     	z80Memory.writeByte(0x8014, 0x22);
     	z80Memory.writeByte(0x8015, 0x5d);	// back to loop - getkey
@@ -350,9 +311,6 @@ public class PZ80Cpu {
     	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
     	z80Memory.writeWord(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
     	
-    	//z80Memory.writeWord(0x6958, 2);
-    	//z80Memory.writeWord(0x6962, 3);
-        
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
@@ -379,18 +337,17 @@ public class PZ80Cpu {
     {
         // color display
     	z80Memory.writeByte(0x66aa, PortalConsts.JUMP8080);
-    	z80Memory.writeByte(0x66ab, 0x00);
-    	z80Memory.writeByte(0x66ac, 0x80);         // color patch jump
+    	z80Memory.writeWord(0x66ab, 0x8000);		// color patch jump
 
+    	// The patch...
     	z80Memory.writeByte(0x8000, PortalConsts.CALL8080);
     	z80Memory.writeByte(0x8001, 0xb0);
     	z80Memory.writeByte(0x8002, 0x66);         // fcolor
-    	z80Memory.writeByte(0x8003, 0x21);
+    	z80Memory.writeByte(0x8003, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
     	z80Memory.writeByte(0x8004, 0x25);
     	z80Memory.writeByte(0x8005, 0x7d);         // floating acc
     	z80Memory.writeByte(0x8006, PortalConsts.CALL8080);
-    	z80Memory.writeByte(0x8007, 0x90);
-    	z80Memory.writeByte(0x8008, 0x00);         // r.fcolor + 2
+    	z80Memory.writeWord(0x8007, PortalConsts.R_FCOLOR + 2);
 
     	z80Memory.writeByte(0x8009, PortalConsts.CALL8080);
         z80Memory.writeByte(0x800a, low_getvar);
@@ -400,28 +357,26 @@ public class PZ80Cpu {
         z80Memory.writeByte(0x800d, 0xbd);
         z80Memory.writeByte(0x800e, 0x66);         // bcolor
 
-        z80Memory.writeByte(0x800f, 0x21);
+        z80Memory.writeByte(0x800f, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
         z80Memory.writeByte(0x8010, 0x25);
         z80Memory.writeByte(0x8011, 0x7d);         // floating acc
 
         z80Memory.writeByte(0x8012, PortalConsts.CALL8080);
-        z80Memory.writeByte(0x8013, 0x93);
-        z80Memory.writeByte(0x8014, 0x00);         // r.bcolor + 2
+        z80Memory.writeWord(0x8013, PortalConsts.R_BCOLOR + 2);
 
         z80Memory.writeByte(0x8015, PortalConsts.JUMP8080);
-        z80Memory.writeByte(0x8016, 0x52);
-        z80Memory.writeByte(0x8017, 0x61);         // pincg
+        z80Memory.writeWord(0x8016, PortalConsts.Level4MainLoop);
 
-                                    // paint - flood fill
-        z80Memory.writeByte(0x66c3, 0x20);
-        z80Memory.writeByte(0x66c4, 0x80);
+                                    // paint - flood fill patch
+        z80Memory.writeWord(0x66c3, 0x8020);
 
-        z80Memory.writeByte(0x8020, 0x21);
+        // paint patch
+        z80Memory.writeByte(0x8020, 0x21);			// ld hl,00
         z80Memory.writeByte(0x8021, 0);
         z80Memory.writeByte(0x8022, 0);
         z80Memory.writeByte(0x8023, PortalConsts.CALL8080);
-        z80Memory.writeByte(0x8024, 0x94);
-        z80Memory.writeByte(0x8025, 0x00);         // r.paint
+        z80Memory.writeWord(0x8024, PortalConsts.R_PAINT);
+
         z80Memory.writeByte(0x8026, PortalConsts.JUMP8080);
         z80Memory.writeByte(0x8027, 0x5d);
         z80Memory.writeByte(0x8028, 0x61);         // pinc1

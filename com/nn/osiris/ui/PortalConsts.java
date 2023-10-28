@@ -186,6 +186,9 @@ class PortalConsts
 	static final int SLIDEL = 0x20;
 	static final int SLIDEU = 0x21;
 	
+	
+	static final int MTUTLVL = 0x530a;
+	
 	// These used for patching levels of mtutor
 	static final int Level2Pause = 0x68d9;
 	static final int Level3Pause = 0x6978;
