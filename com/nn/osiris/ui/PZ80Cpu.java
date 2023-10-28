@@ -177,6 +177,15 @@ public class PZ80Cpu {
 	                }
 	                if (!test && !stopme)  //&& !giveupz80 )
 	                {
+	                	if (m_mtPLevel == 4 && z80.reg_PC == 0x5996 && in_mode6)  // return from mode 6 handler address
+	                	{
+	                		z80.RestoreState();
+	                		in_mode6 = false;
+	                		//System.out.println("Return from mode 6 data proc.  PC = " + z80.reg_PC);
+	                		if (z80.reg_PC == 61)
+	                			z80.reg_PC = 0x6152;
+	                	}
+	                	
 	                	z80.executeOneInstruction();	// finally we get to execute one z80 instruction
 	                }
 	                else
@@ -458,6 +467,10 @@ public class PZ80Cpu {
     		return x + 0x80;
     }
     
+    
+    
+    public boolean in_mode6 = false;
+    
  /** This emulates the "ROM resident".  Return values:
  // 0: PC is not special (not in resident), proceed normally.
  // 1: PC is ROM function entry point, it has been emulated,
@@ -476,7 +489,10 @@ public class PZ80Cpu {
     	{
     	
     	case PortalConsts.R_MAIN:
-    		sendKeysToPlato();
+        	//System.out.println("R_MAIN");
+    		mtutor_waiting = false;
+        	
+        	sendKeysToPlato();
     		return 2;
     	
     	case PortalConsts.R_INIT:
@@ -1019,7 +1035,7 @@ public class PZ80Cpu {
     	
     	
     	default: 
-        	System.out.println("------------------------NOT handled 0x" + String.format("%x", val));
+        	System.out.println("------------------------Resident R. routine NOT handled 0x" + String.format("%x", val));
         	mtutor_waiting = false;
         	sendKeysToPlato();
         	return 2;

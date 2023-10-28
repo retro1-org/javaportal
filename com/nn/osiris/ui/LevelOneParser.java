@@ -6948,12 +6948,15 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		
 		cpu.stopme = true;
 		
+		/*
 		if (PortalConsts.is_threaded)
 		{
 			for (int z = 0 ; z < 100000; z++)    // wait for stop
 				z++;
 			//cpu = new PZ80Cpu(cpu);
 		}
+		*/
+		
 		cpu.runWithMtutorCheck(cpu.z80Memory.readWord(origin));
 	}
 	
@@ -7006,15 +7009,29 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 *
 	 */
 
+	int m6cnt = 0;
+	
 	private final void UserData6()
 	{
-		int val = ExtractWord(0);
-
-		//System.out.println("UserData6:   Data: 0x" + String.format("%x",val));
-
-
-		cpu.z80.SaveState();
 		
+		//if (!cpu.in_r_exec)
+		//	return;
+		
+		int val = ExtractWord(0) & 0xffffff;
+
+		if (z80.reg_PC == PortalConsts.R_MAIN)
+		{
+		    // Push the fake return address for "return to main loop" onto the
+		    // stack, as if we just did a CALL instruction		
+			z80.setRegisterValue(RegisterNames.SP, PortalConsts.INITSP);
+			z80.push(PortalConsts.R_MAIN);
+		}
+		
+		
+		//System.out.println(++m6cnt + "  UserData6:   Data: 0x" + String.format("%x",val) + " C: " + ((val >> 16) & 0xff) + " D: "   + ((val >> 8) & 0xff) + " E: "   + ((val) & 0xff) + " PC = " + z80.reg_PC);
+
+		z80.SaveState();	// state includes PC and SP!!
+	
 		// Load C/D/E with data word
 		z80.setRegisterValue(RegisterNames.C, (val >> 16) & 0xff);
 		z80.setRegisterValue(RegisterNames.D, (val >> 8) & 0xff);
@@ -7023,16 +7040,15 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		   //// Push the return address onto the
 		   //// stack, as if we just did a CALL instruction
 		
-		z80.push(z80.getProgramCounter());
 		int xaddr = cpu.z80Memory.readWord(PortalConsts.M6ORIGIN);
+		z80.reg_PC = xaddr;
 		
-		cpu.stopme = true;
+		cpu.in_mode6 = true;
 		
 		cpu.runWithMtutorCheck(xaddr);
 
-		cpu.z80.RestoreState();
+		cpu.in_mode6 = false;
 
-		cpu.runWithMtutorCheck(cpu.z80.reg_PC);
 	}
 
 	/**

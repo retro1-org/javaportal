@@ -11,7 +11,6 @@ package com.nn.osiris.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.lang.reflect.Constructor;
 import java.util.Vector;
 import javax.swing.*;
