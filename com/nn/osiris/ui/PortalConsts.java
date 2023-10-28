@@ -195,6 +195,11 @@ class PortalConsts
 	static final int Level3Xplato = 0x60d5;
 	static final int Level2Xplato = 0x602c;
 	
+	
+	static final int Level4Mode6Ret = 0x5996;
+	static final int Level4MainLoop = 0x6152;
+	
+	
 	static final int CALL8080 = 0xcd;
 	static final int JUMP8080 = 0xc3;
 	static final int RET8080 =  0xc9;

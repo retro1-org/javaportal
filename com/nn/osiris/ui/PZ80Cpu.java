@@ -177,51 +177,24 @@ public class PZ80Cpu {
 	                }
 	                if (!test && !stopme)  //&& !giveupz80 )
 	                {
-	                	if (m_mtPLevel == 4 && z80.reg_PC == 0x5996 && in_mode6)  // return from mode 6 handler address
+	                	// Special checks for return from mode six data handler
+	                	if (m_mtPLevel == 4 && z80.reg_PC == PortalConsts.Level4Mode6Ret && in_mode6)  // return from mode 6 handler address
 	                	{
 	                		z80.RestoreState();
 	                		in_mode6 = false;
-	                		//System.out.println("Return from mode 6 data proc.  PC = " + z80.reg_PC);
-	                		if (z80.reg_PC == 61)
-	                			z80.reg_PC = 0x6152;
+	                		if (z80.reg_PC == PortalConsts.R_MAIN) 			// Mtutor no longer running	
+	                			z80.reg_PC = PortalConsts.Level4MainLoop;	// it back in main loop!
 	                	}
-	                	
+//	                	int xaddr = z80Memory.readWord(PortalConsts.M6ORIGIN);
+//	                	xaddr = z80Memory.readWord(xaddr);
+//	            		System.out.println(xaddr);
+	            		
 	                	z80.executeOneInstruction();	// finally we get to execute one z80 instruction
 	                }
 	                else
-	                	
-	                	/*
-	                	
-	                	// for threading instead of a break we should be in a sleep loop here until stopme is false again
-	                	
-	                	if (PortalConsts.is_threaded)
-	                	{
-	                		if (stopme)
-	                		{
-	                	        tstates = z80.getTStates();
-	                	        z80.resetTStates();
-	                	       // System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread waiting... waiting PC= "+String.format("%x", pc) + "    TStates= " + tstates + "  debug= " +runs);
-	                	    	//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>===========Threads copied: "+threadsCopied);
-
-	                		}
-	            	        restoreParserState();
-
-	                		while (stopme)
-	                		{
-	                			//sleep(50);
-	                		}
-	            	        //long tstates = z80.getTStates();
-	            	        z80.resetTStates();
-	            	        System.out.println(">>>>>>>>>>>>>>>>>>>>>  Z80 thread continuing...PC= "+String.format("%x", pc));
-	                		
-	            	        saveParserState();	            	        
-	            	        continue;
-	                	}
-	                	else
-	                	*/
-	                	
-	                		break;
-	                
+	                {
+	                	break;
+	                }
 	                
 	            } catch (Exception e) {
 	                System.out.println("Z80 Hardware crash, oops! " + e.getMessage());
@@ -282,7 +255,7 @@ public class PZ80Cpu {
         switch (m_mtPLevel)
         {
         case 2: PatchL2 (); break;
-        case 3: PatchL3 (); break;
+        case 3: break; //PatchL3 (); break;
         case 4: PatchL4 (); break;
         case 5: break; // PatchL5 (); break;
         case 6: break; // PatchL6 (); break;
@@ -827,28 +800,12 @@ public class PZ80Cpu {
  
         	parser.do_repaint = true;		// tell the caller to repaint screen
     		
-//        	int HL = z80.getRegisterValue(RegisterNames.HL);
- 
-    		int ram = z80Memory.readWord(0x6962);
-    		
-    		
     		try {
 				Thread.sleep(8);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		   		
-  /*  		
-    		long start_time = System.nanoTime();
-    		System.out.println(++runs);
-    		while ((System.nanoTime() - start_time) < 150000)
-    		{
-    			;
-    		}
-
-*/
-    		
     		
     		return 1;
    

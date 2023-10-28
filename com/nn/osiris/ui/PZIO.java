@@ -22,10 +22,10 @@ public class PZIO implements IBaseDevice {
     private int m_mtDiskUnit = 0;
     private int m_mtDiskTrack;
     private int m_mtDiskSector;
-    // private int m_mtDisk1;
-    //private int m_mtDisk2;
-    //private int m_mtDiskCheck1;
-    //private int m_mtDiskCheck2;
+    private int m_mtDisk1;
+    private int m_mtDisk2;
+    private int m_mtDiskCheck1;
+    private int m_mtDiskCheck2;
     private long m_mtSeekPos;
     private boolean m_clockPhase = true;
     private int m_mtDataPhase;
@@ -220,16 +220,16 @@ public class PZIO implements IBaseDevice {
     	                       m_mtDiskSector = acc;
     	                       break;
     	                   case 4:
-    	                       //m_mtDisk1 = acc;
+    	                       m_mtDisk1 = acc;
     	                       break;
     	                   case 5:
-    	                       //m_mtDisk2 = acc;
+    	                       m_mtDisk2 = acc;
     	                       break;
     	                   case 6:
-    	                       //m_mtDiskCheck1 = acc;
+    	                       m_mtDiskCheck1 = acc;
     	                       break;
     	                   case 7: // 128 bytes/sector plus two check bytes
-    	                       //m_mtDiskCheck2 = acc;
+    	                       m_mtDiskCheck2 = acc;
 
     	                	   // Do a seek on the disk
     	                       m_mtSeekPos = (128 * 64 * m_mtDiskTrack) + (128 * (m_mtDiskSector-1));
@@ -266,10 +266,10 @@ public class PZIO implements IBaseDevice {
     	                   m_mtDiskSector = acc;
     	                   break;
     	               case 4:
-    	                   //m_mtDisk1 = acc;
+    	                   m_mtDisk1 = acc;
     	                   break;
     	               case 5:
-    	                   //m_mtDisk2 = acc;
+    	                   m_mtDisk2 = acc;
     	                   break;
     	               default:
     	                   m_MTDisk[m_mtDiskUnit & 1].Format();
