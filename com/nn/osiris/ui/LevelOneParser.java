@@ -11232,10 +11232,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	public void ControlKeyDown (KeyEvent e)
 	{
-	boolean	shift = e.isShiftDown();
-	int z = e.getKeyCode();
-	
-//	System.out.println(z);
+		boolean	shift = e.isShiftDown();
+		int z = e.getKeyCode();
 	
 		switch (z)
 		{
@@ -11433,6 +11431,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				break;
 			case KeyEvent.VK_ADD:
 				SendKey(KEY_SIGMA);
+				break;
+			
+			case KeyEvent.VK_F1:
+				printScreen();
 				break;
 		}
 	}
