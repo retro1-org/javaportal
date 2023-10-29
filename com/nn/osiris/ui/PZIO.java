@@ -199,7 +199,7 @@ public class PZIO implements IBaseDevice {
     	       case 0x2b:
     	           break;
 
-    	       case 0xab:  // new in level 4
+    	       case 0xab:  // new in level 4 - related to screen printing?
 
     	           break;
 
