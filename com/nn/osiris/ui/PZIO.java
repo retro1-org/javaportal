@@ -37,9 +37,15 @@ public class PZIO implements IBaseDevice {
     /**
      * Represents the two possible cdc-110 disk drives
      */
-    public MTDisk[] m_MTDisk = new MTDisk[2];
+    private MTDisk[] m_MTDisk = new MTDisk[2];
 //    private boolean m_floppy0;
 //    private boolean m_floppy1;
+    
+    
+    public MTDisk[] m_MTDisk()
+    {
+    	return m_MTDisk;
+    }
     
     public void Init(PZ80Cpu cpu)
     {

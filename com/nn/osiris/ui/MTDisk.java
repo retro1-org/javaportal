@@ -110,7 +110,7 @@ public class MTDisk {
 				for (int bytes = 0; bytes < 128; bytes++)
 				{
 					mybyte = ReadByte();
-					cpu.z80Memory.writeByte(addr++, mybyte);
+					cpu.z80Memory().writeByte(addr++, mybyte);
 				}
 				// omit check bytes
 				mybyte = ReadByte();

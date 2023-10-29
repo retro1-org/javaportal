@@ -111,7 +111,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		data_pnt = 0;
   		data_proc = TTYDataMode;
 
-  		need_title = true;
+//  		need_title = true;
 
   		font_height = 16;
 		
@@ -443,7 +443,6 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private long rstartu;
 	/** The student variables for the session. */
 	private long[] student_variables;	
-
 	
 	public PZ80Cpu cpu;
 	public Z80Core z80;
@@ -652,7 +651,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private int skipper = 0;	// for time slicing the z80 
 	public long z80_loops;		// instructions per Z80 time slice
 	
-	private boolean need_title = true;
+//	private boolean need_title = true;
 	
 	public byte m_indev = 0;
 	public byte m_outdev = 0;
@@ -2192,7 +2191,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			b = buffer[offset + (i++)] & 0xff;
 			c = b & 0x7f;
 		
-			if (cpu != null && cpu.mtutor_waiting && !cpu.in_r_exec)
+			if (cpu != null && cpu.mtutor_waiting() && !cpu.in_r_exec)
 			{
 				return 1;
 			}
@@ -2246,7 +2245,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			levelone_container.repaint();
 		}
 		
-		if (cpu != null && cpu.mtutor_waiting && (++skipper % skipper_mod) == 0)	//   does the z80 need the cpu?
+		if (cpu != null && cpu.mtutor_waiting() && (++skipper % skipper_mod) == 0)	//   does the z80 need the cpu?
 		{
 			skipper = 0;
 			
@@ -2263,7 +2262,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			cpu = new PZ80Cpu();
 			cpu.Init(this);
-			z80 = cpu.z80;			// shortcut
+			z80 = cpu.z80();			// shortcut
 		}
 		
 		return i;
@@ -2285,7 +2284,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		if (true)
 		{
 			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host);
-			need_title = false;
+			//need_title = false;
 		}
 
 		if ( cmd_pending && ESC != c)
@@ -3029,7 +3028,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		if ( (value & 0x0100)==0x0100 && key2mtutor())		// mtutor touch key
 		{
- 			cpu.keyBuffer.Enqueue(transmit_buffer, 0, 3);
+ 			cpu.keyBuffer().Enqueue(transmit_buffer, 0, 3);
 		} 
 		if	(null != levelone_network)
 			levelone_network.write (transmit_buffer,0, 3);
@@ -6617,12 +6616,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				
 				cpu = new PZ80Cpu();
 				cpu.Init(this);
-				z80 = cpu.z80;			// shortcut
+				z80 = cpu.z80();			// shortcut
 			}
 
 			int val = ExtractWord ( 0);
 			
-			cpu.z80Memory.writeWord(mem_addr, val);
+			cpu.z80Memory().writeWord(mem_addr, val);
 		
 		}
 		else
@@ -6635,10 +6634,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				
 				cpu = new PZ80Cpu();
 				cpu.Init(this);
-				z80 = cpu.z80;			// shortcut
+				z80 = cpu.z80();			// shortcut
 			}
 			
-			cpu.z80Memory.writeWord(mem_addr, val);
+			cpu.z80Memory().writeWord(mem_addr, val);
 			
 			//System.out.println("LoadMEM at: 0x" + String.format("%x",mem_addr) + "   Data: 0x" + String.format("%x",val));
 			mem_addr += 2;
@@ -6856,7 +6855,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 		*/
 		
-		cpu.runWithMtutorCheck(cpu.z80Memory.readWord(origin));
+		cpu.runWithMtutorCheck(cpu.z80Memory().readWord(origin));
 	}
 	
 	/**
@@ -6888,7 +6887,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		   //// stack, as if we just did a CALL instruction
 		
 		z80.push(z80.getProgramCounter());
-		int xaddr = cpu.z80Memory.readWord(PortalConsts.M5ORIGIN);
+		int xaddr = cpu.z80Memory().readWord(PortalConsts.M5ORIGIN);
 		
 		cpu.stopme = true;
 		
@@ -6939,7 +6938,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		   //// Push the return address onto the
 		   //// stack, as if we just did a CALL instruction
 		
-		int xaddr = cpu.z80Memory.readWord(PortalConsts.M6ORIGIN);
+		int xaddr = cpu.z80Memory().readWord(PortalConsts.M6ORIGIN);
 		z80.reg_PC = xaddr;
 		
 		cpu.in_mode6 = true;
@@ -10431,7 +10430,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		if(key2mtutor())
 		{
-			cpu.keyBuffer.Enqueue(transmit_buffer, 0, count);
+			cpu.keyBuffer().Enqueue(transmit_buffer, 0, count);
 		}
 		else if (!lw_suppress)
 		{
@@ -11203,7 +11202,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		if (cpu != null && cpu.key2mtutor())
 		{
 			transmit_buffer[0] = (byte) key;
-			cpu.keyBuffer.Enqueue(transmit_buffer, 0, 1);
+			cpu.keyBuffer().Enqueue(transmit_buffer, 0, 1);
 			return;
 		}
 		

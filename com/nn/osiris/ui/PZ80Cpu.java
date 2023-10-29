@@ -25,31 +25,59 @@ import com.codingrodent.microprocessor.Z80.CPUConstants.*;
  */
 public class PZ80Cpu {
     /** z80 cpu */
-	public Z80Core z80;
+	private Z80Core z80;
 	/** ram for z80 */
-    public PZMemory z80Memory;
+    private PZMemory z80Memory;
     /** IO for the z80 */
-    public PZIO z80IO;
+    private PZIO z80IO;
     /** LevelOneParser that owns us */
-    public LevelOneParser parser;
+    private LevelOneParser parser;
     /** mtutor level of the interpreter */
-    public int m_mtPLevel = 0;
-    /** flag indicating z80 should stop */ 
-    public boolean stopme;
-    /** is mtutor running flag */
-    public boolean mtutor_waiting = false;
-    
+    private int m_mtPLevel = 0;
     /** internal stop processing flag for z80 - */
     private boolean giveupz80;
     /** internal counter */
+    /** is mtutor running flag */
+    private boolean mtutor_waiting = false;
+
     private int m_mtincnt = 0;
     
     private int r_execs = 0;
     
-    public boolean in_r_exec = false;
-    
     /** circular buffer for accumulating keys */
-    public CircularBuffer keyBuffer;
+    private CircularBuffer keyBuffer;
+    
+    /** flag indicating z80 should stop */ 
+    public boolean stopme;
+    
+    public boolean in_r_exec = false;
+
+    /** The following are read only outside of this class.  Provide access... */
+    
+    public boolean mtutor_waiting()
+    {
+    	return mtutor_waiting;
+    }
+
+    public CircularBuffer keyBuffer()
+    {
+    	return keyBuffer;
+    }
+    
+    public PZIO z80IO()
+    {
+    	return z80IO;
+    }
+
+    public Z80Core z80()
+    {
+    	return z80;
+    }
+    
+    public PZMemory z80Memory()
+    {
+    	return z80Memory;
+    }
     
     /** translates portal (non flow control) keys to mtutor keys */
     private static final long[] portalToMTutor = new long[]		
@@ -1239,20 +1267,20 @@ public class PZ80Cpu {
 		
 			MTDisk myFile = new MTDisk(fn);
 			
-			if (this.z80IO.m_MTDisk[0] != null)
+			if (this.z80IO.m_MTDisk()[0] != null)
 			{
-				this.z80IO.m_MTDisk[0].Close();
+				this.z80IO.m_MTDisk()[0].Close();
 			}
 			
-			this.z80IO.m_MTDisk[0] = myFile;
+			this.z80IO.m_MTDisk()[0] = myFile;
     	}
 
     	
-		int it = this.z80IO.m_MTDisk[0].ReadByte(25);
+		int it = this.z80IO.m_MTDisk()[0].ReadByte(25);
 		
 		if (it == 0)
 			return false;   // no router set
-		m_mtPLevel = this.z80IO.m_MTDisk[0].ReadByte(36);
+		m_mtPLevel = this.z80IO.m_MTDisk()[0].ReadByte(36);
 		int readnum = 0;  	// lth of interp in sectors
 		
 
@@ -1277,7 +1305,7 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!this.z80IO.m_MTDisk[0].ReadSectorsForBoot(PortalConsts.MTutorLoad, PortalConsts.MTutorOffset, readnum, this))	// read interp to ram
+		if (!this.z80IO.m_MTDisk()[0].ReadSectorsForBoot(PortalConsts.MTutorLoad, PortalConsts.MTutorOffset, readnum, this))	// read interp to ram
 			return false;
 
 		parser.needToBoot = false; 
