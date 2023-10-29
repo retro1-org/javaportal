@@ -185,7 +185,9 @@ class PortalConsts
 	
 	// These used for patching levels of mtutor
 
-	static final int MTUTLVL = 0x530a;
+	static final int CALL8080 = 0xcd;
+	static final int JUMP8080 = 0xc3;
+	static final int RET8080 =  0xc9;
 
 	static final int Level2Pause = 0x68d9;
 	static final int Level3Pause = 0x6978;
@@ -196,16 +198,35 @@ class PortalConsts
 	static final int Level4Xplato = 0x6061;
 	static final int Level3Xplato = 0x60d5;
 	static final int Level2Xplato = 0x602c;
+
+	/**
+	 * GetVar address in levels 4, 5, 6 of Mtutor
+	 */
+	static final int Level4GetVar = 0x71e5;
+	static final int Level56GetVar = 0x71eb;
 	
-	
+	/**
+	 * Misc addresses in levels 4, 5, 6 of Mtutor
+	 */
 	static final int Level4Mode6Ret = 0x5996;
 	static final int Level4MainLoop = 0x6152;
 	static final int Level4MainLoopPlus = 0x615d;
 
-	static final int FLOATACC = 0x7d25;
-
-	static final int CALL8080 = 0xcd;
-	static final int JUMP8080 = 0xc3;
-	static final int RET8080 =  0xc9;
+/**	
+ *  RAM fwa of Mtutor floating point accumulator - 6 bytes long, 48 bits
+ *  
+ *	floating point format -           
+ *	                                   
+ *	1st  01 bits = mantissa sign      
+ *	 next 15      = biased exponent    
+ *	 next 32      = unsigned mantissa 
+ */
+	static final int FLOATACC = 0x7d25;	
 	
+	static final int MTutorLoad = 0x5300;		// MTutor RAM load address
+	static final int MTutorOffset = 0x5400;		// MTutor offset on disk
+	static final int MTutorBoot = 0x5306; 		// Boot RAM address for MTutor
+	
+	static final int MTUTLVL = 0x530a;			// base address in RAM of MTutor level
+
 }

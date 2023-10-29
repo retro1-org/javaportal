@@ -171,11 +171,11 @@ public class PZ80Cpu {
 	                if (!test && !stopme)  //&& !giveupz80 )
 	                {
 	                	// Special checks for return from mode six data handler
-	                	if (m_mtPLevel == 4 && z80.reg_PC == PortalConsts.Level4Mode6Ret && in_mode6)  // return from mode 6 handler address
+	                	if ( in_mode6 && z80.reg_PC == PortalConsts.Level4Mode6Ret && m_mtPLevel > 3 )  // return from mode 6 handler address
 	                	{
 	                		z80.RestoreState();
 	                		in_mode6 = false;
-	                		if (z80.reg_PC == PortalConsts.R_MAIN) 			// Mtutor no longer running	
+	                		if (z80.reg_PC == PortalConsts.R_MAIN) 			// Mtutor no longer running!
 	                			z80.reg_PC = PortalConsts.Level4MainLoop;	// put it back in main loop!
 	                	}
 	            		
@@ -318,7 +318,7 @@ public class PZ80Cpu {
         // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
 
-        PatchColor (0x71e5);
+        PatchColor (PortalConsts.Level4GetVar);
     }
     
     /**
@@ -338,7 +338,7 @@ public class PZ80Cpu {
         // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
 
-        PatchColor (0x71eb);
+        PatchColor (PortalConsts.Level56GetVar);
     }
 
     /**
@@ -358,7 +358,7 @@ public class PZ80Cpu {
         // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
 
-        PatchColor (0x71eb);
+        PatchColor (PortalConsts.Level56GetVar);
     }
 
     
@@ -430,8 +430,6 @@ public class PZ80Cpu {
     	else
     		return x + 0x80;
     }
-    
-    
     
     public boolean in_mode6 = false;
     
@@ -645,10 +643,10 @@ public class PZ80Cpu {
         	return 1;
     		
         case PortalConsts.R_GJOB:
-            return 1;
+            return 1;				// noop
             
         case PortalConsts.R_XJOB:
-            return 1;
+        	return 1;				// noop
     		
     	case PortalConsts.R_INPX:
         	z80.setRegisterValue(RegisterNames.HL, parser.current_x);
@@ -660,7 +658,6 @@ public class PZ80Cpu {
     		
     	case PortalConsts.R_OUTX:
         	parser.current_x = z80.getRegisterValue(RegisterNames.HL);
-//        	parser.text_margin = parser.current_x;
         	return 1;
         	
     	case PortalConsts.R_OUTY:
@@ -674,17 +671,13 @@ public class PZ80Cpu {
             byte temp_hold = getM_KSW();
             if (k != 0x3a)
                 setM_KSW(0);
- 
-            //System.out.print("XMIT: " + String.format("%h", k)+"  count: " + ++xmits);
-            
             
         	parser.SendRawKey(0x1b);
         	
         	x = Parity(0x40+(k & 0x3f));
-            //System.out.print("  >>   1: " + String.format("%h", (k & 0x3f)));
         	parser.SendRawKey(x);
+
         	x = Parity(0x60+(k >> 6));
-            //System.out.println("  >>   2: " + String.format("%h", (k >> 6)));
         	parser.SendRawKey(x);
         	
         	setM_KSW(temp_hold);   
@@ -705,7 +698,6 @@ public class PZ80Cpu {
     			z80.setRegisterValue(RegisterNames.HL, -1);
     			return 1;
     		}
-//			System.out.println("------------------------R_INPUT pre-key: " + mkey);
     		
     		if ((mkey & 0xff) < 128)
     		{
@@ -725,9 +717,7 @@ public class PZ80Cpu {
     				}
     			}
     			
-    			
     			mkey = portalToMTutor[(int)mkey];
-//    			System.out.println("------------------------R_INPUT post-key: " + mkey);
 
     			if (mkey != -1)
     			{
@@ -801,25 +791,9 @@ public class PZ80Cpu {
     		return 1;
    
        	case PortalConsts.R_WAIT16 + 1:
-       		/*
-       		       		try {
-       						Thread.sleep(15);
-       					} catch (InterruptedException e) {
-       						// TODO Auto-generated catch block
-       						e.printStackTrace();
-       					}
-       		   */ 		
        		    		return 1;
     		
        	case PortalConsts.R_WAIT16 + 2:
-       		/*
-       		       		try {
-       						Thread.sleep(15);
-       					} catch (InterruptedException e) {
-       						// TODO Auto-generated catch block
-       						e.printStackTrace();
-       					}
-       		   */ 		
        		    		return 1;
        	
        	case PortalConsts.R_CHRCV: 
@@ -880,37 +854,8 @@ public class PZ80Cpu {
                m_mtincnt++;            // rotating selection of 3 possible responses
                                        // mtutor tries many times
            }
-/*           
-	        switch(ssftype)
-	   		{
-	   			// Slide projector functions (ignored).
-	   			case 0:
-	   				break;
-	   			// Set interrupt mask (touch enable/disable).
-	   			case 1:
-	   				if ((n & 0x20) != 0)
-	   				{
-	   					if (!parser.is_touch_enabled)
-	   						parser.is_touch_enabled = true;
-	   				}
-	   				else if (parser.is_touch_enabled)
-	   				{
-	   					parser.is_touch_enabled = false;
-	   				}
-	   				break;
-	   			// Select input/output.
-	   			default:
-	   				if ((n & 0x0200) == 0)
-	   				{
-	   					//ext_device = ssftype;
-	   	//				if ( 0 == ( word & 0x0100))
-	   	//					ExtData ( word & 0xff);
-	   				}
-	   				break;
-	   		}
- */          
+
            // I think this switch is PTerm specific   will leave for now
-           
            switch (n)
            {
            case 0x1f00:    // xin 7; means start CWS functions
@@ -942,11 +887,6 @@ public class PZ80Cpu {
            }
     	}
             
-            //System.out.println("------------------------R_SSF HL: 0x" + String.format("%x", hl));
-    		// 
-            //System.out.println("------------------------NOT handled R_SSF");
-        	//mtutor_waiting = false;
-        	//sendKeysToPlato();
     		return 1;
     		
     	case PortalConsts.R_PAINT:
@@ -988,7 +928,6 @@ public class PZ80Cpu {
         	sendKeysToPlato();
         	return 2;
     	}
-    	
     }
  
     /*
@@ -1013,7 +952,6 @@ public class PZ80Cpu {
 
         return new Color(red, green, blue);
     }
-
     
     // get resident status byte
     public byte getM_KSW()
@@ -1050,6 +988,8 @@ public class PZ80Cpu {
     	val |= 1;
     	z80Memory.writeByte(PortalConsts.M_KSW, val);
     }
+
+    /*
     
     private void CharTest()
     {
@@ -1085,6 +1025,7 @@ public class PZ80Cpu {
             lth = 0;              	
         }
     }
+    */
     
    //  index position is char code, value is index into M table
     
@@ -1245,6 +1186,14 @@ public class PZ80Cpu {
     	parser.text_margin = text_margin;
     }
     
+    
+    /**
+     * Boot to Micro-Tutor
+     * 
+     * 
+     * @param fn - filename/path of virtual disk file
+     * @return
+     */
     public boolean BootMtutor(String fn)
     {
     	if (fn != null)
@@ -1296,7 +1245,7 @@ public class PZ80Cpu {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!this.z80IO.m_MTDisk[0].ReadSectorsForBoot(0x5300, 21504, readnum, this))	// read interp to ram
+		if (!this.z80IO.m_MTDisk[0].ReadSectorsForBoot(PortalConsts.MTutorLoad, PortalConsts.MTutorOffset, readnum, this))	// read interp to ram
 			return false;
 
 		parser.needToBoot = false; 
@@ -1305,7 +1254,7 @@ public class PZ80Cpu {
 		((PortalFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Micro-Tutor");
 		
 		this.z80.reset();
-		runWithMtutorCheck(0x5306);  					// f.inix - boot entry point
+		runWithMtutorCheck(PortalConsts.MTutorBoot);  	// f.inix - boot entry point
 
 		return true;
     }
