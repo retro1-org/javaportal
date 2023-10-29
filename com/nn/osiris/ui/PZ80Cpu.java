@@ -229,10 +229,10 @@ public class PZ80Cpu {
         switch (m_mtPLevel)
         {
         case 2: PatchL2 (); break;
-        case 3: break; //PatchL3 (); break;
+        case 3: PatchL3 (); break;
         case 4: PatchL4 (); break;
-        case 5: break; // PatchL5 (); break;
-        case 6: break; // PatchL6 (); break;
+        case 5: PatchL5 (); break;
+        case 6: PatchL6 (); break;
         default: break;
         }
         
@@ -272,15 +272,14 @@ public class PZ80Cpu {
         // patch xerror tight getkey loop problem in mtutor
         // top 32K of ram was for memory mapped video on ist 2/3
         // so that's safe for us to use
-    	z80Memory.writeByte(0x5d26,  0x10);
-    	z80Memory.writeByte(0x5d27,  0x80);		// jmp just above interp
+    	z80Memory.writeWord(0x5d26,  0x8010);	// jmp just above interp
+    	
     	// here is the patch
     	z80Memory.writeByte(0x8010, PortalConsts.CALL8080);
-    	z80Memory.writeByte(0x8011, 0x2f);
-    	z80Memory.writeByte(0x8012, 0x60);	// xplato
+    	z80Memory.writeWord(0x8011, 0x602f);	// xplato
+
     	z80Memory.writeByte(0x8013, PortalConsts.JUMP8080);  // jmp
-    	z80Memory.writeByte(0x8014, 0x22);
-    	z80Memory.writeByte(0x8015, 0x5d);	// back to loop - getkey
+    	z80Memory.writeWord(0x8014, 0x5d22);// back to loop - getkey
     }
 
     /**
@@ -297,7 +296,7 @@ public class PZ80Cpu {
         // was a z80 jr - 2 bytes only
     	z80Memory.writeWord(PortalConsts.Level3Xplato,  0);
     	
-        //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
+        // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x600d, PortalConsts.RET8080);  // z80 ret
     }
 
@@ -316,13 +315,52 @@ public class PZ80Cpu {
         // was a z80 jr - 2 bytes only
     	z80Memory.writeWord(PortalConsts.Level4Xplato,  0);
     	
-        //RAM[0x5f5c] = RET8080;  // ret to disable ist-3 screen print gunk
+        // ret to disable ist-3 screen print gunk
     	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
 
-        PatchColor (0xe5);
+        PatchColor (0x71e5);
     }
     
-    
+    /**
+     * Patch Level 5 mtutor
+     */
+    void PatchL5 ()
+    {
+        // Call resident for brief pause
+    	z80Memory.writeByte(PortalConsts.Level56Pause, PortalConsts.CALL8080);
+    	z80Memory.writeWord(PortalConsts.Level56Pause + 1, PortalConsts.R_WAIT16);
+    	
+        // remove off-line check for calling r.exec - 
+        // only safe place to give up control..  
+        // was a z80 jr - 2 bytes only
+    	z80Memory.writeWord(PortalConsts.Level56Xplato,  0);
+    	
+        // ret to disable ist-3 screen print gunk
+    	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
+
+        PatchColor (0x71eb);
+    }
+
+    /**
+     * Patch Level 6 mtutor
+     */
+    void PatchL6 ()
+    {
+        // Call resident for brief pause
+    	z80Memory.writeByte(PortalConsts.Level56Pause, PortalConsts.CALL8080);
+    	z80Memory.writeWord(PortalConsts.Level56Pause + 1, PortalConsts.R_WAIT16);
+    	
+        // remove off-line check for calling r.exec - 
+        // only safe place to give up control..  
+        // was a z80 jr - 2 bytes only
+    	z80Memory.writeWord(PortalConsts.Level56Xplato,  0);
+    	
+        // ret to disable ist-3 screen print gunk
+    	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
+
+        PatchColor (0x71eb);
+    }
+
     
     /**
      * 
@@ -333,33 +371,30 @@ public class PZ80Cpu {
      * in z80 code
      * 
      */
-    void PatchColor(int low_getvar)
+    void PatchColor(int getvar)
     {
         // color display
-    	z80Memory.writeByte(0x66aa, PortalConsts.JUMP8080);
-    	z80Memory.writeWord(0x66ab, 0x8000);		// color patch jump
+    	z80Memory.writeByte(0x66aa, PortalConsts.JUMP8080); // jump to hi mem patch
+    	z80Memory.writeWord(0x66ab, 0x8000);				// color patch jump
 
     	// The patch...
     	z80Memory.writeByte(0x8000, PortalConsts.CALL8080);
-    	z80Memory.writeByte(0x8001, 0xb0);
-    	z80Memory.writeByte(0x8002, 0x66);         // fcolor
+    	z80Memory.writeWord(0x8001, 0x66b0);		// fcolor
+
     	z80Memory.writeByte(0x8003, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
-    	z80Memory.writeByte(0x8004, 0x25);
-    	z80Memory.writeByte(0x8005, 0x7d);         // floating acc
+    	z80Memory.writeWord(0x8004, PortalConsts.FLOATACC);
+
     	z80Memory.writeByte(0x8006, PortalConsts.CALL8080);
     	z80Memory.writeWord(0x8007, PortalConsts.R_FCOLOR + 2);
 
     	z80Memory.writeByte(0x8009, PortalConsts.CALL8080);
-        z80Memory.writeByte(0x800a, low_getvar);
-        z80Memory.writeByte(0x800b, 0x71);         // getvar
+        z80Memory.writeWord(0x800a, getvar);
 
         z80Memory.writeByte(0x800c, PortalConsts.CALL8080);
-        z80Memory.writeByte(0x800d, 0xbd);
-        z80Memory.writeByte(0x800e, 0x66);         // bcolor
+        z80Memory.writeWord(0x800d, 0x66bd);		// bcolor
 
         z80Memory.writeByte(0x800f, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
-        z80Memory.writeByte(0x8010, 0x25);
-        z80Memory.writeByte(0x8011, 0x7d);         // floating acc
+        z80Memory.writeWord(0x8010, PortalConsts.FLOATACC);
 
         z80Memory.writeByte(0x8012, PortalConsts.CALL8080);
         z80Memory.writeWord(0x8013, PortalConsts.R_BCOLOR + 2);
@@ -367,19 +402,20 @@ public class PZ80Cpu {
         z80Memory.writeByte(0x8015, PortalConsts.JUMP8080);
         z80Memory.writeWord(0x8016, PortalConsts.Level4MainLoop);
 
-                                    // paint - flood fill patch
-        z80Memory.writeWord(0x66c3, 0x8020);
+        ////////////////////////////////////////////////////////
+        
+        // paint - flood fill patch
+        z80Memory.writeWord(0x66c3, 0x8020);		// jump to hi mem patch
 
         // paint patch
         z80Memory.writeByte(0x8020, 0x21);			// ld hl,00
-        z80Memory.writeByte(0x8021, 0);
-        z80Memory.writeByte(0x8022, 0);
+        z80Memory.writeWord(0x8021, 0);
+
         z80Memory.writeByte(0x8023, PortalConsts.CALL8080);
         z80Memory.writeWord(0x8024, PortalConsts.R_PAINT);
 
         z80Memory.writeByte(0x8026, PortalConsts.JUMP8080);
-        z80Memory.writeByte(0x8027, 0x5d);
-        z80Memory.writeByte(0x8028, 0x61);         // pinc1
+        z80Memory.writeWord(0x8027, PortalConsts.Level4MainLoopPlus);
     }
     
     
