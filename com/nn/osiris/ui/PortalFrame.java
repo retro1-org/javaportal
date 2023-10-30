@@ -1262,10 +1262,10 @@ public class PortalFrame
 			if (currentPanel().level_one_parser.cpu != null)
 			{
 				LevelOneParser p = currentPanel().level_one_parser;
-				if (p.cpu.z80IO.m_MTDisk[0] != null)
-					p.cpu.z80IO.m_MTDisk[0].Close();
-				if (p.cpu.z80IO.m_MTDisk[1] != null)
-					p.cpu.z80IO.m_MTDisk[1].Close();
+				if (p.cpu.z80IO().m_MTDisk()[0] != null)
+					p.cpu.z80IO().m_MTDisk()[0].Close();
+				if (p.cpu.z80IO().m_MTDisk()[1] != null)
+					p.cpu.z80IO().m_MTDisk()[1].Close();
 			}
 
 			currentPanel().endSession();
@@ -1526,11 +1526,11 @@ public class PortalFrame
 	
 			String disk0 = "";
 			String disk1 = "";
-			if (lop.cpu != null && lop.cpu.z80IO.m_MTDisk[0] != null)
-				disk0 = lop.cpu.z80IO.m_MTDisk[0].GetFileName();
+			if (lop.cpu != null && lop.cpu.z80IO().m_MTDisk()[0] != null)
+				disk0 = lop.cpu.z80IO().m_MTDisk()[0].GetFileName();
 			
-			if (lop.cpu != null && lop.cpu.z80IO.m_MTDisk[1] != null)
-				disk1 = lop.cpu.z80IO.m_MTDisk[1].GetFileName();
+			if (lop.cpu != null && lop.cpu.z80IO().m_MTDisk()[1] != null)
+				disk1 = lop.cpu.z80IO().m_MTDisk()[1].GetFileName();
 			
 			JOptionPane.showMessageDialog(this,
 					"<html>Disk 0: " + disk0 + "<br>Disk1: " + disk1 +  "</html>",
@@ -1550,10 +1550,10 @@ public class PortalFrame
 	public void doEjectVDisk(int drive)
 	{
 		LevelOneParser lop = this.currentPanel().getParser();
-		if (lop != null && lop.cpu != null && lop.cpu.z80IO.m_MTDisk[drive] != null)
+		if (lop != null && lop.cpu != null && lop.cpu.z80IO().m_MTDisk()[drive] != null)
 		{
-			lop.cpu.z80IO.m_MTDisk[drive].Close();
-			lop.cpu.z80IO.m_MTDisk[drive] = null;
+			lop.cpu.z80IO().m_MTDisk()[drive].Close();
+			lop.cpu.z80IO().m_MTDisk()[drive] = null;
 		}
 	}
 	
@@ -1773,15 +1773,15 @@ public class PortalFrame
 				
 				MTDisk myFile = new MTDisk(it);
 				
-				if (this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] != null)
+				if (this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[0] != null)
 				{
-					this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0].Close();
+					this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[0].Close();
 				}
 				
-				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] = myFile;
+				this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[0] = myFile;
 
 				
-				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[0] = myFile;
+				this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[0] = myFile;
 
 				System.out.println(it + " loaded to drive 0!");
 
@@ -1827,15 +1827,15 @@ public class PortalFrame
 				
 				MTDisk myFile = new MTDisk(it);
 				
-				if (this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] != null)
+				if (this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[1] != null)
 				{
-					this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1].Close();
+					this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[1].Close();
 				}
 				
-				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] = myFile;
+				this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[1] = myFile;
 
 				
-				this.currentPanel().getParser().cpu.z80IO.m_MTDisk[1] = myFile;
+				this.currentPanel().getParser().cpu.z80IO().m_MTDisk()[1] = myFile;
 
 				System.out.println(it + " loaded to drive 1!");
 			}

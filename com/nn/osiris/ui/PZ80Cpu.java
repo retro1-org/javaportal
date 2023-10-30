@@ -37,7 +37,7 @@ public class PZ80Cpu {
     /** internal stop processing flag for z80 - */
     private boolean giveupz80;
     /** internal counter */
-    /** is mtutor running flag */
+    /** is mtutor/z80_program running/waiting flag */
     private boolean mtutor_waiting = false;
 
     private int m_mtincnt = 0;
@@ -217,19 +217,26 @@ public class PZ80Cpu {
     }
     
     /** 
-     * 
      * Do checks and setup before running the z80
-     * 
-     */
+     *
+	 * do checks here for patching the levels of MTUTOR -  then run
+	 *
+	 * find mtutor release level
+	 * unfortunately cdc put it in different places in different
+	 * releases - but only off by 1 byte.
+	 * 
+	 * WARNING *** WARNING *** WARNING!!!
+	 * 
+	 * WARNING - NON-MTutor user z80 programs MUST NOT use addresses
+	 * PortalConsts.MTUTLVL and PortalConsts.MTUTLVL+1 = 0x530a .. 0x530b.
+	 * Those locations should be 0 = noops.  Otherwise this code might think it
+	 * needs to patch MTutor!!
+	 * 
+	 * At least those locations MUST NOT contain: 2..6
+    */
     public void runWithMtutorCheck(int address)
     {
-    	/** do checks here for patching the levels of MTUTOR -  then run
-    	 *
-    	 * find mtutor release level
-    	 * unfortunately cdc put it in different places in different
-    	 * releases - but only off by 1 byte.
-         */
-        int release = z80Memory.readByte(PortalConsts.MTUTLVL + 1);  // release or year *y1*
+    	int release = z80Memory.readByte(PortalConsts.MTUTLVL + 1);  // release or year *y1*
         if (release == 8)           // year *y1* 82 - 8?
             release = z80Memory.readByte(PortalConsts.MTUTLVL); 	 // release
         
@@ -237,7 +244,7 @@ public class PZ80Cpu {
         	m_mtPLevel = release;
         
         /**
-         * There are some things in Mtutor interp. we need to patch for our
+         * There are some things in the Mtutor interpreter we need to patch for our
          * emulated environment.  Do that BEFORE allowing the Z80 to run it's 
          * time slice.
          */
@@ -672,7 +679,7 @@ public class PZ80Cpu {
     		}
     		return 1;
     		
-    	case PortalConsts.R_FCOLOR+1:		// using ascii commands
+    	case PortalConsts.R_FCOLOR+1:		// using ccode commands
     		{
     			int DE = z80.getRegisterValue(RegisterNames.DE);
     			int red  = z80Memory.readByte(DE++);
@@ -695,7 +702,7 @@ public class PZ80Cpu {
 		}
     		return 1;
     		
-    	case PortalConsts.R_BCOLOR+1:		// using ascii commands
+    	case PortalConsts.R_BCOLOR+1:		// using ccode commands
     		{
     			int DE = z80.getRegisterValue(RegisterNames.DE);
     			int red  = z80Memory.readByte(DE++);
@@ -736,6 +743,7 @@ public class PZ80Cpu {
     		return	1;
     		
     	case PortalConsts.R_DUMMY2 + 1:
+			ExtendMTutor();
     		return	1;
 
     	case PortalConsts.R_DUMMY2 + 2:
@@ -760,6 +768,38 @@ public class PZ80Cpu {
     	}
     }
 
+    /** Extend MTUTOR here.  -Offer-ing lesson mtutextN will provide ccode interface. */
+    private void ExtendMTutor()
+    {
+		int DE = z80.getRegisterValue(RegisterNames.DE);
+		int cmd  = z80Memory.readByte(DE++);	// first byte is command
+
+		switch(cmd)
+		{
+			case 1:			// Local font select
+				FontStyle(DE);
+				break;
+						
+			default: break;
+		}
+    }
+    
+    private void FontStyle(int DE)		// ccode  155,cmd, family where local vars are ==   i,8: cmd, family, size, bold, italic -- cmd = 1
+    {
+    	int family = z80Memory.readByte(DE++);
+    	int size = z80Memory.readByte(DE++);
+    	boolean bold = z80Memory.readByte(DE++) > 0;
+    	boolean italic = z80Memory.readByte(DE) > 0;
+    	
+    	int select = (family & 0x3f) << 12;
+    	select |= (size & 127);
+    	select |= bold ? 04000 : 0;
+    	select |= italic ? 02000 : 0;
+
+    	parser.FontSelect2(select);
+    }
+    	
+    
     /**
      * Plot chars for mode 3
      */
@@ -1161,6 +1201,7 @@ public class PZ80Cpu {
     private Color bg_color;
     
     private int text_margin;
+    private int text_style;
 
     
 	/** Current screen mode of terminal. */
@@ -1181,6 +1222,7 @@ public class PZ80Cpu {
     private Color Rbg_color;
 	
     private int Rtext_margin;
+    private int Rtext_style;
 	
     /**
      * Save local state
@@ -1196,6 +1238,7 @@ public class PZ80Cpu {
     	Rfg_color = parser.fg_color;
     	Rbg_color = parser.bg_color;
     	Rtext_margin = parser.text_margin;
+    	Rtext_style = parser.text_style;
     }
 
     /**
@@ -1212,6 +1255,7 @@ public class PZ80Cpu {
     	parser.fg_color = Rfg_color;
     	parser.bg_color = Rbg_color;
     	parser.text_margin = Rtext_margin;
+    	parser.text_style = Rtext_style;
     }
 
     /**
@@ -1228,6 +1272,8 @@ public class PZ80Cpu {
     	fg_color = parser.fg_color;
     	bg_color = parser.bg_color;
     	text_margin = parser.text_margin;
+    	text_style = parser.text_style;
+
     }
     
     /**
@@ -1244,6 +1290,7 @@ public class PZ80Cpu {
     	parser.fg_color = fg_color;
     	parser.bg_color = bg_color;
     	parser.text_margin = text_margin;
+    	parser.text_style = text_style;
     }
     
     

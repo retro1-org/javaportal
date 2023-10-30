@@ -752,7 +752,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private long buffered_data[];
 	private int buffered_count;
 	/** Text style bits. */
-	private int text_style;
+	public int text_style;
 	/** Color is avaiable. */
 	private boolean	colorAvail;
 	/** Current max X coordinate. */
@@ -8652,7 +8652,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	void FontSelect()
 	{
-	int 	fontspec = ExtractLWord(0);
+		FontSelect2(ExtractLWord(0));
+	}
+	
+	public void FontSelect2(int 	fontspec)
+	{
 	int 	fontfamily,fontsize;
 	String fontname;
 	String resource_prefix = null;
