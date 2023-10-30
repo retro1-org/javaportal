@@ -9278,7 +9278,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if	(text_charset < 2)
 				clipFlushText();
 
-			if (text_charset > 0 || text_size != 0 || text_style != 0)
+			if ((text_charset > 0 || text_size != 0 || text_style != 0))  // && !(local_fnt == null || local_font == null) )
 				FlushSystemFont();
 			else if (null != local_fnt)
 				FlushLocalFnt();
