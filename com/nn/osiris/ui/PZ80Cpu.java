@@ -780,6 +780,12 @@ public class PZ80Cpu {
 				FontStyle(DE);
 				break;
 						
+			case 2:			// Text style
+				TextStyle(DE);
+				break;
+				
+			case 3:			//Draw Circle/Ellipse
+				Ellipse(DE);
 			default: break;
 		}
     }
@@ -799,6 +805,41 @@ public class PZ80Cpu {
     	parser.FontSelect2(select);
     }
     	
+    private void TextStyle(int DE)		// ccode  155,cmd, styleb where local vars are ==   i,8: cmd, styleb -- cmd = 2
+    {
+    	parser.text_style = z80Memory.readByte(DE);
+    }
+    
+    private void Ellipse(int DE)
+    {
+    	int radius = z80Memory.readWord(DE);
+    	int r1 = bendint(radius);
+
+    	int radius2 = z80Memory.readWord(DE+2);
+    	int r2 = bendint(radius2);
+
+		boolean fill = (r1 < 0);
+    	if (fill)
+    		r1 = -r1 & 0xfff ;
+    	if (r2 < 0)
+    		r2 = -r2  & 0x0fff;
+    	
+		parser.PlotEllipse ( r1, r2,
+				parser.current_x+center_x,parser.current_y,parser.screen_mode,
+				1,5,fill ? 1 : 0);
+		parser.do_repaint = true;
+    }
+    
+    private int bendint(int x)
+    {
+    	int hi = ((x & 0xff) << 8);
+    	int lo = ((x >> 8) & 0xff);
+    	int r1 = hi | lo;
+		if ((r1 & 0100000) != 0)
+			r1 |= 0xffff0000;
+    	return r1;
+    }
+
     
     /**
      * Plot chars for mode 3
