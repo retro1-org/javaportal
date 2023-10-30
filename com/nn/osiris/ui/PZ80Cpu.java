@@ -786,6 +786,8 @@ public class PZ80Cpu {
 				
 			case 3:			//Draw Circle/Ellipse
 				Ellipse(DE);
+				break;
+				
 			default: break;
 		}
     }
