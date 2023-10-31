@@ -23,7 +23,7 @@ import com.codingrodent.microprocessor.Z80.CPUConstants.*;
  * Resident.  Provides part of the time slicing function and control of Z80.
  * 
  */
-public class PZ80Cpu {
+public class PZ80CpuResident {
     /** z80 cpu */
 	private Z80Core z80;
 	/** ram for z80 */
@@ -103,7 +103,7 @@ public class PZ80Cpu {
     /** 
      * Default constructor
      */
-    public PZ80Cpu()
+    public PZ80CpuResident()
     {
     }
 

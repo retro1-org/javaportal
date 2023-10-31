@@ -47,7 +47,7 @@ public class PZIO implements IBaseDevice {
     	return m_MTDisk;
     }
     
-    public void Init(PZ80Cpu cpu)
+    public void Init(PZ80CpuResident cpu)
     {
     	// initialize the clock
     	init_milli = java.lang.System.currentTimeMillis();

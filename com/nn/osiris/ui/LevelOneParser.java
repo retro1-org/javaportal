@@ -444,7 +444,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** The student variables for the session. */
 	private long[] student_variables;	
 	
-	public PZ80Cpu cpu;
+	public PZ80CpuResident cpu;
 	public Z80Core z80;
 	public boolean needToBoot = false;
 	public boolean booted = false;
@@ -2260,7 +2260,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 		else if (cpu == null)
 		{
-			cpu = new PZ80Cpu();
+			cpu = new PZ80CpuResident();
 			cpu.Init(this);
 			z80 = cpu.z80();			// shortcut
 		}
@@ -6614,7 +6614,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			{
 				//mTutorParser = new LevelOneParser(this);
 				
-				cpu = new PZ80Cpu();
+				cpu = new PZ80CpuResident();
 				cpu.Init(this);
 				z80 = cpu.z80();			// shortcut
 			}
@@ -6632,7 +6632,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			{
 				//mTutorParser = new LevelOneParser(this);
 				
-				cpu = new PZ80Cpu();
+				cpu = new PZ80CpuResident();
 				cpu.Init(this);
 				z80 = cpu.z80();			// shortcut
 			}

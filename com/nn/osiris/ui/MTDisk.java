@@ -98,7 +98,7 @@ public class MTDisk {
 	/*
 	 * Read the mtutor interp. into ram from disk
 	 */
-	public boolean ReadSectorsForBoot(int addr, long offset, int scount, PZ80Cpu cpu) 
+	public boolean ReadSectorsForBoot(int addr, long offset, int scount, PZ80CpuResident cpu) 
 	{
 		int mybyte = -1;
 		

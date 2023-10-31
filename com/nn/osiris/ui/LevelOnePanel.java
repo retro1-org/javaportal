@@ -301,7 +301,7 @@ public class LevelOnePanel
 			
 			if (this.session.mtdisk0 != null || this.session.mtdisk1 != null)
 			{
-				level_one_parser.cpu = new PZ80Cpu();		// We need a CPU and its friends first
+				level_one_parser.cpu = new PZ80CpuResident();		// We need a CPU and its friends first
 				level_one_parser.cpu.Init(level_one_parser);
 				level_one_parser.z80 = level_one_parser.cpu.z80();			// shortcut
 
