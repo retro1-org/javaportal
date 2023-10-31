@@ -835,6 +835,7 @@ public class PZ80Cpu {
 				parser.current_x+center_x,parser.current_y,parser.screen_mode,
 				1,5,fill ? 1 : 0);
 		parser.do_repaint = true;
+		parser.levelone_container.repaint();
     }
     
     private void TheArc(int DE)
@@ -862,6 +863,7 @@ public class PZ80Cpu {
 				1,5,fill ? 1 : 0);
     	
 		parser.do_repaint = true;
+		parser.levelone_container.repaint();
     }
     
     /*
@@ -873,6 +875,11 @@ public class PZ80Cpu {
     }
     */
     
+    /**
+     * Swap byte order and sign extend 
+     * @param x
+     * @return
+     */
     private int bendint(int x)
     {
     	int hi = ((x & 0xff) << 8);
