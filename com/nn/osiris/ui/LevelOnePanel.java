@@ -308,13 +308,13 @@ public class LevelOnePanel
 				if (this.session.mtdisk0 != null && this.session.mtdisk0.length() > 4)
 				{
 					// load Vdisk  0
-					level_one_parser.cpu.z80IO().m_MTDisk()[0] = PZIO.LoadDisk(this.session.mtdisk0)  ;
+					level_one_parser.cpu.z80IO().m_MTDisk()[0] = PZ80IO.LoadDisk(this.session.mtdisk0)  ;
 				}
 				
 				if (this.session.mtdisk1 != null && this.session.mtdisk1.length() > 4)
 				{
 					// load Vdisk  1
-					level_one_parser.cpu.z80IO().m_MTDisk()[1] = PZIO.LoadDisk(this.session.mtdisk1)  ;
+					level_one_parser.cpu.z80IO().m_MTDisk()[1] = PZ80IO.LoadDisk(this.session.mtdisk1)  ;
 				}				
 				
 				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO().m_MTDisk()[0] != null)

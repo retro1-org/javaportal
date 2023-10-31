@@ -12,7 +12,7 @@ import com.codingrodent.microprocessor.IBaseDevice;
  * to a 1 seconds mtutor clock.
  * 
  */
-public class PZIO implements IBaseDevice {
+public class PZ80IO implements IBaseDevice {
     //private int value;
     private int m_mtdrivefunc = 0;
     private int m_mtdrivetemp = 0xcb;

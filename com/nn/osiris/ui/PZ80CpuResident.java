@@ -29,7 +29,7 @@ public class PZ80CpuResident {
 	/** ram for z80 */
     private PZMemory z80Memory;
     /** IO for the z80 */
-    private PZIO z80IO;
+    private PZ80IO z80IO;
     /** LevelOneParser that owns us */
     private LevelOneParser parser;
     /** mtutor level of the interpreter */
@@ -64,7 +64,7 @@ public class PZ80CpuResident {
     	return keyBuffer;
     }
     
-    public PZIO z80IO()
+    public PZ80IO z80IO()
     {
     	return z80IO;
     }
@@ -112,7 +112,7 @@ public class PZ80CpuResident {
     {
     	parser = x;
     	z80Memory = new PZMemory();
-    	z80IO  = new PZIO();
+    	z80IO  = new PZ80IO();
     	z80 = new Z80Core(z80Memory, z80IO);
     	z80IO.Init(this);
     	
