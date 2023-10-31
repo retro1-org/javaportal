@@ -494,9 +494,24 @@ public class PZ80CpuResident {
     	case PortalConsts.R_LINE:		// mode 1
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
-        	parser.PlotLine(parser.current_x + cx, parser.current_y, x + cx, y,  sMode, 0, 0, 1, 0);
+
+        	if (parser.OkDraw())
+    		{
+    			parser.PlotLine ( parser.current_x+parser.center_x, parser.current_y,
+    					x+parser.center_x, y,
+    					screen_mode, parser.style_pattern, 
+    					parser.style_fill, parser.style_thickness,
+    					parser.style_dash);
+    		}
+
+    		//parser.first_line = false;
             parser.current_x = x;
-            parser.current_y = y;
+            parser.current_y = y;      
+            
+//            parser.checkPoly();
+            
+            parser.do_repaint = true;
+            
     		return 1;
     		
     	case PortalConsts.R_CHARS:		// mode 3
@@ -566,9 +581,6 @@ public class PZ80CpuResident {
 	    			int save = parser.screen_mode;
 	    			parser.screen_mode = LevelOneParser.SCERASE;
 	    			parser.clearScreen();
-	    			
-	    			//parser.BlockData(0,0,511,511);	// clearScreen is not quite getting the job done here
-	    			
 	            	parser.do_repaint = true;		// tell the caller to repaint screen
 	            	parser.screen_mode = save;
 	    		}
@@ -667,7 +679,6 @@ public class PZ80CpuResident {
     		return 1;
     		
     	case PortalConsts.R_PRINT:
-//    		parser.printScreen();
     		return 1;
     	
     	case PortalConsts.R_FCOLOR:			// standard
@@ -791,7 +802,26 @@ public class PZ80CpuResident {
 			case 4:			//Draw Circle/Ellipse Arc
 				TheArc(DE);
 				break;
+				
+			case 5:
+				Thickness(DE);
+				break;
 
+			case 6:
+				Joint(DE);
+				break;
+			
+			case 7:
+				FillFlag(DE);
+				break;
+			
+			case 8:
+				Pattern(DE);
+				break;
+			
+			case 9:
+				Dash(DE);
+				break;
 			
 			default: break;
 		}
@@ -866,14 +896,71 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
     
-    /*
-    private void FillPattern(int DE)
+
+    private void Thickness(int DE)
     {
+        parser.checkPoly();
+    	int pat = z80Memory.readByte(DE);
+    	
+    	parser.style_thickness = pat & 0x7f;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
+
+    private void Joint(int DE)
+    {
+        parser.checkPoly();
+    	int pat = z80Memory.readByte(DE);
+    	
+    	parser.style_join = pat & 0x03;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
+    
+    private void FillFlag(int DE)
+    {
+        parser.checkPoly();
+    	int pat = z80Memory.readByte(DE);
+    	
+    	parser.style_fill = pat & 0x01;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
+
+    private void Pattern(int DE)
+    {
+        parser.checkPoly();
     	int pat = z80Memory.readByte(DE);
     	
     	parser.style_pattern = pat & 0x3f;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
     }
-    */
+
+    private void Dash(int DE)
+    {
+        parser.checkPoly();
+    	int pat = z80Memory.readByte(DE);
+    	
+    	parser.style_dash = pat & 0x1f;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
     
     /**
      * Swap byte order and sign extend 
@@ -1293,6 +1380,9 @@ public class PZ80CpuResident {
     
     private int text_margin;
     private int text_style;
+    private boolean first_line;
+    private int style_thickness;
+    
 
     
 	/** Current screen mode of terminal. */
@@ -1314,6 +1404,8 @@ public class PZ80CpuResident {
 	
     private int Rtext_margin;
     private int Rtext_style;
+    private boolean Rfirst_line;
+    private int Rstyle_thickness;
 	
     /**
      * Save local state
@@ -1330,6 +1422,9 @@ public class PZ80CpuResident {
     	Rbg_color = parser.bg_color;
     	Rtext_margin = parser.text_margin;
     	Rtext_style = parser.text_style;
+    	Rfirst_line = parser.first_line;
+    	Rstyle_thickness = parser.style_thickness;
+
     }
 
     /**
@@ -1347,6 +1442,8 @@ public class PZ80CpuResident {
     	parser.bg_color = Rbg_color;
     	parser.text_margin = Rtext_margin;
     	parser.text_style = Rtext_style;
+    	parser.first_line = Rfirst_line;
+    	parser.style_thickness = Rstyle_thickness;
     }
 
     /**
@@ -1364,6 +1461,8 @@ public class PZ80CpuResident {
     	bg_color = parser.bg_color;
     	text_margin = parser.text_margin;
     	text_style = parser.text_style;
+    	first_line = parser.first_line;
+    	style_thickness = parser.style_thickness;
 
     }
     
@@ -1382,6 +1481,8 @@ public class PZ80CpuResident {
     	parser.bg_color = bg_color;
     	parser.text_margin = text_margin;
     	parser.text_style = text_style;
+    	parser.first_line = first_line;
+    	parser.style_thickness = style_thickness;
     }
     
     

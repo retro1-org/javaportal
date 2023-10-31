@@ -729,9 +729,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 * Data Constuction Support variables.
 	 */
 	/** X coordinate of load. */
-	private int load_x;
+	public int load_x;
 	/** Y coordinate of load. */
-	private int load_y;
+	public int load_y;
 	/** Previous x coordinate. */
 	private int old_x;
 	/** Previous y coordinate. */
@@ -739,7 +739,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Coordinate sequence. */
 	private boolean	seq_coord;
 	/** First coordinate in line mode flag. */
-	private boolean	first_line;
+	public boolean	first_line;
 	/** Reference to polygon. */
 	protected java.awt.Polygon polygon;
 	/** Lightweight signon key supression */
@@ -762,7 +762,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	/** Pen pattern in effect. */
 	protected int style_pattern;
 	/** Pen thickness. */
-	protected int style_thickness;
+	public int style_thickness;
 	/** Pen cap style. */
 	protected int style_cap;
 	/** Pen dash style. */
@@ -6569,7 +6569,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 * Mode 1 data (line mode).
 	 *
 	 */
-	private final void LineData()
+	public final void LineData()
 	{
 		if (!first_line && OkDraw())
 		{
