@@ -788,6 +788,11 @@ public class PZ80Cpu {
 				Ellipse(DE);
 				break;
 				
+			case 4:			//Draw Circle/Ellipse Arc
+				TheArc(DE);
+				break;
+
+			
 			default: break;
 		}
     }
@@ -831,6 +836,42 @@ public class PZ80Cpu {
 				1,5,fill ? 1 : 0);
 		parser.do_repaint = true;
     }
+    
+    private void TheArc(int DE)
+    {
+    	int radius = z80Memory.readWord(DE);
+    	int r1 = bendint(radius);
+
+    	int radius2 = z80Memory.readWord(DE+2);
+    	int r2 = bendint(radius2);
+
+    	int ang1 = z80Memory.readWord(DE+4);
+    	int a1 = bendint(ang1);
+
+    	int ang2 = z80Memory.readWord(DE+6);
+    	int a2 = bendint(ang2);
+
+		boolean fill = (r1 < 0);
+    	if (fill)
+    		r1 = -r1 & 0xfff ;
+    	if (r2 < 0)
+    		r2 = -r2  & 0x0fff;
+    	
+		parser.PlotArc ( r1, r2, a1, a2,
+				parser.current_x+center_x,parser.current_y,parser.screen_mode,
+				1,5,fill ? 1 : 0);
+    	
+		parser.do_repaint = true;
+    }
+    
+    /*
+    private void FillPattern(int DE)
+    {
+    	int pat = z80Memory.readByte(DE);
+    	
+    	parser.style_pattern = pat & 0x3f;
+    }
+    */
     
     private int bendint(int x)
     {
