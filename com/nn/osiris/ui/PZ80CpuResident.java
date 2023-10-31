@@ -27,7 +27,7 @@ public class PZ80CpuResident {
     /** z80 cpu */
 	private Z80Core z80;
 	/** ram for z80 */
-    private PZMemory z80Memory;
+    private PZ80Memory z80Memory;
     /** IO for the z80 */
     private PZ80IO z80IO;
     /** LevelOneParser that owns us */
@@ -74,7 +74,7 @@ public class PZ80CpuResident {
     	return z80;
     }
     
-    public PZMemory z80Memory()
+    public PZ80Memory z80Memory()
     {
     	return z80Memory;
     }
@@ -111,7 +111,7 @@ public class PZ80CpuResident {
     public Z80Core Init(LevelOneParser x)
     {
     	parser = x;
-    	z80Memory = new PZMemory();
+    	z80Memory = new PZ80Memory();
     	z80IO  = new PZ80IO();
     	z80 = new Z80Core(z80Memory, z80IO);
     	z80IO.Init(this);

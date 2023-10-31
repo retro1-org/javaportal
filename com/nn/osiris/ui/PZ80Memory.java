@@ -4,12 +4,12 @@ import com.codingrodent.microprocessor.IMemory;
 
 // Represents the full 64K of Z80 memory
 
-public class PZMemory implements IMemory {
+public class PZ80Memory implements IMemory {
 	
     public final int[] memory = new int[65536];
 	
 
-    public PZMemory() {
+    public PZ80Memory() {
     	
     }
     
