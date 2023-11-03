@@ -507,11 +507,7 @@ public class PZ80CpuResident {
     		//parser.first_line = false;
             parser.current_x = x;
             parser.current_y = y;      
-            
-//            parser.checkPoly();
-            
             parser.do_repaint = true;
-            
     		return 1;
     		
     	case PortalConsts.R_CHARS:		// mode 3
@@ -674,7 +670,7 @@ public class PZ80CpuResident {
     	case PortalConsts.R_ALARM:
     		parser.Beep();
     		
-    		//CharTest();		// temp
+    		CharTest();		// temp
     		
     		return 1;
     		
@@ -753,6 +749,12 @@ public class PZ80CpuResident {
     	case PortalConsts.R_DUMMY2:
     		return	1;
     		
+    		/**
+    		 * A hook for an "Extensions to Micro Tutor" notion.
+    		 * MTutor -ccode- can be used to call this and
+    		 * pass parameters in consecutive memory locations
+    		 * pointed at on entry by the Z80 DE register.
+    		 */
     	case PortalConsts.R_DUMMY2 + 1:
 			ExtendMTutor();
     		return	1;
@@ -779,7 +781,7 @@ public class PZ80CpuResident {
     	}
     }
 
-    /** Extend MTUTOR here.  -Offer-ing lesson mtutextN will provide ccode interface. */
+    /** Extend MTUTOR here.  Lesson will provide ccode interface at address r. 155. */
     private void ExtendMTutor()
     {
 		int DE = z80.getRegisterValue(RegisterNames.DE);
@@ -804,29 +806,41 @@ public class PZ80CpuResident {
 				break;
 				
 			case 5:
-				Thickness(DE);
+				Thickness(DE);	// set line thickness
 				break;
 
 			case 6:
-				Joint(DE);
+				Joint(DE);		// set thick line joint style
 				break;
 			
 			case 7:
-				FillFlag(DE);
+				FillFlag(DE);	// polyfill -draw-s flag
 				break;
 			
 			case 8:
-				Pattern(DE);
+				Pattern(DE);	// set fill pattern slot
 				break;
 			
 			case 9:
-				Dash(DE);
+				Dash(DE);		// set line dash style slot
+				break;
+			
+			case 10:
+				Cap(DE);		// set line cap style
+				break;
+			
+			case 11:
+				Clear(DE);		// clear graphics styles
 				break;
 			
 			default: break;
 		}
     }
     
+    /**
+     * Set Local Font
+     * @param DE
+     */
     private void FontStyle(int DE)		// ccode  155,cmd, family where local vars are ==   i,8: cmd, family, size, bold, italic -- cmd = 1
     {
     	int family = z80Memory.readByte(DE++);
@@ -842,11 +856,19 @@ public class PZ80CpuResident {
     	parser.FontSelect2(select);
     }
     	
+    /**
+     * Set text style
+     * @param DE
+     */
     private void TextStyle(int DE)		// ccode  155,cmd, styleb where local vars are ==   i,8: cmd, styleb -- cmd = 2
     {
     	parser.text_style = z80Memory.readByte(DE);
     }
     
+    /**
+     * Draw an Ellipse/Circle
+     * @param DE
+     */
     private void Ellipse(int DE)
     {
     	int radius = z80Memory.readWord(DE);
@@ -868,6 +890,10 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
     
+    /**
+     * Draw a Elliptical or Circular Arc
+     * @param DE
+     */
     private void TheArc(int DE)
     {
     	int radius = z80Memory.readWord(DE);
@@ -896,7 +922,10 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
     
-
+    /**
+     * Set line thickness
+     * @param DE
+     */
     private void Thickness(int DE)
     {
         parser.checkPoly();
@@ -910,6 +939,10 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
 
+    /**
+     * Set line joint style
+     * @param DE
+     */
     private void Joint(int DE)
     {
         parser.checkPoly();
@@ -922,7 +955,11 @@ public class PZ80CpuResident {
 		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
-    
+  
+    /**
+     * Set/Clear polyline fill flag
+     * @param DE
+     */
     private void FillFlag(int DE)
     {
         parser.checkPoly();
@@ -936,6 +973,10 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
 
+    /**
+     * Set pattern for fills
+     * @param DE
+     */
     private void Pattern(int DE)
     {
         parser.checkPoly();
@@ -949,18 +990,56 @@ public class PZ80CpuResident {
 		parser.levelone_container.repaint();
     }
 
+    /**
+     * Set dash style for lines
+     * @param DE
+     */
     private void Dash(int DE)
     {
         parser.checkPoly();
-    	int pat = z80Memory.readByte(DE);
+    	int dash = z80Memory.readByte(DE);
     	
-    	parser.style_dash = pat & 0x1f;
+    	parser.style_dash = dash & 0x1f;
     	
     	parser.first_line = true;
 
 		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
+    
+    /**
+     * Set line cap style
+     * @param DE
+     */
+    private void Cap(int DE)
+    {
+        parser.checkPoly();
+    	int cap = z80Memory.readByte(DE);
+    	
+    	parser.style_cap = cap & 0x03;
+    	
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
+    
+    /**
+     * Clear graphics styles
+     * @param DE
+     */
+    private void Clear(int DE)
+    {
+        parser.checkPoly();
+
+        parser.ClearStyles();
+        
+    	parser.first_line = true;
+
+		parser.do_repaint = true;
+		parser.levelone_container.repaint();
+    }
+    
     
     /**
      * Swap byte order and sign extend 
@@ -1251,25 +1330,25 @@ public class PZ80CpuResident {
     	z80Memory.writeByte(PortalConsts.M_KSW, val);
     }
 
-    /*
+    
     
     private void CharTest()
     {
     	parser.current_x = 0;
     	parser.current_y = 496;
-    	CharTestx((byte)2,0);
+    	CharTestx((byte)0,0);
 
     	parser.current_x = 0;
     	parser.current_y = 496-16;
-    	CharTestx((byte)2,64);
+    	CharTestx((byte)0,64);
 
     	parser.current_x = 0;
     	parser.current_y = 496-32;
-    	CharTestx((byte)3, 0);
+    	CharTestx((byte)1, 0);
 
     	parser.current_x = 0;
     	parser.current_y = 496-48;
-    	CharTestx((byte)3, 64);
+    	CharTestx((byte)1, 64);
     }
 
     private void CharTestx(byte set, int start )
@@ -1287,18 +1366,17 @@ public class PZ80CpuResident {
             lth = 0;              	
         }
     }
-    */
+    
     
    /**
     *   index position is char code, value is index into M table
     */
-    
     private static final byte[] convert0 =
     		{
-    			58,  1,  2,  3,  4,  5,  6,  7,		// 0..7	
-    			 8,  9, 10, 11, 12, 13, 14, 15,		// 8..15
-    			16, 17, 18, 19, 20, 21, 22, 23,		// 16..23
-    			24, 25, 26, 48, 49, 50, 51, 52,		// 24..31
+    			58, 97, 98, 99,100,101,102,103,		// 0..7	
+    		   104,105,106,107,108,109,110,111,		// 8..15
+    		   112,113,114,115,116,117,118,119,		// 16..23
+    		   120,121,122, 48, 49, 50, 51, 52,		// 24..31
     			53, 54, 55, 56, 57, 43, 45, 42,		// 32..39
     			47, 40, 41, 36, 61, 32, 44, 46,		// 40..47
     			47, 91, 93, 37, 42, 36, 39, 34,		// 48..55
@@ -1311,10 +1389,10 @@ public class PZ80CpuResident {
   */
     private static final byte[] newchrset0 =				
     	{
-    			0, 1, 1, 1, 1, 1, 1, 1,			// 0..7
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 8..15
-    			1, 1, 1, 1, 1, 1, 1, 1,			// 16..23
-    			1, 1, 1, 0, 0, 0, 0, 0,			// 24..31
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 0..7
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 8..15
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 16..23
+    			0, 0, 0, 0, 0, 0, 0, 0,			// 24..31
     			0, 0, 0, 0, 0, 0, 0, 0,			// 32..39
     			0, 0, 0, 0, 0, 1, 0, 0,			// 40..47
     			1, 0, 0, 0, 1, 1, 0, 0,			// 48..55
