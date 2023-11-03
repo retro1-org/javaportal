@@ -670,7 +670,7 @@ public class PZ80CpuResident {
     	case PortalConsts.R_ALARM:
     		parser.Beep();
     		
-    		CharTest();		// temp
+ //   		CharTest();		// temp
     		
     		return 1;
     		
@@ -1107,6 +1107,13 @@ public class PZ80CpuResident {
 	        	case 0: 		// unSHIFTed char code
 	            	{
 	            		byte cv = convert0[pv];
+	            		if (cv > 0  && cv < 27)
+	            		{
+	            			cv += 96;
+		            		cbuf[0] = cv;
+		            		parser.text_charset = 0;
+		            		break;
+	            		}
 	            		cbuf[0] = cv;
 	            		parser.text_charset =newchrset0[pv];
 	            	}
