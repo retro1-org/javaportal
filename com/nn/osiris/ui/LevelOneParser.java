@@ -2283,7 +2283,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		
 		if (true)
 		{
-			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host);
+			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port);
 			//need_title = false;
 		}
 
