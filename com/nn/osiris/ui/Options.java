@@ -37,10 +37,10 @@ class Options
 
 	public void toXML(StringBuffer sb)
 	{
-		sb.append("<options multi_connect=\""+JPortal.boolString(multi_connect)+"\"");
-		sb.append(" disconnect_at_signoff=\""+JPortal.boolString(disconnect_at_signoff)+"\"");
-		sb.append(" disable_signon_display=\""+JPortal.boolString(disable_signon_display)+"\"");
-		sb.append(" lock_configuration=\""+JPortal.boolString(lock_configuration)+"\"");
+//		sb.append("<options multi_connect=\""+JPortal.boolString(multi_connect)+"\"");
+		sb.append("<options disconnect_at_signoff=\""+JPortal.boolString(disconnect_at_signoff)+"\"");
+//		sb.append(" disable_signon_display=\""+JPortal.boolString(disable_signon_display)+"\"");
+//		sb.append(" lock_configuration=\""+JPortal.boolString(lock_configuration)+"\"");
 		sb.append(" scale2x=\""+JPortal.boolString(scale2x)+"\"");
 		sb.append("/>\n");
 	}
