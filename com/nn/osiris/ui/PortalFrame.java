@@ -578,6 +578,9 @@ public class PortalFrame
 		jMenuFile.add (item = new JMenuItem("Save Configuration As..."));
 		item.addActionListener(this);
 		
+		jMenuFile.add (item = new JMenuItem("Save Connection As..."));
+		item.addActionListener(this);
+		
 		
 		jMenuFile.addSeparator();
 		jMenuFile.add (item = new JMenuItem("Print Screen..."));
@@ -620,8 +623,12 @@ public class PortalFrame
 		if	(!PortalConsts.is_macintosh)
 			jMenuSettings.setMnemonic('S');
 
-		jMenuSettings.add (item = new JMenuItem("Communications..."));
+		jMenuSettings.add (item = new JMenuItem("Connection..."));
 		item.addActionListener(this);
+
+		jMenuSettings.add (item = new JMenuItem("New Connection..."));
+		item.addActionListener(this);
+
 		if	(!PortalConsts.is_macintosh)
 		{
 			jMenuSettings.add (item = new JMenuItem("Options..."));
@@ -1180,10 +1187,15 @@ public class PortalFrame
 	{
 		ungrabTabKey();
 
+		if	(null != currentPanel())
+		{
+			last_session = currentPanel().session;
+		}
+		
 	CommunicationsDialog	communications = 
 		new CommunicationsDialog(
 				this,
-				"Communications Configuration",
+				"Connection Configuration",
 				true,					// modal
 				last_session,
 				options);
@@ -1195,6 +1207,29 @@ public class PortalFrame
 		regrabTabKey();
 	}
 
+	public void newCommunicationsDialog()
+	{
+		ungrabTabKey();
+
+		last_session = new Session();
+
+	CommunicationsDialog	communications = 
+		new CommunicationsDialog(
+				this,
+				"Connection Configuration",
+				true,					// modal
+				last_session,
+				options);
+		communications.setVisible(true);
+
+		if	(!communications.isCancelled())
+			communications.getValues().copyTo(last_session);
+
+		this.SaveConnection(last_session);
+		
+		regrabTabKey();
+	}
+	
 	/**
 	 * Opens a new connection to NovaNET using the
 	 * passed configuration.
@@ -1385,6 +1420,45 @@ public class PortalFrame
 		}
 	}
 
+	public void saveNewPreferences(File prefsfile, Session session)
+	{
+		try
+		{
+		FileOutputStream	file = new FileOutputStream(prefsfile);
+		StringBuffer	sb = new StringBuffer();
+
+			sb.append("<?xml version=\"1.0\" standalone='yes'?>\n");
+			sb.append("<configuration>\n");
+			if	(portal_pane.getTabCount() > 0)
+				session.toXML(sb);
+			else
+				last_session.toXML(sb);
+
+			sb.append("\n</configuration>");
+
+			file.write(sb.toString().getBytes());
+
+			file.close();
+			if	(mgi != null)
+				mgi.associateConfigFile(prefsfile);
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			JOptionPane.showMessageDialog(
+				this,
+				prefsfile.getAbsolutePath()+" can not be created or modified.",
+				"File Not Found",
+				JOptionPane.ERROR_MESSAGE);
+		}
+		catch (IOException ioe)
+		{
+			JOptionPane.showMessageDialog(
+				this,
+				"An error occurred while writing to "+prefsfile.getAbsolutePath()+".",
+				"IO Exception",
+				JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	/**
 	 * Writes the configuration settings to the user's preferences file.
 	 */
@@ -1484,9 +1558,14 @@ public class PortalFrame
 				System.exit(0);
 		}
 
-		if	(e.getActionCommand().equals("Communications..."))
+		if	(e.getActionCommand().equals("Connection..."))
 		{
 			doCommunicationsDialog();
+		}
+
+		if	(e.getActionCommand().equals("New Connection..."))
+		{
+			newCommunicationsDialog();
 		}
 
 		if	(e.getActionCommand().equals("Options..."))
@@ -1502,6 +1581,11 @@ public class PortalFrame
 		if	(e.getActionCommand().equals("Save Configuration As..."))
 		{
 			doSaveConfiguration();
+		}
+		
+		if	(e.getActionCommand().equals("Save Connection As..."))
+		{
+			SaveConnection(currentPanel().session);
 		}
 		
 		if	(e.getActionCommand().equals("Load M-Tutor Virtual Disk 0..."))
@@ -1739,6 +1823,18 @@ public class PortalFrame
 		}
 	}
 
+	void SaveConnection(Session session)
+	{
+		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				PortalConsts.theName + " Configuration Files - .cfg", "cfg");
+	    fc.setFileFilter(filter);
+
+		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
+		{
+			saveNewPreferences(fc.getSelectedFile(), session);
+		}
+	}
 
 	void doLoadVDisk0()
 	{
