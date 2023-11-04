@@ -18,7 +18,7 @@ class PortalConsts
 	static final public String	theName = "PlatoAccess";
 	
 	// version string displayed in dialog and sent to system via -local-
-	static public String	short_version = "0.0.1 beta";
+	static public String	short_version = "0.0.2 beta";
 	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
 	static public String	user_config_file = "jpterm.cfg";
@@ -86,7 +86,7 @@ class PortalConsts
 	static final int R_BCOLOR= 0x91;
 	static final int R_PAINT=  0x94;
 	static final int R_WAIT16= 0x97;
-	static final int R_DUMMY2= 0x9a;
+	static final int R_EXTEND= 0x9a;
 	static final int R_DUMMY3= 0x9d;
 
 	// Interrupt mask bits

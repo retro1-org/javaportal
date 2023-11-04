@@ -60,6 +60,7 @@ class Options
 
 		if	(PortalConsts.is_debugging)
 			System.out.println("options set from XML");
+		/*
 		n = nnm.getNamedItem("multi_connect");
 		if	(null != n)
 		{
@@ -67,15 +68,28 @@ class Options
 			if	(PortalConsts.is_debugging)
 				System.out.println("multi-connect="+this.multi_connect);
 		}
+		*/
+		this.multi_connect = true;
+		
 		n = nnm.getNamedItem("disconnect_at_signoff");
 		if	(null != n)
 			this.disconnect_at_signoff = JPortal.stringBool(n.getNodeValue());
+		/*
 		n = nnm.getNamedItem("disable_signon_display");
 		if	(null != n)
 			this.disable_signon_display = JPortal.stringBool(n.getNodeValue());
+		*/
+		
+		this.disable_signon_display = false;
+		
+		/*
 		n = nnm.getNamedItem("lock_configuration");
 		if	(null != n)
 			this.lock_configuration = JPortal.stringBool(n.getNodeValue());
+		*/
+		
+		this.lock_configuration = false;
+		
 		n = nnm.getNamedItem("scale2x");
 		if	(null != n)
 			this.scale2x = JPortal.stringBool(n.getNodeValue());
