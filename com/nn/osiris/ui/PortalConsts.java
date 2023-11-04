@@ -18,7 +18,7 @@ class PortalConsts
 	static final public String	theName = "PlatoAccess";
 	
 	// version string displayed in dialog and sent to system via -local-
-	static public String	short_version = "0.0.2 beta";
+	static public String	short_version = "0.0.3 beta";
 	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
 	static public String	user_config_file = "jpterm.cfg";
@@ -50,7 +50,7 @@ class PortalConsts
 	
 	// time slicing initial values
 	static final int skipper_mod = 3;			// number of data processing loops (plato bytes) before giving z80 a time slice.
-	static final long z80_loops = 500000;	// number of z80 instructions / time slice
+	static final long z80_loops = 500000;		// number of z80 instructions / time slice
 	static public final int r_exec_mod = 5;
 	
 	// Resident entry points.

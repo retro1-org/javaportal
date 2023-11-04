@@ -1376,6 +1376,15 @@ public class PortalFrame
 	 */
 	public void savePreferences(File prefsfile)
 	{
+		String fn = prefsfile.getAbsolutePath();
+		fn = fn.toLowerCase();
+		if (!fn.endsWith(".cfg"))
+		{
+			fn = prefsfile.getAbsolutePath() + ".cfg";
+			File nfile = new File(fn);
+			prefsfile = nfile;
+		}
+		
 		try
 		{
 		FileOutputStream	file = new FileOutputStream(prefsfile);
@@ -1424,6 +1433,15 @@ public class PortalFrame
 
 	public void saveNewPreferences(File prefsfile, Session session)
 	{
+		String fn = prefsfile.getAbsolutePath();
+		fn = fn.toLowerCase();
+		if (!fn.endsWith(".cfg"))
+		{
+			fn = prefsfile.getAbsolutePath() + ".cfg";
+			File nfile = new File(fn);
+			prefsfile = nfile;
+		}
+
 		try
 		{
 		FileOutputStream	file = new FileOutputStream(prefsfile);

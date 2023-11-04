@@ -746,7 +746,7 @@ public class PZ80CpuResident {
        	case PortalConsts.R_WAIT16 + 2:
     		return 1;
        	
-    	case PortalConsts.R_DUMMY2:
+    	case PortalConsts.R_EXTEND:
     		return	1;
     		
     		/**
@@ -755,11 +755,11 @@ public class PZ80CpuResident {
     		 * pass parameters in consecutive memory locations
     		 * pointed at on entry by the Z80 DE register.
     		 */
-    	case PortalConsts.R_DUMMY2 + 1:
+    	case PortalConsts.R_EXTEND + 1:
 			ExtendMTutor();
     		return	1;
 
-    	case PortalConsts.R_DUMMY2 + 2:
+    	case PortalConsts.R_EXTEND + 2:
     		return	1;
 
     	case PortalConsts.R_DUMMY3:
@@ -769,8 +769,6 @@ public class PZ80CpuResident {
     		return	1;
     	
     	case PortalConsts.R_DUMMY3 + 2:
-    		// Boot Pterm HELP disk
-    		//  parser.needToBoot = true;
     		return	1;
     	
     	default: 
