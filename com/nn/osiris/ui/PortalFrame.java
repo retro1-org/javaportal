@@ -606,7 +606,7 @@ public class PortalFrame
 		// the command key is the special key and not used
 		// by portal
 			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		}
  		item.addActionListener(this);
 
@@ -614,7 +614,7 @@ public class PortalFrame
 		if	(PortalConsts.is_macintosh)
 		{
 			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		}
 		item.addActionListener(this);
 		jMenuBar1.add(jMenuEdit);
@@ -879,8 +879,8 @@ public class PortalFrame
 		if	(!PortalConsts.is_applet)
 			findDefaultConfig();
 
-		if	(PortalConsts.is_macintosh)
-			macOSXRegistration();
+//		if	(PortalConsts.is_macintosh)
+//			macOSXRegistration();
 
 	// quicktime for java is not compatible with 64 bit java
 		if	(System.getProperty("os.arch").startsWith("x86_64"))
