@@ -1223,9 +1223,11 @@ public class PortalFrame
 		communications.setVisible(true);
 
 		if	(!communications.isCancelled())
+		{
 			communications.getValues().copyTo(last_session);
 
-		this.SaveConnection(last_session);
+			this.SaveConnection(last_session);
+		}
 		
 		regrabTabKey();
 	}

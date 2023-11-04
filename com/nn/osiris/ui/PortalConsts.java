@@ -18,7 +18,7 @@ class PortalConsts
 	static final public String	theName = "PlatoAccess";
 	
 	// version string displayed in dialog and sent to system via -local-
-	static public String	short_version = "3.4.3";
+	static public String	short_version = "0.0.1 beta";
 	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
 	static public String	user_config_file = "jpterm.cfg";
