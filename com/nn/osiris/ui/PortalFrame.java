@@ -189,7 +189,7 @@ public class PortalFrame
 	 */
 	void findDefaultConfig()
 	{
-	String	user_config_fn = PortalConsts.user_config_file;
+	String	user_config_fn = null;  //  = PortalConsts.user_config_file;
 	String	global_config_fn = PortalConsts.global_config_file;
 
 		if (PortalConsts.is_macintosh)
@@ -219,41 +219,45 @@ public class PortalFrame
 				user_config_fn = user_prop;
 		}
 
-	// set user_config_fn from a dialog of available configs
+		if (user_config_fn == null)
+		{
 		
-		File directoryPath = new File(JPortal.current_dir);
-
-		FilenameFilter textFilefilter = new FilenameFilter(){
-	         public boolean accept(File dir, String name) {
-	            String lowercaseName = name.toLowerCase();
-	            if (lowercaseName.endsWith(".cfg")) {
-	               return true;
-	            } else {
-	               return false;
-	            }
-	         }
-	      };
-		
-	      String filesList[] = directoryPath.list(textFilefilter);
-	      
-	      if (filesList != null && filesList.length == 1 )
-	      {
-	    	  user_config_fn = filesList[0];
-	      }
-	      else if (filesList != null && filesList.length > 1 )
-	      {
-	    	// File list dialog
-	      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
-	    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	    	       PortalConsts.theName + " Configuration Files", "cfg");
-	    	fc.setFileFilter(filter);
-	    	fc.setDialogTitle("Choose a configuration file to connect...");
-	    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
-	    	if	(isOk)
-	    		user_config_fn = fc.getSelectedFile().getAbsolutePath();
-	    	else
-	    		System.exit(0);
-	      }   
+		// set user_config_fn from a dialog of available configs
+			
+			File directoryPath = new File(JPortal.current_dir);
+	
+			FilenameFilter textFilefilter = new FilenameFilter(){
+		         public boolean accept(File dir, String name) {
+		            String lowercaseName = name.toLowerCase();
+		            if (lowercaseName.endsWith(".cfg")) {
+		               return true;
+		            } else {
+		               return false;
+		            }
+		         }
+		      };
+			
+		      String filesList[] = directoryPath.list(textFilefilter);
+		      
+		      if (filesList != null && filesList.length == 1 )
+		      {
+		    	  user_config_fn = filesList[0];
+		      }
+		      else if (filesList != null && filesList.length > 1 )
+		      {
+		    	// File list dialog
+		      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		    	       PortalConsts.theName + " Configuration Files", "cfg");
+		    	fc.setFileFilter(filter);
+		    	fc.setDialogTitle("Choose a configuration file to connect...");
+		    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
+		    	if	(isOk)
+		    		user_config_fn = fc.getSelectedFile().getAbsolutePath();
+		    	else
+		    		System.exit(0);
+		      }  
+		}
 	// user-specific config file
 	File	uref = new File(user_config_fn);
 	// global config file
