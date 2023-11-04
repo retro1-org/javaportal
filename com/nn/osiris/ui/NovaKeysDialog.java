@@ -34,6 +34,7 @@ public class NovaKeysDialog
 	{
 		super(parent, "Host Keys", true);
 		this.frame = parent;
+		this.setModal(false);
 		getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.X_AXIS));
 
 	JEditorPane	ep = new JEditorPane();
