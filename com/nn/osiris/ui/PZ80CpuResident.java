@@ -828,7 +828,7 @@ public class PZ80CpuResident {
 				break;
 			
 			case 11:
-				Clear(DE);		// clear graphics styles
+				Clear();		// clear graphics styles
 				break;
 			
 			default: break;
@@ -884,7 +884,7 @@ public class PZ80CpuResident {
 		parser.PlotEllipse ( r1, r2,
 				parser.current_x+center_x,parser.current_y,parser.screen_mode,
 				1,5,fill ? 1 : 0);
-		parser.do_repaint = true;
+
 		parser.levelone_container.repaint();
     }
     
@@ -916,7 +916,6 @@ public class PZ80CpuResident {
 				parser.current_x+center_x,parser.current_y,parser.screen_mode,
 				1,5,fill ? 1 : 0);
     	
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
     
@@ -928,12 +927,8 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int pat = z80Memory.readByte(DE);
-    	
     	parser.style_thickness = pat & 0x7f;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
 
@@ -945,12 +940,8 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int pat = z80Memory.readByte(DE);
-    	
     	parser.style_join = pat & 0x03;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
   
@@ -962,12 +953,8 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int pat = z80Memory.readByte(DE);
-    	
     	parser.style_fill = pat & 0x01;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
 
@@ -979,12 +966,8 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int pat = z80Memory.readByte(DE);
-    	
     	parser.style_pattern = pat & 0x3f;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
 
@@ -996,12 +979,8 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int dash = z80Memory.readByte(DE);
-    	
     	parser.style_dash = dash & 0x1f;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
     
@@ -1013,28 +992,20 @@ public class PZ80CpuResident {
     {
         parser.checkPoly();
     	int cap = z80Memory.readByte(DE);
-    	
     	parser.style_cap = cap & 0x03;
-    	
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
     
     /**
      * Clear graphics styles
-     * @param DE
+     * 
      */
-    private void Clear(int DE)
+    private void Clear()
     {
         parser.checkPoly();
-
         parser.ClearStyles();
-        
     	parser.first_line = true;
-
-		parser.do_repaint = true;
 		parser.levelone_container.repaint();
     }
     
