@@ -464,28 +464,29 @@ public class PortalFrame
 				JOptionPane.ERROR_MESSAGE);
 		}
 		
-		int save = PortalConsts.SCALE;
+		float save = PortalConsts.SCALE;
+/*
 		if (options.scale2x)
 			PortalConsts.SCALE = 2;
 		else
 			PortalConsts.SCALE = 1;		
-			
+*/
+		
+		PortalConsts.SCALE = options.scale2x;
+		
 		if (save != PortalConsts.SCALE)
 		{	// rescale on fly
 			// Setup our dimensions as we want them.
-			Dimension panel_dim = new Dimension(PortalConsts.default_width * PortalConsts.SCALE, LevelOnePanel.PANEL_STD * PortalConsts.SCALE);
+			Dimension panel_dim = new Dimension((int)(PortalConsts.default_width * PortalConsts.SCALE), (int)(LevelOnePanel.PANEL_STD * PortalConsts.SCALE));
 			Dimension frame_dim = this.getSize();
+			LevelOnePanel lop = ((LevelOnePanel) portal_pane.getComponentAt(0));
 
 			int h = frame_dim.height;
-			if (h > 1000)
-				h -= LevelOnePanel.PANEL_STD;
-			else
-				h += LevelOnePanel.PANEL_STD;
-			
+			int top = h - lop.getHeight();
+			h = top + panel_dim.height;
 			this.setSize(panel_dim.width, h);
 			
 			int	cnt = portal_pane.getTabCount();
-			LevelOnePanel lop;
 			for (int i=0;i<cnt; i++)
 			{
 				lop = ((LevelOnePanel) portal_pane.getComponentAt(i));
@@ -1750,8 +1751,7 @@ public class PortalFrame
 		{
 		}
 		
-		if (options.scale2x)
-			PortalConsts.SCALE = 2;
+			PortalConsts.SCALE = options.scale2x;
 
 	}
 

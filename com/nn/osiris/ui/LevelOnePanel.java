@@ -95,7 +95,7 @@ public class LevelOnePanel
 		getOfflineImage();
 
 		// Setup our dimensions as we want them.
-		Dimension panel_dim = new Dimension(panel_width * PortalConsts.SCALE, PANEL_STD * PortalConsts.SCALE);
+		Dimension panel_dim = new Dimension((int)(panel_width * PortalConsts.SCALE), (int)(PANEL_STD * PortalConsts.SCALE));
 
 		setMinimumSize(panel_dim);
 		setMaximumSize(panel_dim);
@@ -499,13 +499,13 @@ public class LevelOnePanel
 		}
 		// Draw from the backing store.
 		
-		if (PortalConsts.SCALE != 2)
+		if (PortalConsts.SCALE == 1)
 		{
 			graphics.drawImage(offscreen, 0, 0, this);
 		}
 		else
 		{
-			graphics.drawImage(offscreen, 0, 0, (panel_width * PortalConsts.SCALE), (PANEL_STD * PortalConsts.SCALE), 0, 0, panel_width, PANEL_STD, this);
+			graphics.drawImage(offscreen, 0, 0, (int)(panel_width * PortalConsts.SCALE), (int)(PANEL_STD * PortalConsts.SCALE), 0, 0, panel_width, PANEL_STD, this);
 			this.repaint();
 		}
 

@@ -15,7 +15,7 @@ class Options
 	// true if configuration settings are locked
 	boolean	lock_configuration;
 	
-	boolean scale2x;
+	float scale2x;
 
 	public Options()
 	{
@@ -23,7 +23,7 @@ class Options
 		disconnect_at_signoff = false;
 		disable_signon_display = false;
 		lock_configuration = false;
-		scale2x = false;
+		scale2x = 1;
 	}
 
 	public void copyTo(Options x)
@@ -41,7 +41,7 @@ class Options
 		sb.append("<options disconnect_at_signoff=\""+JPortal.boolString(disconnect_at_signoff)+"\"");
 //		sb.append(" disable_signon_display=\""+JPortal.boolString(disable_signon_display)+"\"");
 //		sb.append(" lock_configuration=\""+JPortal.boolString(lock_configuration)+"\"");
-		sb.append(" scale2x=\""+JPortal.boolString(scale2x)+"\"");
+		sb.append(" scalex=\""+scale2x+"\"");
 		sb.append("/>\n");
 	}
 
@@ -90,8 +90,8 @@ class Options
 		
 		this.lock_configuration = false;
 		
-		n = nnm.getNamedItem("scale2x");
+		n = nnm.getNamedItem("scalex");
 		if	(null != n)
-			this.scale2x = JPortal.stringBool(n.getNodeValue());
+			this.scale2x = Float.parseFloat(n.getNodeValue());
 	}
 }

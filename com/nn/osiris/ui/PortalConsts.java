@@ -33,7 +33,7 @@ class PortalConsts
 	// default width of portal window
 	static final int		default_width = 640;
 	
-	static  int  			SCALE = 1; 
+	static  float  			SCALE = (float)1; 
 
 	static public boolean	is_threaded = false;		// for Z80  -- currently ignored
 	static public boolean	is_macintosh = false;
