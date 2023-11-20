@@ -676,6 +676,10 @@ public class PortalFrame
 		item.addActionListener(this);
 		jMenuHelp.add (item = new JMenuItem("Tabs Help..."));
 		item.addActionListener(this);
+		jMenuHelp.add (item = new JMenuItem("Edit Menu Help..."));
+		item.addActionListener(this);
+		jMenuHelp.add (item = new JMenuItem("Settings Menu Help..."));
+		item.addActionListener(this);
 		jMenuHelp.addSeparator();
 		jMenuHelp.add (item = new JMenuItem("About Multimedia..."));
 		item.addActionListener(this);
@@ -1534,14 +1538,24 @@ public class PortalFrame
 
 		if	(cmd.equals("File Menu Help..."))
 		{
-			this.ExternalHelp(PortalConsts.fileHelp);
+			ExternalHelp(PortalConsts.fileHelp);
 		}
 
 		if	(cmd.equals("Tabs Help..."))
 		{
-			this.ExternalHelp(PortalConsts.tabsHelp);
+			ExternalHelp(PortalConsts.tabsHelp);
 		}
 
+		if	(cmd.equals("Edit Menu Help..."))
+		{
+			ExternalHelp(PortalConsts.editHelp);
+		}
+		
+		if	(cmd.equals("Settings Menu Help..."))
+		{
+			ExternalHelp(PortalConsts.settingsHelp);
+		}
+		
 		if	(cmd.equals("About Multimedia..."))
 		{
 			aboutMultimedia();
@@ -1549,6 +1563,7 @@ public class PortalFrame
 
 		if	(cmd.equals("Keyboard..."))
 		{
+			ExternalHelp(PortalConsts.keysHelp);
 			if	(nova_keys_dialog == null)
 			{
 				nova_keys_dialog = new NovaKeysDialog(this);

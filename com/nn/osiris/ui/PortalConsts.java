@@ -53,6 +53,9 @@ class PortalConsts
 	static final String optHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:sizing";
 	static final String fileHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:filemenu";
 	static final String tabsHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:multiconnect";
+	static final String editHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:editmenu";
+	static final String settingsHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:settings";
+	static final String keysHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:keyboard";
 	
 	
 	// The rest of this file is for executing Z80 code - MTUTOR
