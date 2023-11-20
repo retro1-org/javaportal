@@ -65,6 +65,8 @@ public class PortalFrame
 	/* File with global options */
 	File	options_file;
 
+	
+	public static PortalFrame mainFrame;
 
 	/**
 	 * Gets configuration information from the registry
@@ -670,6 +672,11 @@ public class PortalFrame
 		jMenuHelp.add (item = new JMenuItem("Function Key Bar"));
 		item.addActionListener(this);
 		jMenuHelp.addSeparator();
+		jMenuHelp.add (item = new JMenuItem("File Menu Help..."));
+		item.addActionListener(this);
+		jMenuHelp.add (item = new JMenuItem("Tabs Help..."));
+		item.addActionListener(this);
+		jMenuHelp.addSeparator();
 		jMenuHelp.add (item = new JMenuItem("About Multimedia..."));
 		item.addActionListener(this);
 
@@ -869,6 +876,7 @@ public class PortalFrame
 	public PortalFrame(Properties startup_props)
 	{
 		super (PortalConsts.theName);
+		mainFrame = this;
 		setPortalIcon();
 		setResizable(false);
 		this.startup_properties = startup_props;
@@ -1084,7 +1092,7 @@ public class PortalFrame
 	public void aboutBox()
 	{
 	JOptionPane.showMessageDialog(this,
-			PortalConsts.theName + " Version "+PortalConsts.short_version+", Copyright 2010 Pearson Education",
+			PortalConsts.theName + " Version "+PortalConsts.short_version , //+", Copyright 2010 Pearson Education",
 		"About " + PortalConsts.theName,
 		JOptionPane.PLAIN_MESSAGE);
 	}
@@ -1498,6 +1506,17 @@ public class PortalFrame
 		savePreferences(current_config_file);
 	}
 
+	
+	public void ExternalHelp(String url)
+	{
+		try
+		{
+			mainFrame.openURL(url);
+		}
+		catch (Exception ex) {}
+	}
+	
+	
 	/**
 	 * Invoked when a swing control action callback happens
 	 */
@@ -1508,7 +1527,21 @@ public class PortalFrame
 		if	(PortalConsts.is_debugging)
 	    	System.out.println ("actionPerformed: "+cmd);
 		if	(cmd.equals("About " + PortalConsts.theName + "..."))
+		{
+			ExternalHelp(PortalConsts.codexroot);
 			aboutBox();
+		}
+
+		if	(cmd.equals("File Menu Help..."))
+		{
+			this.ExternalHelp(PortalConsts.fileHelp);
+		}
+
+		if	(cmd.equals("Tabs Help..."))
+		{
+			this.ExternalHelp(PortalConsts.tabsHelp);
+		}
+
 		if	(cmd.equals("About Multimedia..."))
 		{
 			aboutMultimedia();

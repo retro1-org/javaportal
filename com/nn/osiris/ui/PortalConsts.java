@@ -18,7 +18,7 @@ class PortalConsts
 	static final public String	theName = "PlatoAccess";
 	
 	// version string displayed in dialog and sent to system via -local-
-	static public String	short_version = "0.0.3 beta";
+	static public String	short_version = "0.1.0 beta";
 	static public String	options_file = "portopt.cf2";
 	// user-specific configuration file name
 	static public String	user_config_file = "jpterm.cfg";
@@ -44,6 +44,15 @@ class PortalConsts
 	// Default tcp host & port to connect to:
 	static final String	default_host = "cybis.retro1.net";
 	static final int default_port = 8005;
+	
+	
+	
+	// HELP strings
+	static final String codexroot = "https://codex.retro1.org/plato:portal.help:platoaccess.help:start";
+	static final String sessHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:configfiles";
+	static final String optHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:sizing";
+	static final String fileHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:filemenu";
+	static final String tabsHelp = "https://codex.retro1.org/plato:portal.help:platoaccess.help:multiconnect";
 	
 	
 	// The rest of this file is for executing Z80 code - MTUTOR

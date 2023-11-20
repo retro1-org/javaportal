@@ -35,6 +35,7 @@ public class OptionsDialog
 	private JTextField		scale2x_button = new JTextField(5);
 	private JButton			ok_button = new JButton("Ok");
 	private JButton			cancel_button = new JButton("Cancel");
+	private JButton			help_button = new JButton("Help");
 	private boolean			cancelled;
 
 	private PortalFrame		parent;
@@ -86,6 +87,7 @@ public class OptionsDialog
 		// Add buttons to button panel.
 		button_panel.add(ok_button);
 		button_panel.add(cancel_button);
+		button_panel.add(help_button);
 
 		// Set layout and add panels.
   		getContentPane().setLayout(new BorderLayout(6, 6)); // margins of 6
@@ -94,6 +96,7 @@ public class OptionsDialog
 
 		ok_button.addActionListener(this);
 		cancel_button.addActionListener(this);
+		help_button.addActionListener(this);
 
 		if (options.lock_configuration)
 		{
@@ -141,6 +144,10 @@ public class OptionsDialog
 			options.scale2x = Float.valueOf(this.scale2x_button.getText());
 			cancelled = false;
 			setVisible(false);
+		}
+		else if (e.getSource() == help_button)
+		{
+			PortalFrame.mainFrame.ExternalHelp(PortalConsts.optHelp);
 		}
 	}
 

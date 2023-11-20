@@ -46,6 +46,7 @@ public class CommunicationsDialog
 
 	private JButton			ok_button = new JButton("Ok");
 	private JButton			cancel_button = new JButton("Cancel");
+	private JButton			help_button = new JButton("Help");
 
 	//private PortalFrame		parent;
 	private Session			session = new Session();
@@ -167,6 +168,7 @@ public class CommunicationsDialog
 		// Add buttons to button panel.
 		button_panel.add(ok_button);
 		button_panel.add(cancel_button);
+		button_panel.add(help_button);
 
 		// Set layout and add panels.
   		getContentPane().setLayout(new BorderLayout(6, 6)); // margins of 6
@@ -182,6 +184,7 @@ public class CommunicationsDialog
 		mtboot_field.addActionListener(this);
 		ok_button.addActionListener(this);
 		cancel_button.addActionListener(this);
+		help_button.addActionListener(this);
 
 		if (options.lock_configuration)
 		{
@@ -329,6 +332,10 @@ public class CommunicationsDialog
 			session.mtdisk1 = mtdisk1_field.getText();
 			session.mtboot = mtboot_field.getText();
 			setVisible(false);
+		}
+		else if (e.getSource() == help_button)
+		{
+			PortalFrame.mainFrame.ExternalHelp(PortalConsts.sessHelp);
 		}
 	}
 
