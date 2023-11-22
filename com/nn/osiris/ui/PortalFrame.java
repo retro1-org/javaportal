@@ -1286,7 +1286,7 @@ public class PortalFrame
 		lop.startSession(session);
 
 		compTab(lop);
-
+		
 		this.pack();
 	}
 
@@ -2139,10 +2139,16 @@ public class PortalFrame
 	public void openURL(String urlspec)
 		throws java.io.IOException
 	{
+		
+		OpenURL.go(urlspec);
+		
+	/*
 		if	(mgi != null)
 			mgi.openURL(urlspec);
 		else
 			BrowserLauncher.openURL(urlspec);
+			
+	*/
 	}
 
 	/**
