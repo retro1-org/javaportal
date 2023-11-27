@@ -1039,7 +1039,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		/*40*/DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, 
 		/*48*/DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, DATA00, 
 		/*50*/DATA00, DATA03, DATA03, DATA00, DATA00, DATA00, DATA00, DATA03, 
-		/*58*/ICMD, DATA03, DATA00, ICMD, ICMD, ICMD, ICMD, ICMD, 
+		/*58*/ICMD, DATA03, DATA00, DATA00, ICMD, ICMD, ICMD, ICMD, 
 		/*60*/ICMD, DATA04, DATA04, DATA02, DATA00, DATA00, DATA00, DATA00, 
 		/*68*/DATA00, CMDi, CMDj, CMDk, DATA02, DATA02, DATA06, ICMD, 
 		/*70*/ICMD, CMDq, ICMD, DATA00, ICMD, ICMD, CMDv, ICMD, 
@@ -1265,6 +1265,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				break;
 			case 0x5a:
 				setMargin();
+				break;
+			case 0x5b:
+				LoadMeta();
 				break;
 			case 0x61:
 //				if	(PortalConsts.is_debugging)
@@ -2689,6 +2692,18 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		data_pnt = 0;
 	}
 
+	private final String ExtractString(int fbyte, int nbytes)
+	{
+		StringBuffer x = new StringBuffer("");
+		
+		for (int i = fbyte ; i < nbytes+fbyte ; i++ )
+		{
+			char z = (char)(data[i] & 0x7f);
+			x.append(z);
+		}
+		return x.toString();
+	}
+	
 	/**
 	 * Extract a data word from the data array.
 	 *
@@ -3727,6 +3742,40 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		this.print_interface = print_interface;
 	}
 
+	private final void LoadMeta()
+	{
+		String x = filename.toString();
+		int len = x.length();
+		String name = "";
+		String group = "";
+		
+		if (len > 5)
+		{
+			int fnd = x.indexOf("name=");
+			if (fnd !=-1)
+			{
+				name = x.substring(fnd+5, len - fnd - 5);
+				fnd = name.indexOf(";");
+				if (fnd != -1)
+					name = name.substring(0, fnd);
+			}
+			fnd = x.indexOf("group=");
+			if (fnd !=-1)
+			{
+				group = x.substring(fnd+6, len - fnd - 6);
+				if (fnd != -1)
+					fnd = group.indexOf(";");
+				group = group.substring(0, fnd);
+			}
+			
+			x = name + " / " + group;
+		}
+		
+		((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port + " | " + x);
+		
+	}
+	
+	
 	/**
 	 *
 	 * LoadEcho()
