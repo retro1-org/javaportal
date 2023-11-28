@@ -23,12 +23,12 @@ class NetConnModern extends NetConnInterface
 			for (int pi=0;pi<plist.size();pi++)
 			{
 				proxy = plist.get(pi);
-				if	(PortalConsts.is_debugging) System.out.println("evaluating proxy: "+proxy.toString());
+				if	(PlatoConsts.is_debugging) System.out.println("evaluating proxy: "+proxy.toString());
 				if	(proxy.type() == Proxy.Type.SOCKS)
 					break;
 			}
 		}
-		if (PortalConsts.is_debugging) System.out.println("using proxy: "+proxy.toString());
+		if (PlatoConsts.is_debugging) System.out.println("using proxy: "+proxy.toString());
 
 //	if we found a proxy to use, connect using it
 		if	(null != proxy)

@@ -45,8 +45,8 @@ class Session
 
 	public Session()
 	{
-		host = PortalConsts.default_host;
-		port = PortalConsts.default_port;
+		host = PlatoConsts.default_host;
+		port = PlatoConsts.default_port;
 		name = group = null;
 	}
 
@@ -69,12 +69,12 @@ class Session
 
 		n = nnm.getNamedItem("host");
 		if	(null == n)
-			this.host = PortalConsts.default_host;
+			this.host = PlatoConsts.default_host;
 		else
 			this.host = n.getNodeValue();
 		n = nnm.getNamedItem("port");
 		if	(null == n)
-			this.port = PortalConsts.default_port;
+			this.port = PlatoConsts.default_port;
 		else
 		{
 			try
@@ -83,7 +83,7 @@ class Session
 			}
 			catch (NumberFormatException e1)
 			{
-				this.port = PortalConsts.default_port;
+				this.port = PlatoConsts.default_port;
 			}
 		}
 		n = nnm.getNamedItem("name");
@@ -130,8 +130,8 @@ class Session
 	 */
 	public Session(java.util.Properties p)
 	{
-		this.host = p.getProperty("network_host",PortalConsts.default_host);
-		this.port = Integer.parseInt(p.getProperty("network_host_port",Integer.toString(PortalConsts.default_port)));
+		this.host = p.getProperty("network_host",PlatoConsts.default_host);
+		this.port = Integer.parseInt(p.getProperty("network_host_port",Integer.toString(PlatoConsts.default_port)));
 		this.name = p.getProperty("name");
 		this.group = p.getProperty("group");
 		this.lesson = p.getProperty("lesson");

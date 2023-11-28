@@ -90,7 +90,7 @@ class PrintInterfaceMac extends PrintInterface
 	{
 		if (null != offscreen && page_open)
 		{
-		PortalFrame	pf = (PortalFrame) engine.parent_frame;
+		PlatoFrame	pf = (PlatoFrame) engine.parent_frame;
 
 			pf.printImage(offscreen,false);
 			page_open = false;

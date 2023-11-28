@@ -613,7 +613,7 @@ public final class LevelOneKermit
 		zclosi();
 		zcloso(true);
 		decstr(error_string);
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println(error_string.toString());
 		servefunc();
 	}
@@ -719,7 +719,7 @@ public final class LevelOneKermit
 			return -1;
 		}
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("kermit upload: "+filename);
 		return 0;
 	}
@@ -741,7 +741,7 @@ public final class LevelOneKermit
 		{
 			return -1;
 		}
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("kermit download: "+current_dir+"@"+filename);
 
 		return 0;
@@ -870,7 +870,7 @@ public final class LevelOneKermit
 	private int zputc(int c)
 	{
 	// unix+mac text files don't contain crs
-		if	(!PortalConsts.is_windows)
+		if	(!PlatoConsts.is_windows)
 		{
 			if (!is_binary_mode)
 			{

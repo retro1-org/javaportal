@@ -21,7 +21,7 @@ public class ConnectDialog extends JDialog
 	 * 
 	 */
 	private static final long serialVersionUID = -21L;
-	PortalFrame	pf;
+	PlatoFrame	pf;
 
 	/**
 	 * Construct a connection dialog which displays a message.
@@ -36,7 +36,7 @@ public class ConnectDialog extends JDialog
 		String message)
 	{
 		super(parent, title, false);
-		this.pf = (PortalFrame) parent;
+		this.pf = (PlatoFrame) parent;
   		getContentPane().setLayout(new BorderLayout(15, 15));
 		getContentPane().add(new JLabel(message),BorderLayout.CENTER);
 

@@ -11,10 +11,10 @@
  * so a decent name is shown on the MacOS when launching
  * the jar file.
  */
-class Portal
+class Plato
 {
 	static public void main(String[] args)
 	{
-		com.nn.osiris.ui.JPortal.main(args);
+		com.nn.osiris.ui.PlatoAccess.main(args);
 	}
 }

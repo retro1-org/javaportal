@@ -28,9 +28,9 @@ public class NovaKeysDialog
 	 * 
 	 */
 	private static final long serialVersionUID = -161L;
-	PortalFrame	frame;
+	PlatoFrame	frame;
 
-	public NovaKeysDialog(PortalFrame parent)
+	public NovaKeysDialog(PlatoFrame parent)
 	{
 		super(parent, "Host Keys", true);
 		this.frame = parent;

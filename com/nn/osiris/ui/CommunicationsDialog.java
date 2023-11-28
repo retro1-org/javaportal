@@ -58,7 +58,7 @@ public class CommunicationsDialog
 	 * @param	title	The title for the dialog.
 	 */
 	public CommunicationsDialog(
-		PortalFrame parent,
+		PlatoFrame parent,
 		String title,
 		boolean is_modal,
 		Session old_session,
@@ -242,12 +242,12 @@ public class CommunicationsDialog
 						public void focusGained(FocusEvent e)
 						{
 							host_field.grabFocus();
-							JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+							JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 							FileNameExtensionFilter filter = new FileNameExtensionFilter(
 							        "Portal Disk Files", "mte");
 							    fc.setFileFilter(filter);
 
-								if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(JPortal.global_jportal.frame))
+								if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(PlatoAccess.global_jportal.frame))
 								{
 									mtdisk0_field.setText(fc.getSelectedFile().getAbsolutePath());
 								}
@@ -261,12 +261,12 @@ public class CommunicationsDialog
 								public void focusGained(FocusEvent e)
 								{
 									host_field.grabFocus();
-									JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+									JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 									FileNameExtensionFilter filter = new FileNameExtensionFilter(
 									        "Portal Disk Files", "mte");
 									    fc.setFileFilter(filter);
 
-										if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(JPortal.global_jportal.frame))
+										if	(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(PlatoAccess.global_jportal.frame))
 										{
 											mtdisk1_field.setText(fc.getSelectedFile().getAbsolutePath());
 										}
@@ -335,7 +335,7 @@ public class CommunicationsDialog
 		}
 		else if (e.getSource() == help_button)
 		{
-			PortalFrame.mainFrame.ExternalHelp(PortalConsts.sessHelp);
+			PlatoFrame.mainFrame.ExternalHelp(PlatoConsts.sessHelp);
 		}
 	}
 

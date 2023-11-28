@@ -27,7 +27,7 @@ import org.w3c.dom.*;
  *
  * @author John Hegarty
  */
-public class PortalFrame
+public class PlatoFrame
 	extends JFrame
 	implements Printable, ActionListener, ONetworkListener,
 		ComponentListener
@@ -66,7 +66,7 @@ public class PortalFrame
 	File	options_file;
 
 	
-	public static PortalFrame mainFrame;
+	public static PlatoFrame mainFrame;
 
 	/**
 	 * Gets configuration information from the registry
@@ -192,20 +192,20 @@ public class PortalFrame
 	void findDefaultConfig()
 	{
 	String	user_config_fn = null;  //  = PortalConsts.user_config_file;
-	String	global_config_fn = PortalConsts.global_config_file;
+	String	global_config_fn = PlatoConsts.global_config_file;
 
-		if (PortalConsts.is_macintosh)
+		if (PlatoConsts.is_macintosh)
 		{
 		String	home = System.getProperty("user.home");
 		String	libprefs = "/Library/Preferences/";
 
-			user_config_fn = home+libprefs+PortalConsts.user_config_file;
-			global_config_fn = libprefs+PortalConsts.global_config_file;
-			options_file = new File(home+libprefs+PortalConsts.options_file);
+			user_config_fn = home+libprefs+PlatoConsts.user_config_file;
+			global_config_fn = libprefs+PlatoConsts.global_config_file;
+			options_file = new File(home+libprefs+PlatoConsts.options_file);
 		// check for global options file if user one doesn't exist.
 			if	(!options_file.exists())
 			{
-			File	test = new File(libprefs+PortalConsts.options_file);
+			File	test = new File(libprefs+PlatoConsts.options_file);
 
 				if	(test.exists())
 					options_file = test;
@@ -213,7 +213,7 @@ public class PortalFrame
 		}
 		else
 		{
-			options_file = new File(PortalConsts.options_file);
+			options_file = new File(PlatoConsts.options_file);
 
 		String	user_prop= startup_properties.getProperty("configfile");
 
@@ -226,7 +226,7 @@ public class PortalFrame
 		
 		// set user_config_fn from a dialog of available configs
 			
-			File directoryPath = new File(JPortal.current_dir);
+			File directoryPath = new File(PlatoAccess.current_dir);
 	
 			FilenameFilter textFilefilter = new FilenameFilter(){
 		         public boolean accept(File dir, String name) {
@@ -248,9 +248,9 @@ public class PortalFrame
 		      else if (filesList != null && filesList.length > 1 )
 		      {
 		    	// File list dialog
-		      	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		      	JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 		    	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		    	       PortalConsts.theName + " Configuration Files", "cfg");
+		    	       PlatoConsts.theName + " Configuration Files", "cfg");
 		    	fc.setFileFilter(filter);
 		    	fc.setDialogTitle("Choose a configuration file to connect...");
 		    	boolean isOk = JFileChooser.APPROVE_OPTION == fc.showOpenDialog(this);
@@ -337,7 +337,7 @@ public class PortalFrame
 				lop.endSession();
 				removePanel(lop);
 
-				JOptionPane.showMessageDialog(PortalFrame.this,s,"Connection Failed",
+				JOptionPane.showMessageDialog(PlatoFrame.this,s,"Connection Failed",
 					JOptionPane.ERROR_MESSAGE);
 			}
 		});
@@ -361,7 +361,7 @@ public class PortalFrame
 				
 					if	(!ended_session)
 					{
-						JOptionPane.showMessageDialog(PortalFrame.this,
+						JOptionPane.showMessageDialog(PlatoFrame.this,
 							"<html>"+
 							"You are no longer connected, <br>"+
 							"you must choose the ReOpen Connection option <br>"+
@@ -387,7 +387,7 @@ public class PortalFrame
 
 			mgi = (MacGlueInterface) osxAdapter.getDeclaredConstructor().newInstance();
 			mgi.init(this);
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("Using EAWT extensions for finder; temp="+mgi.getTempFolder());
 		}
 		catch (NoClassDefFoundError e)
@@ -401,7 +401,7 @@ public class PortalFrame
 
 				mgi = (MacGlueInterface) cls.getDeclaredConstructor().newInstance();
 				mgi.init(this);
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 					System.out.println("Using MRJ extensions for finder; temp="+mgi.getTempFolder());
 			}
 			catch (NoClassDefFoundError e2)
@@ -433,7 +433,7 @@ public class PortalFrame
 	 */
 	public void saveOptions()
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("saveoptions invoked");
 		try
 		{
@@ -466,7 +466,7 @@ public class PortalFrame
 				JOptionPane.ERROR_MESSAGE);
 		}
 		
-		float save = PortalConsts.SCALE;
+		float save = PlatoConsts.SCALE;
 /*
 		if (options.scale2x)
 			PortalConsts.SCALE = 2;
@@ -474,12 +474,12 @@ public class PortalFrame
 			PortalConsts.SCALE = 1;		
 */
 		
-		PortalConsts.SCALE = options.scale2x;
+		PlatoConsts.SCALE = options.scale2x;
 		
-		if (save != PortalConsts.SCALE)
+		if (save != PlatoConsts.SCALE)
 		{	// rescale on fly
 			// Setup our dimensions as we want them.
-			Dimension panel_dim = new Dimension((int)(PortalConsts.default_width * PortalConsts.SCALE), (int)(LevelOnePanel.PANEL_STD * PortalConsts.SCALE));
+			Dimension panel_dim = new Dimension((int)(PlatoConsts.default_width * PlatoConsts.SCALE), (int)(LevelOnePanel.PANEL_STD * PlatoConsts.SCALE));
 			Dimension frame_dim = this.getSize();
 			LevelOnePanel lop = ((LevelOnePanel) portal_pane.getComponentAt(0));
 
@@ -562,7 +562,7 @@ public class PortalFrame
 		jMenuBar1 = new javax.swing.JMenuBar();
 
 		jMenuFile = new javax.swing.JMenu("File");
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 			jMenuFile.setMnemonic('F');
 		jMenuFile.add (item = new JMenuItem("ReOpen Connection"));
 		item.addActionListener(this);
@@ -589,7 +589,7 @@ public class PortalFrame
 		jMenuFile.add (item = new JMenuItem("Print Screen..."));
 		item.addActionListener(this);
 
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 		{
 			jMenuFile.addSeparator();
 			jMenuFile.add (item = new JMenuItem("Exit"));
@@ -598,11 +598,11 @@ public class PortalFrame
 		jMenuBar1.add(jMenuFile);
 
 		jMenuEdit = new javax.swing.JMenu("Edit");
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 			jMenuEdit.setMnemonic('E');
 
 		jMenuEdit.add (item = new JMenuItem("Copy"));
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 		{
 		// mac only since portal uses all the control keys
 		// for novanet stuff under windows, but on macintosh
@@ -614,7 +614,7 @@ public class PortalFrame
  		item.addActionListener(this);
 
 		jMenuEdit.add (item = new JMenuItem("Paste"));
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 		{
 			item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
@@ -623,7 +623,7 @@ public class PortalFrame
 		jMenuBar1.add(jMenuEdit);
 
 		jMenuSettings = new javax.swing.JMenu("Settings");
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 			jMenuSettings.setMnemonic('S');
 
 		jMenuSettings.add (item = new JMenuItem("Connection..."));
@@ -632,7 +632,7 @@ public class PortalFrame
 		jMenuSettings.add (item = new JMenuItem("New Connection..."));
 		item.addActionListener(this);
 
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 		{
 			jMenuSettings.add (item = new JMenuItem("Options..."));
 			item.addActionListener(this);
@@ -661,7 +661,7 @@ public class PortalFrame
 		jMenuBar1.add(jMenuSettings);
 
 		jMenuHelp = new javax.swing.JMenu("Help");
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 			jMenuHelp.setMnemonic('H');
 
 		jMenuHelp.add (item = new JMenuItem("Keyboard..."));
@@ -684,9 +684,9 @@ public class PortalFrame
 		jMenuHelp.add (item = new JMenuItem("About Multimedia..."));
 		item.addActionListener(this);
 
-		if	(!PortalConsts.is_macintosh)
+		if	(!PlatoConsts.is_macintosh)
 		{
-			jMenuHelp.add (item = new JMenuItem("About " + PortalConsts.theName + "..."));
+			jMenuHelp.add (item = new JMenuItem("About " + PlatoConsts.theName + "..."));
 			item.addActionListener(this);
 		}
 		jMenuBar1.add(jMenuHelp);
@@ -756,16 +756,16 @@ public class PortalFrame
 		// this method is 1.4+ only
 			this.setFocusTraversalKeysEnabled(false);
 			compTab(portal_pane);
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("disabled tab via 1.4 method");
 		}
 		catch (java.lang.NoSuchMethodError e1)
 		{
 			// this is a security violation for an applet - later
-			if	(PortalConsts.is_applet)
+			if	(PlatoConsts.is_applet)
 				return;
 
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("disabled tab via swing focus manager");
 			oldFocusManager = FocusManager.getCurrentManager();
 
@@ -840,7 +840,7 @@ public class PortalFrame
 	Container	cp = getContentPane();
 	int			tcount = portal_pane.getTabCount();
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("adjustbounds, tcount="+tcount);
 		if	(tcount < 1)
 		{
@@ -877,9 +877,9 @@ public class PortalFrame
 	/**
 	 * Constructor for frame.
 	 */
-	public PortalFrame(Properties startup_props)
+	public PlatoFrame(Properties startup_props)
 	{
-		super (PortalConsts.theName);
+		super (PlatoConsts.theName);
 		mainFrame = this;
 		setPortalIcon();
 		setResizable(false);
@@ -889,7 +889,7 @@ public class PortalFrame
 			inhibit_tabs = true;
 
 	// determine configuration file
-		if	(!PortalConsts.is_applet)
+		if	(!PlatoConsts.is_applet)
 			findDefaultConfig();
 
 //		if	(PortalConsts.is_macintosh)
@@ -897,7 +897,7 @@ public class PortalFrame
 
 	// quicktime for java is not compatible with 64 bit java
 		if	(System.getProperty("os.arch").startsWith("x86_64"))
-			PortalConsts.is_quicktime = false;
+			PlatoConsts.is_quicktime = false;
 
 	// initialize quicktime if we think it is present
 		
@@ -946,7 +946,7 @@ public class PortalFrame
 			logo_label.setPreferredSize(new Dimension(640,532));
 			cp.add(logo_label,BorderLayout.CENTER);
 		}
-		else if (PortalConsts.is_debugging)
+		else if (PlatoConsts.is_debugging)
 			System.out.println("could not read logo com/nn/images/notes.jpg");
 
 //	Create tabbed pane
@@ -1096,8 +1096,8 @@ public class PortalFrame
 	public void aboutBox()
 	{
 	JOptionPane.showMessageDialog(this,
-			PortalConsts.theName + " Version "+PortalConsts.short_version , //+", Copyright 2010 Pearson Education",
-		"About " + PortalConsts.theName,
+			PlatoConsts.theName + " Version "+PlatoConsts.short_version , //+", Copyright 2010 Pearson Education",
+		"About " + PlatoConsts.theName,
 		JOptionPane.PLAIN_MESSAGE);
 	}
 
@@ -1267,7 +1267,7 @@ public class PortalFrame
 //		if	(session.host.equals(PortalConsts.default_host))
 //			return;
 
-	LevelOnePanel	lop = new LevelOnePanel(this,JPortal.frame_width);
+	LevelOnePanel	lop = new LevelOnePanel(this,PlatoAccess.frame_width);
 	double			rate = 0.0;
 
 		lop.addNetworkListener(this);
@@ -1345,7 +1345,7 @@ public class PortalFrame
 
 		ungrabTabKey();
 
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 			title = "Preferences";
 		else
 			title = "Options";
@@ -1362,12 +1362,12 @@ public class PortalFrame
 	// options are always saved immediately
 		if	(!options_dialog.isCancelled())
 		{
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("options updated from dialog");
 			options_dialog.getValues().copyTo(options);
 			saveOptions();
 		}
-		else if (PortalConsts.is_debugging)
+		else if (PlatoConsts.is_debugging)
 			System.out.println("options dialog cancelled");
 
 		options_dialog.dispose();
@@ -1528,32 +1528,32 @@ public class PortalFrame
 	{
 	String	cmd = e.getActionCommand();
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 	    	System.out.println ("actionPerformed: "+cmd);
-		if	(cmd.equals("About " + PortalConsts.theName + "..."))
+		if	(cmd.equals("About " + PlatoConsts.theName + "..."))
 		{
-			ExternalHelp(PortalConsts.codexroot);
+			ExternalHelp(PlatoConsts.codexroot);
 			aboutBox();
 		}
 
 		if	(cmd.equals("File Menu Help..."))
 		{
-			ExternalHelp(PortalConsts.fileHelp);
+			ExternalHelp(PlatoConsts.fileHelp);
 		}
 
 		if	(cmd.equals("Tabs Help..."))
 		{
-			ExternalHelp(PortalConsts.tabsHelp);
+			ExternalHelp(PlatoConsts.tabsHelp);
 		}
 
 		if	(cmd.equals("Edit Menu Help..."))
 		{
-			ExternalHelp(PortalConsts.editHelp);
+			ExternalHelp(PlatoConsts.editHelp);
 		}
 		
 		if	(cmd.equals("Settings Menu Help..."))
 		{
-			ExternalHelp(PortalConsts.settingsHelp);
+			ExternalHelp(PlatoConsts.settingsHelp);
 		}
 		
 		if	(cmd.equals("About Multimedia..."))
@@ -1563,7 +1563,7 @@ public class PortalFrame
 
 		if	(cmd.equals("Keyboard..."))
 		{
-			ExternalHelp(PortalConsts.keysHelp);
+			ExternalHelp(PlatoConsts.keysHelp);
 			if	(nova_keys_dialog == null)
 			{
 				nova_keys_dialog = new NovaKeysDialog(this);
@@ -1623,7 +1623,7 @@ public class PortalFrame
 			//	quicktime.QTSession.close();
 			setVisible(false);
 			dispose();
-			if	(!PortalConsts.is_applet)
+			if	(!PlatoConsts.is_applet)
 				System.exit(0);
 		}
 
@@ -1698,7 +1698,7 @@ public class PortalFrame
 		
 		if	(e.getActionCommand().equals("Boot M-Tutor Virtual Disk 0"))
 		{
-			this.currentPanel().getParser().center_x = (PortalConsts.default_width - LevelOnePanel.PANEL_STD) / 2;
+			this.currentPanel().getParser().center_x = (PlatoConsts.default_width - LevelOnePanel.PANEL_STD) / 2;
 			this.currentPanel().getParser().cpu.BootMtutor(null);
 		}
 
@@ -1719,7 +1719,7 @@ public class PortalFrame
 	 */
 	void readOldConfiguration(File fref,boolean set_options)
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("readold="+fref);
 		try
 		{
@@ -1749,7 +1749,7 @@ public class PortalFrame
 	 */
 	public void readXMLConfiguration(File fref)
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("readxmlconfig="+fref);
 		try
 		{
@@ -1778,7 +1778,7 @@ public class PortalFrame
 	 */
 	public void readXMLOptions(File fref)
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("readxmloptions="+fref);
 		try
 		{
@@ -1799,7 +1799,7 @@ public class PortalFrame
 		{
 		}
 		
-			PortalConsts.SCALE = options.scale2x;
+			PlatoConsts.SCALE = options.scale2x;
 
 	}
 
@@ -1847,9 +1847,9 @@ public class PortalFrame
 	 */
 	void doLoadConfiguration()
 	{
-	JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+	JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 	FileNameExtensionFilter filter = new FileNameExtensionFilter(
-			PortalConsts.theName + " Configuration Files - .cfg", "cfg");
+			PlatoConsts.theName + " Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(mgi != null)
@@ -1880,9 +1880,9 @@ public class PortalFrame
 	 */
 	void doSaveConfiguration()
 	{
-		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				PortalConsts.theName + " Configuration Files - .cfg", "cfg");
+				PlatoConsts.theName + " Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
@@ -1893,9 +1893,9 @@ public class PortalFrame
 
 	void SaveConnection(Session session)
 	{
-		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				PortalConsts.theName + " Configuration Files - .cfg", "cfg");
+				PlatoConsts.theName + " Configuration Files - .cfg", "cfg");
 	    fc.setFileFilter(filter);
 
 		if	(JFileChooser.APPROVE_OPTION == fc.showSaveDialog(this))
@@ -1906,7 +1906,7 @@ public class PortalFrame
 
 	void doLoadVDisk0()
 	{
-		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	        "Portal Disk Files", "mte");
 	    fc.setFileFilter(filter);
@@ -1960,7 +1960,7 @@ public class PortalFrame
 
 	void doLoadVDisk1()
 	{
-		JFileChooser	fc = new JFileChooser(JPortal.current_dir);
+		JFileChooser	fc = new JFileChooser(PlatoAccess.current_dir);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	        "Portal Disk Files", "mte");
 	    fc.setFileFilter(filter);
@@ -2036,7 +2036,7 @@ public class PortalFrame
 	 */
 	public void initializeApplication()
 	{
-		if	(!PortalConsts.is_applet)
+		if	(!PlatoConsts.is_applet)
 			readOptionsFile();
 
 		/*
@@ -2057,7 +2057,7 @@ public class PortalFrame
 		// make command line options overrule everything else --
 		if	(startup_properties.getProperty("network_host") != null)
 		{
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("configuring from command line");
 
 		Session	s = new Session(startup_properties);
@@ -2065,14 +2065,14 @@ public class PortalFrame
 			doOpenConnection(s);
 		}
 		// if no configuration file, prompt user to create same
-		else if	(PortalConsts.is_applet || !current_config_file.exists())
+		else if	(PlatoConsts.is_applet || !current_config_file.exists())
 		{
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("no config file: "+current_config_file);
 
 			if	(startup_properties.getProperty("network_host") != null)
 			{
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 					System.out.println("configuring from command line");
 
 			Session	s = new Session(startup_properties);
@@ -2179,7 +2179,7 @@ public class PortalFrame
 	 */
 	public void componentShown(ComponentEvent e)
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("requesting focus on "+e.getComponent());
 		e.getComponent().requestFocus();
 	}

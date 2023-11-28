@@ -9,13 +9,13 @@ package com.nn.osiris.ui;
 
 class MacGlueInterface
 {
-	PortalFrame	frame;
+	PlatoFrame	frame;
 
 	public MacGlueInterface()
 	{
 	}
 
-	public void init(PortalFrame frame)
+	public void init(PlatoFrame frame)
 	{
 	}
 

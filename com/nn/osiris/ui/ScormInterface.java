@@ -10,7 +10,7 @@ class ScormInterface
 
     public ScormInterface()
 	{
-		if	(PortalConsts.is_debugging)System.out.println("Using ScormInterface");
+		if	(PlatoConsts.is_debugging)System.out.println("Using ScormInterface");
 	}
 	public void init(javax.swing.JFrame papplet)
 	{

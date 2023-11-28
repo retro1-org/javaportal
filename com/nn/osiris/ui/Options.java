@@ -38,7 +38,7 @@ class Options
 	public void toXML(StringBuffer sb)
 	{
 //		sb.append("<options multi_connect=\""+JPortal.boolString(multi_connect)+"\"");
-		sb.append("<options disconnect_at_signoff=\""+JPortal.boolString(disconnect_at_signoff)+"\"");
+		sb.append("<options disconnect_at_signoff=\""+PlatoAccess.boolString(disconnect_at_signoff)+"\"");
 //		sb.append(" disable_signon_display=\""+JPortal.boolString(disable_signon_display)+"\"");
 //		sb.append(" lock_configuration=\""+JPortal.boolString(lock_configuration)+"\"");
 		sb.append(" scalex=\""+scale2x+"\"");
@@ -47,10 +47,10 @@ class Options
 
 	public void readProperties(Properties p)
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("options set from properties");
-		this.disconnect_at_signoff = JPortal.stringBool(p.getProperty("disconnect_signoff"));
-		this.disable_signon_display = JPortal.stringBool(p.getProperty("disable_name"));
+		this.disconnect_at_signoff = PlatoAccess.stringBool(p.getProperty("disconnect_signoff"));
+		this.disable_signon_display = PlatoAccess.stringBool(p.getProperty("disable_name"));
 	}
 
 	public void readNode(Node options_node)
@@ -58,7 +58,7 @@ class Options
 	NamedNodeMap	nnm = options_node.getAttributes();
 	Node	n;
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("options set from XML");
 		/*
 		n = nnm.getNamedItem("multi_connect");
@@ -73,7 +73,7 @@ class Options
 		
 		n = nnm.getNamedItem("disconnect_at_signoff");
 		if	(null != n)
-			this.disconnect_at_signoff = JPortal.stringBool(n.getNodeValue());
+			this.disconnect_at_signoff = PlatoAccess.stringBool(n.getNodeValue());
 		/*
 		n = nnm.getNamedItem("disable_signon_display");
 		if	(null != n)

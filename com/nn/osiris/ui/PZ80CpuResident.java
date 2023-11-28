@@ -167,7 +167,7 @@ public class PZ80CpuResident {
                 pc =  z80.reg_PC; // z80.getProgramCounter();	
                 
                 /** Check if PC (running program/MTutor) is calling Resident */
-                if ( pc > (PortalConsts.R_MAIN -1) && pc < (PortalConsts.R_DUMMY3 + 3) && !stopme)
+                if ( pc > (PlatoConsts.R_MAIN -1) && pc < (PlatoConsts.R_DUMMY3 + 3) && !stopme)
                 {
                 	/** need to process resident calls here. */
                 	int result = Resident(pc);
@@ -190,12 +190,12 @@ public class PZ80CpuResident {
                 if (!z80.getHalt() && !stopme)
                 {
                 	/** Special checks for return from mode six data handler */
-                	if ( in_mode6 && z80.reg_PC == PortalConsts.Level4Mode6Ret && m_mtPLevel > 3 )  // return from mode 6 handler address
+                	if ( in_mode6 && z80.reg_PC == PlatoConsts.Level4Mode6Ret && m_mtPLevel > 3 )  // return from mode 6 handler address
                 	{
                 		z80.RestoreState();
                 		in_mode6 = false;
-                		if (z80.reg_PC == PortalConsts.R_MAIN) 			// Mtutor no longer running!
-                			z80.reg_PC = PortalConsts.Level4MainLoop;	// put it back in main loop!
+                		if (z80.reg_PC == PlatoConsts.R_MAIN) 			// Mtutor no longer running!
+                			z80.reg_PC = PlatoConsts.Level4MainLoop;	// put it back in main loop!
                 	}
                 	/** finally we get to execute one z80 instruction */
                 	z80.executeOneInstruction();
@@ -236,9 +236,9 @@ public class PZ80CpuResident {
     */
     public void runWithMtutorCheck(int address)
     {
-    	int release = z80Memory.readByte(PortalConsts.MTUTLVL + 1);  // release or year *y1*
+    	int release = z80Memory.readByte(PlatoConsts.MTUTLVL + 1);  // release or year *y1*
         if (release == 8)           // year *y1* 82 - 8?
-            release = z80Memory.readByte(PortalConsts.MTUTLVL); 	 // release
+            release = z80Memory.readByte(PlatoConsts.MTUTLVL); 	 // release
         
         if (!parser.booted)
         	m_mtPLevel = release;
@@ -283,13 +283,13 @@ public class PZ80CpuResident {
     void PatchL2 ()
     {
         // Call resident for brief pause
-    	z80Memory.writeByte(PortalConsts.Level2Pause, PortalConsts.CALL8080);
-    	z80Memory.writeWord(PortalConsts.Level2Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PlatoConsts.Level2Pause, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(PlatoConsts.Level2Pause + 1, PlatoConsts.R_WAIT16);
     	
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..
-    	z80Memory.writeWord(PortalConsts.Level2Xplato,  0);
-    	z80Memory.writeByte(PortalConsts.Level2Xplato + 2,  0);
+    	z80Memory.writeWord(PlatoConsts.Level2Xplato,  0);
+    	z80Memory.writeByte(PlatoConsts.Level2Xplato + 2,  0);
     	
         // patch xerror tight getkey loop problem in mtutor
         // top 32K of ram was for memory mapped video on ist 2/3
@@ -297,10 +297,10 @@ public class PZ80CpuResident {
     	z80Memory.writeWord(0x5d26,  0x8010);	// jmp just above interp
     	
     	// here is the patch
-    	z80Memory.writeByte(0x8010, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8010, PlatoConsts.CALL8080);
     	z80Memory.writeWord(0x8011, 0x602f);	// xplato
 
-    	z80Memory.writeByte(0x8013, PortalConsts.JUMP8080);  // jmp
+    	z80Memory.writeByte(0x8013, PlatoConsts.JUMP8080);  // jmp
     	z80Memory.writeWord(0x8014, 0x5d22);// back to loop - getkey
     }
 
@@ -310,16 +310,16 @@ public class PZ80CpuResident {
     void PatchL3 ()
     {
         // Call resident for brief pause
-    	z80Memory.writeByte(PortalConsts.Level3Pause, PortalConsts.CALL8080);
-    	z80Memory.writeWord(PortalConsts.Level3Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PlatoConsts.Level3Pause, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(PlatoConsts.Level3Pause + 1, PlatoConsts.R_WAIT16);
     	
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
-    	z80Memory.writeWord(PortalConsts.Level3Xplato,  0);
+    	z80Memory.writeWord(PlatoConsts.Level3Xplato,  0);
     	
         // ret to disable ist-3 screen print gunk
-    	z80Memory.writeByte(0x600d, PortalConsts.RET8080);  // z80 ret
+    	z80Memory.writeByte(0x600d, PlatoConsts.RET8080);  // z80 ret
     }
 
     
@@ -329,18 +329,18 @@ public class PZ80CpuResident {
     void PatchL4 ()
     {
         // Call resident for brief pause
-    	z80Memory.writeByte(PortalConsts.Level4Pause, PortalConsts.CALL8080);
-    	z80Memory.writeWord(PortalConsts.Level4Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PlatoConsts.Level4Pause, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(PlatoConsts.Level4Pause + 1, PlatoConsts.R_WAIT16);
     	
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
-    	z80Memory.writeWord(PortalConsts.Level4Xplato,  0);
+    	z80Memory.writeWord(PlatoConsts.Level4Xplato,  0);
     	
         // to redirect ist-3 screen print gunk
-    	z80Memory.writeByte(0x5f5c , PortalConsts.RET8080);  // z80 ret
+    	z80Memory.writeByte(0x5f5c , PlatoConsts.RET8080);  // z80 ret
 
-        PatchColor (PortalConsts.Level4GetVar);
+        PatchColor (PlatoConsts.Level4GetVar);
     }
     
     /**
@@ -349,18 +349,18 @@ public class PZ80CpuResident {
     void PatchL5 ()
     {
         // Call resident for brief pause
-    	z80Memory.writeByte(PortalConsts.Level56Pause, PortalConsts.CALL8080);
-    	z80Memory.writeWord(PortalConsts.Level56Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PlatoConsts.Level56Pause, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(PlatoConsts.Level56Pause + 1, PlatoConsts.R_WAIT16);
     	
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
-    	z80Memory.writeWord(PortalConsts.Level56Xplato,  0);
+    	z80Memory.writeWord(PlatoConsts.Level56Xplato,  0);
     	
         // ret to disable ist-3 screen print gunk
-    	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
+    	z80Memory.writeByte(0x5f5c, PlatoConsts.RET8080);  // z80 ret
 
-        PatchColor (PortalConsts.Level56GetVar);
+        PatchColor (PlatoConsts.Level56GetVar);
     }
 
     /**
@@ -369,18 +369,18 @@ public class PZ80CpuResident {
     void PatchL6 ()
     {
         // Call resident for brief pause
-    	z80Memory.writeByte(PortalConsts.Level56Pause, PortalConsts.CALL8080);
-    	z80Memory.writeWord(PortalConsts.Level56Pause + 1, PortalConsts.R_WAIT16);
+    	z80Memory.writeByte(PlatoConsts.Level56Pause, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(PlatoConsts.Level56Pause + 1, PlatoConsts.R_WAIT16);
     	
         // remove off-line check for calling r.exec - 
         // only safe place to give up control..  
         // was a z80 jr - 2 bytes only
-    	z80Memory.writeWord(PortalConsts.Level56Xplato,  0);
+    	z80Memory.writeWord(PlatoConsts.Level56Xplato,  0);
     	
         // ret to disable ist-3 screen print gunk
-    	z80Memory.writeByte(0x5f5c, PortalConsts.RET8080);  // z80 ret
+    	z80Memory.writeByte(0x5f5c, PlatoConsts.RET8080);  // z80 ret
 
-        PatchColor (PortalConsts.Level56GetVar);
+        PatchColor (PlatoConsts.Level56GetVar);
     }
 
     
@@ -396,33 +396,33 @@ public class PZ80CpuResident {
     void PatchColor(int getvar)
     {
         // color display
-    	z80Memory.writeByte(0x66aa, PortalConsts.JUMP8080); // jump to hi mem patch
+    	z80Memory.writeByte(0x66aa, PlatoConsts.JUMP8080); // jump to hi mem patch
     	z80Memory.writeWord(0x66ab, 0x8000);				// color patch jump
 
     	// The patch...
-    	z80Memory.writeByte(0x8000, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8000, PlatoConsts.CALL8080);
     	z80Memory.writeWord(0x8001, 0x66b0);		// fcolor
 
     	z80Memory.writeByte(0x8003, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
-    	z80Memory.writeWord(0x8004, PortalConsts.FLOATACC);
+    	z80Memory.writeWord(0x8004, PlatoConsts.FLOATACC);
 
-    	z80Memory.writeByte(0x8006, PortalConsts.CALL8080);
-    	z80Memory.writeWord(0x8007, PortalConsts.R_FCOLOR + 2);
+    	z80Memory.writeByte(0x8006, PlatoConsts.CALL8080);
+    	z80Memory.writeWord(0x8007, PlatoConsts.R_FCOLOR + 2);
 
-    	z80Memory.writeByte(0x8009, PortalConsts.CALL8080);
+    	z80Memory.writeByte(0x8009, PlatoConsts.CALL8080);
         z80Memory.writeWord(0x800a, getvar);
 
-        z80Memory.writeByte(0x800c, PortalConsts.CALL8080);
+        z80Memory.writeByte(0x800c, PlatoConsts.CALL8080);
         z80Memory.writeWord(0x800d, 0x66bd);		// bcolor
 
         z80Memory.writeByte(0x800f, 0x21);			// ld hl,0x7d25  - Floating Accumulator Address
-        z80Memory.writeWord(0x8010, PortalConsts.FLOATACC);
+        z80Memory.writeWord(0x8010, PlatoConsts.FLOATACC);
 
-        z80Memory.writeByte(0x8012, PortalConsts.CALL8080);
-        z80Memory.writeWord(0x8013, PortalConsts.R_BCOLOR + 2);
+        z80Memory.writeByte(0x8012, PlatoConsts.CALL8080);
+        z80Memory.writeWord(0x8013, PlatoConsts.R_BCOLOR + 2);
 
-        z80Memory.writeByte(0x8015, PortalConsts.JUMP8080);
-        z80Memory.writeWord(0x8016, PortalConsts.Level4MainLoop);
+        z80Memory.writeByte(0x8015, PlatoConsts.JUMP8080);
+        z80Memory.writeWord(0x8016, PlatoConsts.Level4MainLoop);
 
         ////////////////////////////////////////////////////////
         
@@ -433,11 +433,11 @@ public class PZ80CpuResident {
         z80Memory.writeByte(0x8020, 0x21);			// ld hl,00
         z80Memory.writeWord(0x8021, 0);
 
-        z80Memory.writeByte(0x8023, PortalConsts.CALL8080);
-        z80Memory.writeWord(0x8024, PortalConsts.R_PAINT);
+        z80Memory.writeByte(0x8023, PlatoConsts.CALL8080);
+        z80Memory.writeWord(0x8024, PlatoConsts.R_PAINT);
 
-        z80Memory.writeByte(0x8026, PortalConsts.JUMP8080);
-        z80Memory.writeWord(0x8027, PortalConsts.Level4MainLoopPlus);
+        z80Memory.writeByte(0x8026, PlatoConsts.JUMP8080);
+        z80Memory.writeWord(0x8027, PlatoConsts.Level4MainLoopPlus);
     }
     
     
@@ -467,23 +467,23 @@ public class PZ80CpuResident {
     	
         int x, y;
         int cx = parser.center_x;
-        int sMode = z80Memory.readByte(PortalConsts.M_MODE) & 3;
+        int sMode = z80Memory.readByte(PlatoConsts.M_MODE) & 3;
 
     	switch(val)
     	{
     	
-    	case PortalConsts.R_MAIN:			// mtutor terminates with this
+    	case PlatoConsts.R_MAIN:			// mtutor terminates with this
         	//System.out.println("R_MAIN");
     		mtutor_waiting = false;
         	
         	sendKeysToPlato();
     		return 2;
     	
-    	case PortalConsts.R_INIT:
+    	case PlatoConsts.R_INIT:
         	System.out.println("R_INIT");
     		return 2;
     		
-    	case PortalConsts.R_DOT:		// mode 0
+    	case PlatoConsts.R_DOT:		// mode 0
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
         	parser.PlotLine(x + cx, y, x + cx, y, sMode, 0, 0, 1, 0);
@@ -491,7 +491,7 @@ public class PZ80CpuResident {
             parser.current_y = y;        	
     		return 1;    		
     	
-    	case PortalConsts.R_LINE:		// mode 1
+    	case PlatoConsts.R_LINE:		// mode 1
         	x = z80.getRegisterValue(RegisterNames.HL);
         	y = z80.getRegisterValue(RegisterNames.DE);
 
@@ -510,11 +510,11 @@ public class PZ80CpuResident {
             parser.do_repaint = true;
     		return 1;
     		
-    	case PortalConsts.R_CHARS:		// mode 3
+    	case PlatoConsts.R_CHARS:		// mode 3
     		R_CHARS();
     		return 1;
     		
-    	case PortalConsts.R_BLOCK:		// mode 4
+    	case PlatoConsts.R_BLOCK:		// mode 4
 	    	{
 	    		int hl = z80.getRegisterValue(RegisterNames.HL);
 	    		int x1 = z80Memory.readWord(hl);
@@ -525,23 +525,23 @@ public class PZ80CpuResident {
 	    	}
     		return 1;
     		
-    	case PortalConsts.R_INPX:
+    	case PlatoConsts.R_INPX:
         	z80.setRegisterValue(RegisterNames.HL, parser.current_x);
         	return 1;
     		
-    	case PortalConsts.R_INPY:
+    	case PlatoConsts.R_INPY:
         	z80.setRegisterValue(RegisterNames.HL, parser.current_y);
         	return 1;
     		
-    	case PortalConsts.R_OUTX:
+    	case PlatoConsts.R_OUTX:
         	parser.current_x = z80.getRegisterValue(RegisterNames.HL);
         	return 1;
         	
-    	case PortalConsts.R_OUTY:
+    	case PlatoConsts.R_OUTY:
         	parser.current_y = z80.getRegisterValue(RegisterNames.HL);
         	return 1;
 
-    	case PortalConsts.R_XMIT: 
+    	case PlatoConsts.R_XMIT: 
 	    	{
 		        int k = z80.getRegisterValue(RegisterNames.HL);
 		        byte temp_hold = getM_KSW();
@@ -561,10 +561,10 @@ public class PZ80CpuResident {
 				return 1;
 	    	}
     	
-    	case PortalConsts.R_MODE:
+    	case PlatoConsts.R_MODE:
 	    	{
 	    		int mode = z80.getRegisterValue(RegisterNames.L) & 0xff;
-	    		z80Memory.writeByte(PortalConsts.M_MODE, (mode & 0x1f ) >> 1);
+	    		z80Memory.writeByte(PlatoConsts.M_MODE, (mode & 0x1f ) >> 1);
 	    		switch ((mode >> 1) & 3)
 	    		{
 	    		case 0: parser.screen_mode = LevelOneParser.SCINVERSE; break;
@@ -583,8 +583,8 @@ public class PZ80CpuResident {
 	    	}
     		return 1;
 
-    	case PortalConsts.R_STEPX:
-    		int sdir = z80Memory.readByte(PortalConsts.M_DIR) & 3;
+    	case PlatoConsts.R_STEPX:
+    		int sdir = z80Memory.readByte(PlatoConsts.M_DIR) & 3;
     		if ((sdir & 2)==0)
     			parser.current_x++;
     		else
@@ -592,8 +592,8 @@ public class PZ80CpuResident {
 
     		return 1;
 
-    	case PortalConsts.R_STEPY:
-    		int sdir2 = z80Memory.readByte(PortalConsts.M_DIR) & 3;
+    	case PlatoConsts.R_STEPY:
+    		int sdir2 = z80Memory.readByte(PlatoConsts.M_DIR) & 3;
     		if ((sdir2 & 1)==0)
     			parser.current_y++;
     		else
@@ -601,60 +601,60 @@ public class PZ80CpuResident {
     		
     		return 1;
     		
-    	case PortalConsts.R_WE:
+    	case PlatoConsts.R_WE:
     		parser.PlotLine(parser.current_x + cx, parser.current_y, parser.current_x + cx, parser.current_y, 1, 0, 0, 1, 0);
     		
     		return 1;
     		
-    	case PortalConsts.R_DIR:
+    	case PlatoConsts.R_DIR:
     		int zhl = z80.getRegisterValue(RegisterNames.HL);
-    		z80Memory.writeByte(PortalConsts.M_DIR, zhl & 3);
+    		z80Memory.writeByte(PlatoConsts.M_DIR, zhl & 3);
     		return 1;
     		
-    	case PortalConsts.R_INPUT:
+    	case PlatoConsts.R_INPUT:
     		R_INPUT();
     		return 1;
         	
-    	case PortalConsts.R_SSF:
+    	case PlatoConsts.R_SSF:
     		R_SSF();            
     		return 1;
     		
-    	case PortalConsts.R_CCR:
+    	case PlatoConsts.R_CCR:
         	int ccr_val = z80.getRegisterValue(RegisterNames.L) & 0xff;
-        	z80Memory.writeByte(PortalConsts.M_CCR, ccr_val);
+        	z80Memory.writeByte(PlatoConsts.M_CCR, ccr_val);
         	parser.text_size = (byte)((ccr_val >> 5) & 1);
         	return 1;
         	
-    	case PortalConsts.R_EXTOUT:
+    	case PlatoConsts.R_EXTOUT:
     		
     		return 1;
         	
-    	case PortalConsts.R_EXEC:
+    	case PlatoConsts.R_EXEC:
         	parser.do_repaint = true;		// tell the caller to repaint screen
         	
         	// r.exec is called very frequently when needed.  If we give up the processor too much -pause  time- does not work near right
-        	if ((++r_execs % PortalConsts.r_exec_mod) == 0)
+        	if ((++r_execs % PlatoConsts.r_exec_mod) == 0)
         	{
         		r_execs = 0;
         		giveupz80 = true;
         	}
         	return 1;
     		
-        case PortalConsts.R_GJOB:
+        case PlatoConsts.R_GJOB:
             return 1;				// noop
             
-        case PortalConsts.R_XJOB:
+        case PlatoConsts.R_XJOB:
         	return 1;				// noop
         	
-        case PortalConsts.R_RETURN:	// obsolete noop
+        case PlatoConsts.R_RETURN:	// obsolete noop
         	
         	return 1;
         	
-       	case PortalConsts.R_CHRCV: 
+       	case PlatoConsts.R_CHRCV: 
             int numchars = z80.getRegisterValue(RegisterNames.HL);
        		int fwa = z80.getRegisterValue(RegisterNames.DE);
        		int[] chardata = new int[8];
-       		int slot = (fwa - PortalConsts.M2ADDR) >> 4;
+       		int slot = (fwa - PlatoConsts.M2ADDR) >> 4;
        		
        		for (int i = 0 ; i < numchars ; i++)
        		{
@@ -667,17 +667,17 @@ public class PZ80CpuResident {
        		
     		return 1;
        		
-    	case PortalConsts.R_ALARM:
+    	case PlatoConsts.R_ALARM:
     		parser.Beep();
     		
  //   		CharTest();		// temp
     		
     		return 1;
     		
-    	case PortalConsts.R_PRINT:
+    	case PlatoConsts.R_PRINT:
     		return 1;
     	
-    	case PortalConsts.R_FCOLOR:			// standard
+    	case PlatoConsts.R_FCOLOR:			// standard
     		{
     			int red = z80.getRegisterValue(RegisterNames.H);
     			int green = z80.getRegisterValue(RegisterNames.L);
@@ -686,7 +686,7 @@ public class PZ80CpuResident {
     		}
     		return 1;
     		
-    	case PortalConsts.R_FCOLOR+1:		// using ccode commands
+    	case PlatoConsts.R_FCOLOR+1:		// using ccode commands
     		{
     			int DE = z80.getRegisterValue(RegisterNames.DE);
     			int red  = z80Memory.readByte(DE++);
@@ -696,11 +696,11 @@ public class PZ80CpuResident {
     		}
     		return 1;
     	
-    	case PortalConsts.R_FCOLOR+2:		// redirected by patch
+    	case PlatoConsts.R_FCOLOR+2:		// redirected by patch
     		parser.fg_color = GetColor(z80.getRegisterValue(RegisterNames.HL));
     		return 1;
     	
-    	case PortalConsts.R_BCOLOR:			// standard
+    	case PlatoConsts.R_BCOLOR:			// standard
 		{
 			int red = z80.getRegisterValue(RegisterNames.H);
 			int green = z80.getRegisterValue(RegisterNames.L);
@@ -709,7 +709,7 @@ public class PZ80CpuResident {
 		}
     		return 1;
     		
-    	case PortalConsts.R_BCOLOR+1:		// using ccode commands
+    	case PlatoConsts.R_BCOLOR+1:		// using ccode commands
     		{
     			int DE = z80.getRegisterValue(RegisterNames.DE);
     			int red  = z80Memory.readByte(DE++);
@@ -719,15 +719,15 @@ public class PZ80CpuResident {
     		}
     		return 1;    	
     	
-    	case PortalConsts.R_BCOLOR+2:		// redirected by patch
+    	case PlatoConsts.R_BCOLOR+2:		// redirected by patch
     		parser.bg_color = GetColor(z80.getRegisterValue(RegisterNames.HL));
     		return 1;
 
-    	case PortalConsts.R_PAINT:
+    	case PlatoConsts.R_PAINT:
     		
     		return 1;
 
-    	case PortalConsts.R_WAIT16:
+    	case PlatoConsts.R_WAIT16:
  
         	parser.do_repaint = true;		// tell the caller to repaint screen
     		
@@ -740,13 +740,13 @@ public class PZ80CpuResident {
     		
     		return 1;
    
-       	case PortalConsts.R_WAIT16 + 1:
+       	case PlatoConsts.R_WAIT16 + 1:
     		return 1;
     		
-       	case PortalConsts.R_WAIT16 + 2:
+       	case PlatoConsts.R_WAIT16 + 2:
     		return 1;
        	
-    	case PortalConsts.R_EXTEND:
+    	case PlatoConsts.R_EXTEND:
     		return	1;
     		
     		/**
@@ -755,20 +755,20 @@ public class PZ80CpuResident {
     		 * pass parameters in consecutive memory locations
     		 * pointed at on entry by the Z80 DE register.
     		 */
-    	case PortalConsts.R_EXTEND + 1:
+    	case PlatoConsts.R_EXTEND + 1:
 			ExtendMTutor();
     		return	1;
 
-    	case PortalConsts.R_EXTEND + 2:
+    	case PlatoConsts.R_EXTEND + 2:
     		return	1;
 
-    	case PortalConsts.R_DUMMY3:
+    	case PlatoConsts.R_DUMMY3:
     		return	1;
 
-    	case PortalConsts.R_DUMMY3 + 1:
+    	case PlatoConsts.R_DUMMY3 + 1:
     		return	1;
     	
-    	case PortalConsts.R_DUMMY3 + 2:
+    	case PlatoConsts.R_DUMMY3 + 2:
     		return	1;
     	
     	default: 
@@ -1037,22 +1037,22 @@ public class PZ80CpuResident {
 		int lth = 0;
 		int charM;
 		
-		parser.text_margin =  z80Memory.readWord(PortalConsts.M_MARGIN);
+		parser.text_margin =  z80Memory.readWord(PlatoConsts.M_MARGIN);
 	
 	    for (;;)
 	    {
 	    	if (chr == 0x3f && 0 == z80Memory.readByte(cpointer))
 	    		break;
 	    	
-	        int save = z80Memory.readByte(PortalConsts.M_CCR);
+	        int save = z80Memory.readByte(PlatoConsts.M_CCR);
 	        int pv;
 	        charM = (save & 0x0e) >> 1; // Current M slot
 	
 	        if (chr > 0x3F )
 	        {
 	            // advance M slot by one
-	        	z80Memory.writeByte(PortalConsts.M_CCR,(z80Memory.readByte(PortalConsts.M_CCR) & ~0x0e) | (charM + 1) << 1);
-	            charM = (z80Memory.readByte(PortalConsts.M_CCR) & 0x0e) >> 1; // Current M slot
+	        	z80Memory.writeByte(PlatoConsts.M_CCR,(z80Memory.readByte(PlatoConsts.M_CCR) & ~0x0e) | (charM + 1) << 1);
+	            charM = (z80Memory.readByte(PlatoConsts.M_CCR) & 0x0e) >> 1; // Current M slot
 	        }
 	
 	        cbuf[lth++] = (byte)(chr & 0x3f);      	//((byte)Sixbit.sixBitCharToAscii(chr & 0x3f, charM > 0));
@@ -1118,7 +1118,7 @@ public class PZ80CpuResident {
 	        	if (chr0 > 0x3F )
 	            {
 	                // restore M slot
-	            	z80Memory.writeByte(PortalConsts.M_CCR, save);
+	            	z80Memory.writeByte(PlatoConsts.M_CCR, save);
 	            }
 	        }
 	    }
@@ -1178,7 +1178,7 @@ public class PZ80CpuResident {
         int writ = (n >> 9) & 0x1;
         int inter = (n >> 8) & 0x1;
         int data = n & 0xff;
-        z80Memory.writeByte(PortalConsts.M_ENAB, data | 0xd0);
+        z80Memory.writeByte(PlatoConsts.M_ENAB, data | 0xd0);
        // remember devices
        if(writ == 1)
        {
@@ -1219,16 +1219,16 @@ public class PZ80CpuResident {
            if (device == 1 && writ == 0)  // touch enable/disable
            {
         	   parser.is_touch_enabled = ((data & 0x20) != 0);
-        	   int enab = z80Memory.readByte(PortalConsts.M_ENAB);
+        	   int enab = z80Memory.readByte(PlatoConsts.M_ENAB);
         	   if (parser.is_touch_enabled)
         	   {
-        		   z80Memory.writeByte(PortalConsts.M_ENAB, enab | (0x20));
+        		   z80Memory.writeByte(PlatoConsts.M_ENAB, enab | (0x20));
         	   }
         	   else
         	   {
-        		   z80Memory.writeByte(PortalConsts.M_ENAB, enab & (0xdf));
+        		   z80Memory.writeByte(PlatoConsts.M_ENAB, enab & (0xdf));
         	   }
-        	   enab = z80Memory.readByte(PortalConsts.M_ENAB);
+        	   enab = z80Memory.readByte(PlatoConsts.M_ENAB);
         	   //System.out.println("touch: " + parser.is_touch_enabled + "  m.enab: " + (enab & 0x20) + "  data: " + data);
            }
        }
@@ -1264,7 +1264,7 @@ public class PZ80CpuResident {
      */
     public byte getM_KSW()
     {
-    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	byte val = (byte)z80Memory.readByte(PlatoConsts.M_KSW);
     	return val;
     }
 
@@ -1274,7 +1274,7 @@ public class PZ80CpuResident {
     public void setM_KSW(int val)
     {
     	val &= 0xff;
-    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    	z80Memory.writeByte(PlatoConsts.M_KSW, val);
     }
     
     /**
@@ -1291,9 +1291,9 @@ public class PZ80CpuResident {
      */
     public void sendKeysToPlato()
     {
-    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	byte val = (byte)z80Memory.readByte(PlatoConsts.M_KSW);
     	val &= 0xfe;
-    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    	z80Memory.writeByte(PlatoConsts.M_KSW, val);
     }
 
     /**
@@ -1301,9 +1301,9 @@ public class PZ80CpuResident {
      */
     public void sendKeysToMicro()
     {
-    	byte val = (byte)z80Memory.readByte(PortalConsts.M_KSW);
+    	byte val = (byte)z80Memory.readByte(PlatoConsts.M_KSW);
     	val |= 1;
-    	z80Memory.writeByte(PortalConsts.M_KSW, val);
+    	z80Memory.writeByte(PlatoConsts.M_KSW, val);
     }
 
     
@@ -1598,16 +1598,16 @@ public class PZ80CpuResident {
 	        readnum = 82;	// lth of interp in sectors
 	    }
 		
-		if (!this.z80IO.m_MTDisk()[0].ReadSectorsForBoot(PortalConsts.MTutorLoad, PortalConsts.MTutorOffset, readnum, this))	// read interp to ram
+		if (!this.z80IO.m_MTDisk()[0].ReadSectorsForBoot(PlatoConsts.MTutorLoad, PlatoConsts.MTutorOffset, readnum, this))	// read interp to ram
 			return false;
 
 		parser.needToBoot = false; 
 		parser.booted = true;
 		
-		((PortalFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Micro-Tutor");
+		((PlatoFrame)parser.parent_frame).setTitle((LevelOnePanel)(parser.levelone_container), "Micro-Tutor");
 		
 		this.z80.reset();
-		runWithMtutorCheck(PortalConsts.MTutorBoot);  	// f.inix - boot entry point
+		runWithMtutorCheck(PlatoConsts.MTutorBoot);  	// f.inix - boot entry point
 
 		return true;
     }

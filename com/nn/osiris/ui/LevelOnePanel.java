@@ -95,7 +95,7 @@ public class LevelOnePanel
 		getOfflineImage();
 
 		// Setup our dimensions as we want them.
-		Dimension panel_dim = new Dimension((int)(panel_width * PortalConsts.SCALE), (int)(PANEL_STD * PortalConsts.SCALE));
+		Dimension panel_dim = new Dimension((int)(panel_width * PlatoConsts.SCALE), (int)(PANEL_STD * PlatoConsts.SCALE));
 
 		setMinimumSize(panel_dim);
 		setMaximumSize(panel_dim);
@@ -199,15 +199,15 @@ public class LevelOnePanel
 		
 		if (this.session.mtdisk0 != null)
 		{
-			if (PortalConsts.is_debugging) System.out.println("--- mtutor disk0 file : " + this.session.mtdisk0 );
+			if (PlatoConsts.is_debugging) System.out.println("--- mtutor disk0 file : " + this.session.mtdisk0 );
 		}
 		if (this.session.mtdisk1 != null)
 		{
-			if (PortalConsts.is_debugging) System.out.println("--- mtutor disk1 file : " + this.session.mtdisk1 );
+			if (PlatoConsts.is_debugging) System.out.println("--- mtutor disk1 file : " + this.session.mtdisk1 );
 		}
 		if (this.session.mtboot != null)
 		{
-			if (PortalConsts.is_debugging) System.out.println("--- mtutor boot : " + this.session.mtboot );
+			if (PlatoConsts.is_debugging) System.out.println("--- mtutor boot : " + this.session.mtboot );
 		}
 			
 		{
@@ -320,7 +320,7 @@ public class LevelOnePanel
 				if (this.session.mtboot != null && this.session.mtboot.length() > 0 && level_one_parser.cpu.z80IO().m_MTDisk()[0] != null)
 				{
 					// start mtutor boot process using loaded disk(s)
-					level_one_parser.center_x = (PortalConsts.default_width -LevelOnePanel.PANEL_STD) / 2;
+					level_one_parser.center_x = (PlatoConsts.default_width -LevelOnePanel.PANEL_STD) / 2;
 					level_one_parser.cpu.BootMtutor(null);
 				}
 
@@ -405,7 +405,7 @@ public class LevelOnePanel
 
 			if	(level_one_network.isConnecting())
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("adding thread to collection list");
+				if	(PlatoConsts.is_debugging)	System.out.println("adding thread to collection list");
 				thread_list.add(level_one_network);
 			}
 			else
@@ -499,13 +499,13 @@ public class LevelOnePanel
 		}
 		// Draw from the backing store.
 		
-		if (PortalConsts.SCALE == 1)
+		if (PlatoConsts.SCALE == 1)
 		{
 			graphics.drawImage(offscreen, 0, 0, this);
 		}
 		else
 		{
-			graphics.drawImage(offscreen, 0, 0, (int)(panel_width * PortalConsts.SCALE), (int)(PANEL_STD * PortalConsts.SCALE), 0, 0, panel_width, PANEL_STD, this);
+			graphics.drawImage(offscreen, 0, 0, (int)(panel_width * PlatoConsts.SCALE), (int)(PANEL_STD * PlatoConsts.SCALE), 0, 0, panel_width, PANEL_STD, this);
 			this.repaint();
 		}
 
@@ -577,7 +577,7 @@ public class LevelOnePanel
 
 			if	(!t.isAlive())
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("thread not alive, joining it");
+				if	(PlatoConsts.is_debugging)	System.out.println("thread not alive, joining it");
 
 				try
 				{
@@ -666,7 +666,7 @@ public class LevelOnePanel
 			return;
 		x1=lastMark.x; y1=lastMark.y;
 		x2=x1+lastMark.width;y2=y1+lastMark.height;
-		if (PortalConsts.SCALE == 2)
+		if (PlatoConsts.SCALE == 2)
 		{
 			x1 >>= 1;
 			x2 >>= 1;
@@ -865,7 +865,7 @@ public class LevelOnePanel
 
 			jmf_player = (JMFInterface)	cls.getDeclaredConstructor().newInstance();
 
-			if	(PortalConsts.is_debugging)	System.out.println("Loaded Java Media Framework");
+			if	(PlatoConsts.is_debugging)	System.out.println("Loaded Java Media Framework");
 		}
 		catch (NoClassDefFoundError e1)
 		{
@@ -876,14 +876,14 @@ public class LevelOnePanel
 
 		if	(null == jmf_player)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("Warning: No Java Media Framework");
+			if	(PlatoConsts.is_debugging)	System.out.println("Warning: No Java Media Framework");
 			jmf_player = new JMFInterface();
 		}
 
 	// Second create an object for doing QuickTime operations
 	QuickTimeInterface	quicktime_player = null;
 
-		if	(PortalConsts.is_quicktime)
+		if	(PlatoConsts.is_quicktime)
 		{
 		// decide what to go for based on quicktime.app.view.QTFactory class existance
 		String	our_qt = "com.nn.osiris.ui.QuickTimeImplementer";
@@ -902,7 +902,7 @@ public class LevelOnePanel
 				our_qt = "com.nn.osiris.ui.QuickTimeImplementerOld";
 			}
 
-			if	(PortalConsts.is_debugging)	System.out.println("Quicktime via class: "+our_qt);
+			if	(PlatoConsts.is_debugging)	System.out.println("Quicktime via class: "+our_qt);
 
 			try
 			{
@@ -912,7 +912,7 @@ public class LevelOnePanel
 				quicktime_player = (QuickTimeInterface)
 					cls.getDeclaredConstructor().newInstance();
 
-				if	(PortalConsts.is_debugging)	System.out.println("Loaded Quicktime Framework");
+				if	(PlatoConsts.is_debugging)	System.out.println("Loaded Quicktime Framework");
 			}
 			catch (NoClassDefFoundError e1)
 			{
@@ -927,7 +927,7 @@ public class LevelOnePanel
 
 		if	(null == quicktime_player)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("Warning: No Quicktime Framework");
+			if	(PlatoConsts.is_debugging)	System.out.println("Warning: No Quicktime Framework");
 			quicktime_player = new QuickTimeInterface();
 		}
 
@@ -970,11 +970,11 @@ public class LevelOnePanel
 				level_one_parser = (LevelOneParser)
 					parser_constructor.newInstance(arguments);
 
-				if	(PortalConsts.is_debugging)	System.out.println("Using advanced protocol interpreter!");
+				if	(PlatoConsts.is_debugging)	System.out.println("Using advanced protocol interpreter!");
 			}
 			catch (ClassNotFoundException exception)
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("advanced protocol interpreter class not found!");
+				if	(PlatoConsts.is_debugging)	System.out.println("advanced protocol interpreter class not found!");
 			}
 			catch (Exception exception)
 			{
@@ -995,7 +995,7 @@ public class LevelOnePanel
 				level_one_network,
 				panel_width);
 
-			if	(PortalConsts.is_debugging)	System.out.println("Using basic protocol interpreter.");
+			if	(PlatoConsts.is_debugging)	System.out.println("Using basic protocol interpreter.");
 		}
 
 		jmf_player.setEngine(level_one_parser);
@@ -1006,7 +1006,7 @@ public class LevelOnePanel
 	// create an object to do printing for the portal
 	PrintInterface	pi;
 
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 			pi = new PrintInterfaceMac();
 		else
 			pi = new PrintInterface();
@@ -1030,9 +1030,9 @@ public class LevelOnePanel
 		// control tab for flipping tabs
 		else if (KeyEvent.VK_TAB == event.getKeyCode() && event.isControlDown())
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("flip tab focus");
-			if (null != parent_frame && parent_frame instanceof PortalFrame)
-				((PortalFrame)parent_frame).controlTab();
+			if	(PlatoConsts.is_debugging)	System.out.println("flip tab focus");
+			if (null != parent_frame && parent_frame instanceof PlatoFrame)
+				((PlatoFrame)parent_frame).controlTab();
 			return false;
 		}
 		// these were used for connection hotkeys with > 1 connection

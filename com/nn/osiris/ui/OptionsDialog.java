@@ -38,7 +38,7 @@ public class OptionsDialog
 	private JButton			help_button = new JButton("Help");
 	private boolean			cancelled;
 
-	private PortalFrame		parent;
+	private PlatoFrame		parent;
 
 	/**
 	 * Construct a kermit dialog which displays a kermit message.
@@ -47,7 +47,7 @@ public class OptionsDialog
 	 * @param	title	The title for the dialog.
 	 */
 	public OptionsDialog(
-		PortalFrame parent,
+		PlatoFrame parent,
 		String title,
 		boolean is_modal,
 		Options old_options)
@@ -147,7 +147,7 @@ public class OptionsDialog
 		}
 		else if (e.getSource() == help_button)
 		{
-			PortalFrame.mainFrame.ExternalHelp(PortalConsts.optHelp);
+			PlatoFrame.mainFrame.ExternalHelp(PlatoConsts.optHelp);
 		}
 	}
 

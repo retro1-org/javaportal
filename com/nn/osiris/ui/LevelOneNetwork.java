@@ -109,7 +109,7 @@ public class LevelOneNetwork extends Thread
 		Class<?> netclass = Class.forName("com.nn.osiris.ui.NetConnModern");
 
 			nci = (NetConnInterface) netclass.getDeclaredConstructor().newInstance();
-			if	(PortalConsts.is_debugging)	System.out.println("Using JRE1.5+ NetConnInterface");
+			if	(PlatoConsts.is_debugging)	System.out.println("Using JRE1.5+ NetConnInterface");
 		}
 		catch (UnsupportedClassVersionError e)
 		{
@@ -129,7 +129,7 @@ public class LevelOneNetwork extends Thread
 		}
 		catch (Exception notpossible)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("ERROR: unable to load netconninterface");
+			if	(PlatoConsts.is_debugging)	System.out.println("ERROR: unable to load netconninterface");
 			load_error = true;
 		}
 		
@@ -140,11 +140,11 @@ public class LevelOneNetwork extends Thread
 			Class<?> netclass = Class.forName("com.nn.osiris.ui.NetConnInterface");
 
 				nci = (NetConnInterface) netclass.getDeclaredConstructor().newInstance();
-				if	(PortalConsts.is_debugging)	System.out.println("Using JRE<1.5 NetConnInterface");
+				if	(PlatoConsts.is_debugging)	System.out.println("Using JRE<1.5 NetConnInterface");
 			}
 			catch (Exception notpossible)
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("ERROR: unable to load netconninterface");
+				if	(PlatoConsts.is_debugging)	System.out.println("ERROR: unable to load netconninterface");
 			}
 		}
 
@@ -168,7 +168,7 @@ public class LevelOneNetwork extends Thread
 			}
 			catch (IOException exception)
 			{
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 				{
 					System.out.println("Connection attempt #"+(num_tries+1)+
 						" to host: "+host+" port: "+port+" failed.");	//!! DEBUG
@@ -204,7 +204,7 @@ public class LevelOneNetwork extends Thread
 	 */
 	void notifyConnectFailed(String s)
 	{
-		if (PortalConsts.is_debugging) System.out.println("notifyconnectfailed: "+s);
+		if (PlatoConsts.is_debugging) System.out.println("notifyconnectfailed: "+s);
 		if	(null != network_listener)
 		{
 		ONetworkListener	nl = network_listener;
@@ -236,7 +236,7 @@ public class LevelOneNetwork extends Thread
 	boolean	old_state = is_network_alive;
 
 		is_network_alive = state;
-		if	(PortalConsts.is_debugging)	System.out.println("setnetworkalive="+state);
+		if	(PlatoConsts.is_debugging)	System.out.println("setnetworkalive="+state);
 
 		if	(old_state != state && null != network_listener)
 		{
@@ -325,7 +325,7 @@ public class LevelOneNetwork extends Thread
 			}	
 		}
 		
-		if	(PortalConsts.is_debugging)	System.out.println("Network connection died");
+		if	(PlatoConsts.is_debugging)	System.out.println("Network connection died");
 
 		setNetworkAlive(false);
 	}
@@ -348,7 +348,7 @@ public class LevelOneNetwork extends Thread
 		{
 			if (length != out_buffer.Enqueue(buffer, offset, length))
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("ERROR: network write failed, buffer overflow");
+				if	(PlatoConsts.is_debugging)	System.out.println("ERROR: network write failed, buffer overflow");
 			}
 
 			out_delay.EnqueueZeroes(length-1);
@@ -447,7 +447,7 @@ public class LevelOneNetwork extends Thread
 					}
 					catch (IOException e)
 					{
-						if	(PortalConsts.is_debugging)	System.out.println("network thread: write failed");
+						if	(PlatoConsts.is_debugging)	System.out.println("network thread: write failed");
 					}
 					xmit_length -= max_xmit;
 					out_buffer.DequeuedBytes(max_xmit);

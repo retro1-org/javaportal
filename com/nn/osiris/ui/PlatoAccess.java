@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @author John Hegarty
  */
-public class JPortal extends javax.swing.JFrame
+public class PlatoAccess extends javax.swing.JFrame
 {
 	/**
 	 * 
@@ -28,11 +28,11 @@ public class JPortal extends javax.swing.JFrame
 	private static final long serialVersionUID = -11L;
 	// Configuration file object
 	private static 	Properties	settings;
-	static JPortal		global_jportal;
-	static	int			frame_width = PortalConsts.default_width;
+	static PlatoAccess		global_jportal;
+	static	int			frame_width = PlatoConsts.default_width;
 	ScormInterface		scorminterface = null;
 
-	PortalFrame			frame = null;
+	PlatoFrame			frame = null;
 	
 	static String		current_dir = null;
 
@@ -163,30 +163,30 @@ public class JPortal extends javax.swing.JFrame
 
 		if	(is_applet)
 		{
-			PortalConsts.is_applet = true;
-			PortalConsts.is_quicktime = false;
+			PlatoConsts.is_applet = true;
+			PlatoConsts.is_quicktime = false;
 		// rest of this code is not good in applets
 			return;
 		}
 		else
-			PortalConsts.is_applet = false;
+			PlatoConsts.is_applet = false;
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.getProperties().list(System.out);
 
 		// check to see if we are on some sort of macintosh
 		if (System.getProperty("mrj.version") != null)
 		{
-			PortalConsts.is_macintosh = true;
-			PortalConsts.is_quicktime = true;
+			PlatoConsts.is_macintosh = true;
+			PlatoConsts.is_quicktime = true;
 		}
 		else
 		{
-			PortalConsts.is_macintosh = false;
+			PlatoConsts.is_macintosh = false;
 			if	(System.getProperty("os.name").startsWith("Wind"))
 			{
-				PortalConsts.is_windows = true;
-				if	(PortalConsts.is_debugging)
+				PlatoConsts.is_windows = true;
+				if	(PlatoConsts.is_debugging)
 					System.out.println("Detected Windoze platform...");
 			}
 		}
@@ -195,7 +195,7 @@ public class JPortal extends javax.swing.JFrame
 	/**
 	 * Constructor for portal class.
 	 */
-	public JPortal()
+	public PlatoAccess()
 	{
 		global_jportal = this;
 	}
@@ -223,7 +223,7 @@ public class JPortal extends javax.swing.JFrame
 	 */
 	public void PortalConstruct()
 	{
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println(java.lang.System.getProperty("java.version"));
 	
 		if (null == scorminterface)
@@ -239,7 +239,7 @@ public class JPortal extends javax.swing.JFrame
 			else
 */
 			{
-				frame = new PortalFrame(settings);
+				frame = new PlatoFrame(settings);
 				frame.pack();
 				frame.setVisible(true);
 			}
@@ -298,9 +298,9 @@ public class JPortal extends javax.swing.JFrame
 	static public void main(String[] args) 
 	{
 		settings = new Properties();
-		JPortal.initializeConstants(false);
+		PlatoAccess.initializeConstants(false);
 
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 			macProperties();
 
 
@@ -310,7 +310,7 @@ public class JPortal extends javax.swing.JFrame
 			if	(args[i].equals("-rs") && i+1 < args.length)
 			{
 				settings.setProperty("resource_server", args[i+1]);
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 					System.out.println("Using resource server: "+settings.getProperty("resource_server"));
 			}
 			if	(args[i].equals("-host") && i+1 < args.length)
@@ -365,7 +365,7 @@ public class JPortal extends javax.swing.JFrame
 				frame_width = Integer.parseInt(args[i+1]);
 		}
 
-		JPortal jportal = new JPortal();
+		PlatoAccess jportal = new PlatoAccess();
 
 		jportal.PortalConstruct();
 	}

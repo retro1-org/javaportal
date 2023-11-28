@@ -50,7 +50,7 @@ public class MTDisk {
 			filename = null;
 			file = null;
 			
-			JOptionPane.showMessageDialog(PortalFrame.getFrames()[0],
+			JOptionPane.showMessageDialog(PlatoFrame.getFrames()[0],
 					"<html>Unable to open MTutor disk:  " + fn +  " Already Open?</html>",
 					"File Error",
 					JOptionPane.WARNING_MESSAGE);

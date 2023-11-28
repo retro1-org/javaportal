@@ -66,7 +66,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
   		levelone_offscreen = g2;
   		levelone_network = n;
   		
-		if	(PortalConsts.is_applet)
+		if	(PlatoConsts.is_applet)
 		{
 			original_dir = "";
 			current_dir = "";
@@ -95,7 +95,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			}
 		}
 
-		if	(PortalConsts.is_debugging)	System.out.println("cwd: "+current_dir+" dl: "+download_dir);
+		if	(PlatoConsts.is_debugging)	System.out.println("cwd: "+current_dir+" dl: "+download_dir);
 		
   		image_slots = new Image[IMAGE_SLOTS];
 	
@@ -1310,7 +1310,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				LoadCharSlot();
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdp tables: "+selector);
 		}
 	}
 
@@ -1432,7 +1432,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				TextStyleS11();
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdip tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdip tables: "+selector);
 		}
 	}
 	
@@ -1485,7 +1485,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	//			ImageDrag(); todo
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdjp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdjp tables: "+selector);
 		}
 	}
 
@@ -1535,7 +1535,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				SoundTwelve();
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdkp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdkp tables: "+selector);
 		}
 	}
 
@@ -1566,7 +1566,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			case 0x37: // -restart-/*rstartl*/*rstartu*
 				signout_data = new long[1+64];
 				signout_data_class = selector;
-				if (PortalConsts.is_debugging)
+				if (PlatoConsts.is_debugging)
 				{ System.out.println("lw data dump coming.."+Integer.toString(selector,16));
 					if (selector == 0x34)
 						System.out.println("score changed");
@@ -1581,7 +1581,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			case 0x38: // signout
 				signout_data = new long[1+64+64+150];
 				signout_data_class = selector;
-				if (PortalConsts.is_debugging) System.out.println("signout data coming.."+Integer.toString(selector,16));
+				if (PlatoConsts.is_debugging) System.out.println("signout data coming.."+Integer.toString(selector,16));
 				break;
 			case 0x41:
 				CursorOn();
@@ -1674,7 +1674,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				lightWeightLogout();
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdxp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdxp tables: "+selector);
 		}
 	}
 
@@ -1799,7 +1799,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	//			ExtensionSelect2(); todo
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdqp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdqp tables: "+selector);
 		}
 	}
 
@@ -1891,7 +1891,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				LocalFTP();
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in cmdvp tables: "+selector);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in cmdvp tables: "+selector);
 		}
 	}
 
@@ -1940,7 +1940,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			case -1:		// used to ignore commands
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("Error in proctables: "+i);
+				if	(PlatoConsts.is_debugging)	System.out.println("Error in proctables: "+i);
 		}
 	}
 
@@ -1983,12 +1983,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		// want to be able to go into the router directly.
 		if (null != lesson && (group != null || name != null))
 		{
-			if	(PortalConsts.is_debugging) System.out.println("NGN USM 126 startup");
+			if	(PlatoConsts.is_debugging) System.out.println("NGN USM 126 startup");
 			SendUsm(126);
 		}
 
 		// If scorm object has data, use it
-		else if	(JPortal.global_jportal.scorminterface.getLesson() != null)
+		else if	(PlatoAccess.global_jportal.scorminterface.getLesson() != null)
 		{
 		String	suspend_data;
 		long[]	suspend_longs=null;
@@ -1996,15 +1996,15 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 			autogroup = "scorm";
 			autoname = "student";
-			auto_lesson = JPortal.global_jportal.scorminterface.getLesson();
-			suspend_data = JPortal.global_jportal.scorminterface.getSuspendData();
+			auto_lesson = PlatoAccess.global_jportal.scorminterface.getLesson();
+			suspend_data = PlatoAccess.global_jportal.scorminterface.getSuspendData();
 			if	(null != suspend_data)
 				suspend_longs = stringToCybers(suspend_data);
 // don't support unit jumpouts
 //			auto_unit = null
 			auto_bypass = null;
-			arg1 = JPortal.global_jportal.scorminterface.getArg1();
-			arg2 = JPortal.global_jportal.scorminterface.getArg2();
+			arg1 = PlatoAccess.global_jportal.scorminterface.getArg1();
+			arg2 = PlatoAccess.global_jportal.scorminterface.getArg2();
 			if (arg2 != null && arg1 != null)
 			{
 				auto_lesson_arguments = new long[2];
@@ -2054,7 +2054,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (is_touch_enabled)
 		{
-			if (PortalConsts.SCALE == 2)
+			if (PlatoConsts.SCALE == 2)
 			{
 				x >>= 1;
 				y >>= 1;
@@ -2162,8 +2162,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		terminalColors = 0;		// never used drs 2023/10/3
 		initTTY();
 		
-		z80_loops = PortalConsts.z80_loops;
-		skipper_mod = PortalConsts.skipper_mod;
+		z80_loops = PlatoConsts.z80_loops;
+		skipper_mod = PlatoConsts.skipper_mod;
 		
 	}
 	
@@ -2280,13 +2280,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (booted) 
 		{
-			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), "Micro-Tutor");
+			((PlatoFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), "Micro-Tutor");
 			return;
 		}
 		
 		if (true)
 		{
-			((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port);
+			((PlatoFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port);
 			//need_title = false;
 		}
 
@@ -2450,7 +2450,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 		else if (c != testseq)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("test mode error; pass="+testpass);
+			if	(PlatoConsts.is_debugging)	System.out.println("test mode error; pass="+testpass);
 			SendUsm(1);
 			testseq = c;
 		}
@@ -2459,7 +2459,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		if (32 == testseq)
 		{
 			testpass++;
-			if	(PortalConsts.is_debugging)	System.out.println("test mode ok; pass="+testpass);
+			if	(PlatoConsts.is_debugging)	System.out.println("test mode ok; pass="+testpass);
 		}
 	}
 	
@@ -2965,7 +2965,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		if	(126 == value)
 		{
 			lw_suppress = true;
-			if	(PortalConsts.is_debugging)	System.out.println("requesting LW login");
+			if	(PlatoConsts.is_debugging)	System.out.println("requesting LW login");
 		}
 
 		SendEsc ( (value & 0x7f) + 0x0380);
@@ -3154,8 +3154,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		PCancel();
 		KermitExit();
-		if (null != parent_frame && parent_frame instanceof PortalFrame)
-			((PortalFrame) parent_frame).signOut((LevelOnePanel)levelone_container);
+		if (null != parent_frame && parent_frame instanceof PlatoFrame)
+			((PlatoFrame) parent_frame).signOut((LevelOnePanel)levelone_container);
 		is_signed_on = false;
 		initTTY();
 	}
@@ -3771,7 +3771,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			x = name + " / " + group;
 		}
 		
-		((PortalFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port + " | " + x);
+		((PlatoFrame)parent_frame).setTitle((LevelOnePanel)(levelone_container), levelone_network.host + ":" + levelone_network.port + " | " + x);
 		
 	}
 	
@@ -3792,7 +3792,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		word = ExtractWord ( 0);
 
-		if	(PortalConsts.is_debugging)
+		if	(PlatoConsts.is_debugging)
 			System.out.println("LoadEcho("+word+")");
 		switch ( word)
 		{
@@ -3836,9 +3836,9 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				break;
 	// osid operating system id (0=dos,1=mac,2=unix,3=win,4=os2,5=nt,6=win95,7=java/misc,8=java/win,9=java/mac)
 			case 0x54:
-				if	(PortalConsts.is_macintosh)
+				if	(PlatoConsts.is_macintosh)
 					SendEcho (9);
-				else if (PortalConsts.is_windows)
+				else if (PlatoConsts.is_windows)
 					SendEcho(8);
 				else
 					SendEcho(7);
@@ -4610,7 +4610,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				}
 				else
 				{
-					if	(PortalConsts.is_debugging)	System.out.println("imagesave to file:" + filename.toString());
+					if	(PlatoConsts.is_debugging)	System.out.println("imagesave to file:" + filename.toString());
 					SendEcho(9);
 				}	
 			}
@@ -4618,7 +4618,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			{
 			int slot = (ExtractWord(12)&255)-1;
 
-				if	(PortalConsts.is_debugging)	System.out.println("imagesave to mem:" + slot);
+				if	(PlatoConsts.is_debugging)	System.out.println("imagesave to mem:" + slot);
 				if (slot < 0 || slot >= IMAGE_SLOTS)
 					SendEcho(5);
 				else
@@ -4658,7 +4658,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			{
 			int	ret = child_process.exitValue();
 
-				if	(PortalConsts.is_debugging)	System.out.println("child done, ret="+ret);
+				if	(PlatoConsts.is_debugging)	System.out.println("child done, ret="+ret);
 				if	(ret == 0)
 					LocalExecuteResult(0);
 				else
@@ -4792,7 +4792,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			String file_url = CreateURL();
 			Image	file_image = null;
 
-				if	(PortalConsts.is_debugging) System.out.println("image get;"+file_url);
+				if	(PlatoConsts.is_debugging) System.out.println("image get;"+file_url);
 
 	// only do still image stuff if file isn't an obvious movie file
 				if (!IsMovieFile(filename))
@@ -4822,7 +4822,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			File file_handle = CreateFile();
 			Image	file_image = null;
 
-				if	(PortalConsts.is_debugging)	System.out.println("image get;"+filename.toString());
+				if	(PlatoConsts.is_debugging)	System.out.println("image get;"+filename.toString());
 
 				if (!file_handle.exists())
 				{
@@ -4904,7 +4904,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			int height = 3;	// error
 			int width = 0777777;	// can't open file
 
-				if	(PortalConsts.is_debugging)	System.out.println("image info;"+file_url);
+				if	(PlatoConsts.is_debugging)	System.out.println("image info;"+file_url);
 
 				if (!IsMovieFile(filename))
 				{
@@ -5098,7 +5098,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	private final void ImageEcho()
 	{
-		if	(PortalConsts.is_debugging) System.out.println("image check");
+		if	(PlatoConsts.is_debugging) System.out.println("image check");
 		SendEcho(imerror);
 	}
 
@@ -5132,7 +5132,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	int 	slot = (ExtractWord(0) & 255)-1;
 
-		if	(PortalConsts.is_debugging)	System.out.println("image load;"+filename.toString()+","+slot);
+		if	(PlatoConsts.is_debugging)	System.out.println("image load;"+filename.toString()+","+slot);
 
 		if (slot < 0 || slot >= IMAGE_SLOTS)
 		{
@@ -5312,7 +5312,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (!playback)
 		{
-			if	(PortalConsts.is_debugging) System.out.println("trap test;"+filename.toString());
+			if	(PlatoConsts.is_debugging) System.out.println("trap test;"+filename.toString());
 			TrapEndInternal();
 			if (disable_file_operations)
 				SendEcho(1);
@@ -5350,7 +5350,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		TrapEndInternal();
 		buffer = ExtractWord (0);
-		if	(PortalConsts.is_debugging)	System.out.println("trap write;"+buffer+";"+filename.toString());
+		if	(PlatoConsts.is_debugging)	System.out.println("trap write;"+buffer+";"+filename.toString());
 		if (buffer < 0 || buffer >= TRAP_SLOTS)
 		{
 			SendEcho(6);
@@ -5403,7 +5403,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		TrapEndInternal();
 		buffer = ExtractWord (0);
 
-		if	(PortalConsts.is_debugging)	System.out.println("trap read;"+buffer+";"+filename.toString());
+		if	(PlatoConsts.is_debugging)	System.out.println("trap read;"+buffer+";"+filename.toString());
 
 		if (buffer < 0 || buffer >= TRAP_SLOTS)
 		{
@@ -5487,7 +5487,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 			TrapEndInternal();
 			buffer = ExtractWord ( 0);
-			if	(PortalConsts.is_debugging)
+			if	(PlatoConsts.is_debugging)
 				System.out.println("trap delete;"+buffer);
 		
 			if (buffer < TRAP_SLOTS)
@@ -5514,7 +5514,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		int buffer;
 
 			buffer = ExtractWord (0);
-			if	(PortalConsts.is_debugging)	System.out.println("trap save;"+buffer);
+			if	(PlatoConsts.is_debugging)	System.out.println("trap save;"+buffer);
 			if (buffer >= 0 && buffer < TRAP_SLOTS)
 			{
 				if (null == trap_slots[buffer])
@@ -5997,8 +5997,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	public void printScreen()
 	{
-		if	(null != parent_frame && parent_frame instanceof PortalFrame)
-			((PortalFrame) parent_frame).doPrint();
+		if	(null != parent_frame && parent_frame instanceof PlatoFrame)
+			((PlatoFrame) parent_frame).doPrint();
 
 	// todo get error code
 		SendEcho(0);
@@ -6046,28 +6046,28 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	String	printobj = filename.toString();
 	File	fileref = smartFile(swabFile(printobj));
 
-		if	(PortalConsts.is_debugging) System.out.println("local print: "+fileref.getAbsolutePath());
+		if	(PlatoConsts.is_debugging) System.out.println("local print: "+fileref.getAbsolutePath());
 
 		if	(!fileref.exists())
 		{
-			if	(PortalConsts.is_debugging) System.out.println("local print failed on fnf error!");
+			if	(PlatoConsts.is_debugging) System.out.println("local print failed on fnf error!");
 			SendEcho(1);
 			return;
 		}
-		if	(PortalConsts.is_macintosh)
+		if	(PlatoConsts.is_macintosh)
 		{
 			try
 			{
 			Process printproc;
 
 				printproc = Runtime.getRuntime().exec("lp "+fileref.getAbsolutePath());
-				if	(PortalConsts.is_debugging) System.out.println("executed lp command: "+printproc);
+				if	(PlatoConsts.is_debugging) System.out.println("executed lp command: "+printproc);
 				SendEcho(0);
-				if	(PortalConsts.is_debugging) System.out.println("executed lp result: "+printproc.waitFor());
+				if	(PlatoConsts.is_debugging) System.out.println("executed lp result: "+printproc.waitFor());
 			}
 			catch (java.lang.Exception e1)
 			{
-				if	(PortalConsts.is_debugging) System.out.println("caught exception during lp");
+				if	(PlatoConsts.is_debugging) System.out.println("caught exception during lp");
 				SendEcho(1);
 			}
 		}
@@ -6178,14 +6178,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if	(fileref.exists())
 				executable = fileref.getAbsolutePath();
 
-			if	(PortalConsts.is_debugging)	System.out.println("local execute: "+executable);
+			if	(PlatoConsts.is_debugging)	System.out.println("local execute: "+executable);
 
 			try
 			{
 				if (executable.startsWith("http:"))
 				{
-					if	(null != parent_frame && parent_frame instanceof PortalFrame)
-						((PortalFrame) parent_frame).openURL(executable);
+					if	(null != parent_frame && parent_frame instanceof PlatoFrame)
+						((PlatoFrame) parent_frame).openURL(executable);
 					LocalExecuteResult(0);
 					return;
 				}
@@ -6656,7 +6656,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			}
 			// System.out.println("Char load at: 0x" + String.format("%x",mem_addr) );
 		}
-		else if (mem_addr == PortalConsts.M6ORIGIN || mem_addr == PortalConsts.M7ORIGIN)
+		else if (mem_addr == PlatoConsts.M6ORIGIN || mem_addr == PlatoConsts.M7ORIGIN)
 		{
 			// ignore these for now drs  TODO ??
 			if (cpu == null)
@@ -6890,8 +6890,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	    // Push the fake return address for "return to main loop" onto the
 	    // stack, as if we just did a CALL instruction		
-		z80.setRegisterValue(RegisterNames.SP, PortalConsts.INITSP);
-		z80.push(PortalConsts.R_MAIN);
+		z80.setRegisterValue(RegisterNames.SP, PlatoConsts.INITSP);
+		z80.push(PlatoConsts.R_MAIN);
 		
 		cpu.stopme = true;
 		
@@ -6928,7 +6928,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		int c = z80.getRegisterValue(RegisterNames.C);
 		if ((c & 3) == 0 && d > 0 )
 		{
-			ProgMode(val, PortalConsts.M5ORIGIN);
+			ProgMode(val, PlatoConsts.M5ORIGIN);
 			return;
 		}
 		
@@ -6936,7 +6936,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		   //// stack, as if we just did a CALL instruction
 		
 		z80.push(z80.getProgramCounter());
-		int xaddr = cpu.z80Memory().readWord(PortalConsts.M5ORIGIN);
+		int xaddr = cpu.z80Memory().readWord(PlatoConsts.M5ORIGIN);
 		
 		cpu.stopme = true;
 		
@@ -6966,12 +6966,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		
 		int val = ExtractWord(0) & 0xffffff;
 
-		if (z80.reg_PC == PortalConsts.R_MAIN)
+		if (z80.reg_PC == PlatoConsts.R_MAIN)
 		{
 		    // Push the fake return address for "return to main loop" onto the
 		    // stack, as if we just did a CALL instruction		
-			z80.setRegisterValue(RegisterNames.SP, PortalConsts.INITSP);
-			z80.push(PortalConsts.R_MAIN);
+			z80.setRegisterValue(RegisterNames.SP, PlatoConsts.INITSP);
+			z80.push(PlatoConsts.R_MAIN);
 		}
 		
 		
@@ -6987,7 +6987,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		   //// Push the return address onto the
 		   //// stack, as if we just did a CALL instruction
 		
-		int xaddr = cpu.z80Memory().readWord(PortalConsts.M6ORIGIN);
+		int xaddr = cpu.z80Memory().readWord(PlatoConsts.M6ORIGIN);
 		z80.reg_PC = xaddr;
 		
 		cpu.in_mode6 = true;
@@ -7204,13 +7204,13 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	// delete() to delete file or empty directory
 	// mkdir() to create directory
 	// list() to list files in a directory
-		if	(PortalConsts.is_debugging)	System.out.println("local os;"+filename.toString());
+		if	(PlatoConsts.is_debugging)	System.out.println("local os;"+filename.toString());
 		if (0 == filename.length() || !VerifyFilenameSumChk())
 			SendEcho(1);
 		else if (filename.toString().startsWith("wtitle"))
 		{
-			if	(null != parent_frame && parent_frame instanceof PortalFrame)
-				((PortalFrame)parent_frame).setTitle((LevelOnePanel) levelone_container,filename.toString().substring(7));
+			if	(null != parent_frame && parent_frame instanceof PlatoFrame)
+				((PlatoFrame)parent_frame).setTitle((LevelOnePanel) levelone_container,filename.toString().substring(7));
 			SendEcho(0);
 		}
 		else if (disable_file_operations)
@@ -7227,7 +7227,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 				if	(dice_roll < local_os_failure_rate)
 				{
-					if	(PortalConsts.is_debugging)	System.out.println("-local os- simulated fail");
+					if	(PlatoConsts.is_debugging)	System.out.println("-local os- simulated fail");
 					SendEcho(2);	// local failure
 					return;
 				}
@@ -7538,7 +7538,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		if (sep != ' ' && LOSChar() != 0)
 			local_os_cmdp++;
 
-		if	(PortalConsts.is_debugging)	System.out.println("found tag="+result);
+		if	(PlatoConsts.is_debugging)	System.out.println("found tag="+result);
 
 		return result.toString();
 	}
@@ -7765,7 +7765,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		// alternate inter-application directory
 		// version, to use carbonized temp directory
 		// under os x
-		PortalFrame	pf = (PortalFrame) parent_frame;
+		PlatoFrame	pf = (PlatoFrame) parent_frame;
 		// need to know os version
 		String	version = System.getProperty("os.version");	// 10.3.3 for example
 
@@ -7816,7 +7816,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				String	uid = output.substring(4,lparen);
 				String	uname = output.substring(lparen+1,rparen);
 
-					if	(PortalConsts.is_debugging)	System.out.println("out="+output+" uid="+uid+"@"+uname);
+					if	(PlatoConsts.is_debugging)	System.out.println("out="+output+" uid="+uid+"@"+uname);
 
 				String	filepath;
 					filepath = prefix+uid+"/"+suffix+"/";
@@ -7826,12 +7826,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				// so we need to try to create it if it doesn't
 				// exist because we may be immediately trying to write
 				// files into it for another application's use.
-					if	(PortalConsts.is_debugging)	System.out.println("setdir filepath="+filepath);
+					if	(PlatoConsts.is_debugging)	System.out.println("setdir filepath="+filepath);
 					if	(!newdir.exists())
 					{
 						if	(newdir.mkdirs())
 							carbon_temp = filepath;
-						else if (PortalConsts.is_debugging)
+						else if (PlatoConsts.is_debugging)
 							System.out.println("mkdirs failed");
 					}
 					else
@@ -7840,14 +7840,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				catch (Exception e1)
 				{
 				// ignore, by default we already have the java temp directory
-					if (PortalConsts.is_debugging) {e1.printStackTrace();}
+					if (PlatoConsts.is_debugging) {e1.printStackTrace();}
 				}
 			}
 
 			if	(null != carbon_temp)
 				current_dir = carbon_temp;
 
-			if	(PortalConsts.is_debugging)	System.out.println("setdir -j renders:"+current_dir);
+			if	(PlatoConsts.is_debugging)	System.out.println("setdir -j renders:"+current_dir);
 
 		}
 		else
@@ -7872,7 +7872,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			}
 		}
 
-		if	(PortalConsts.is_debugging)	System.out.println("currentdir="+current_dir);
+		if	(PlatoConsts.is_debugging)	System.out.println("currentdir="+current_dir);
 		SendEcho(0);
 	}
 
@@ -7915,7 +7915,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if	(dfile.isDirectory())
 				deleteContents(dfile);
 
-			if	(PortalConsts.is_debugging)	System.out.println("rdelete on: "+dfile.getAbsolutePath());
+			if	(PlatoConsts.is_debugging)	System.out.println("rdelete on: "+dfile.getAbsolutePath());
 			dfile.delete();
 		}
 	}
@@ -7949,7 +7949,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if (0 != (local_os_options & 1) && delfile.isDirectory())	// -r
 				deleteContents(delfile);
 
-			if	(PortalConsts.is_debugging)	System.out.println("delete on: "+delfile.getAbsolutePath());
+			if	(PlatoConsts.is_debugging)	System.out.println("delete on: "+delfile.getAbsolutePath());
 
 			if	(delfile.delete())
 				SendEcho(0);	// ok
@@ -8109,7 +8109,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			SendEcho(2);
 		}
 
-		if	(PortalConsts.is_debugging)	System.out.println("set localdata_dir="+localdata_dir);
+		if	(PlatoConsts.is_debugging)	System.out.println("set localdata_dir="+localdata_dir);
 	}
 
 	/**
@@ -8120,7 +8120,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	void LocalOSVersion()
 	{
 		LOSOpenFile();
-		LOSAddString(PortalConsts.short_version,local_os_entrysize);
+		LOSAddString(PlatoConsts.short_version,local_os_entrysize);
 		SendEcho(7);
 	}
 
@@ -8186,7 +8186,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			LOSFMFnt();
 		}
-		else if (null != local_font_metrics && !PortalConsts.is_applet)
+		else if (null != local_font_metrics && !PlatoConsts.is_applet)
 		{
 			LOSFMFont();
 		}
@@ -8221,7 +8221,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if	(fileref.exists())
 				excname = fileref.getAbsolutePath();
 
-			if	(PortalConsts.is_debugging)	System.out.println("excname="+excname);
+			if	(PlatoConsts.is_debugging)	System.out.println("excname="+excname);
 			child_process = Runtime.getRuntime().exec(
 				excname,
 				null,
@@ -8248,7 +8248,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			if	(fileref.exists())
 				excname = fileref.getAbsolutePath();
 
-			if	(PortalConsts.is_debugging) System.out.println("excname="+excname+" dir="+current_dir);
+			if	(PlatoConsts.is_debugging) System.out.println("excname="+excname+" dir="+current_dir);
 			cmdarray[0] = "/System/Library/Frameworks/Carbon.framework/Versions/Current/Support/LaunchCFMApp";
 			cmdarray[1] = excname;
 
@@ -8273,7 +8273,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	void LocalOSFLLaunch()
 	{
-		if	(PortalConsts.is_debugging) System.out.println("LocalOSFLLaunch");
+		if	(PlatoConsts.is_debugging) System.out.println("LocalOSFLLaunch");
 
 		try
 		{
@@ -8285,7 +8285,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				excname = fileref.getAbsolutePath();
 
 			cmdarray[0] = excname+"/Contents/MacOS/launchFL";
-			if	(PortalConsts.is_debugging) System.out.println("exists: "+fileref.exists()+" excname="+cmdarray[0]);
+			if	(PlatoConsts.is_debugging) System.out.println("exists: "+fileref.exists()+" excname="+cmdarray[0]);
 
 			child_process = Runtime.getRuntime().exec(
 				cmdarray,
@@ -8294,7 +8294,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 		catch (java.io.IOException e1)
 		{
-			if	(PortalConsts.is_debugging) System.out.println("LocalOSFLLaunch exeception: "+e1);
+			if	(PlatoConsts.is_debugging) System.out.println("LocalOSFLLaunch exeception: "+e1);
 			LocalExecuteResult(1);
 		}
 	}
@@ -8319,11 +8319,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		// encode using proper URL character encodings
 			urlstring = urlEncode("file://",filespec.getAbsolutePath());
-			if	(PortalConsts.is_debugging)	System.out.println("url encode: "+urlstring);
+			if	(PlatoConsts.is_debugging)	System.out.println("url encode: "+urlstring);
 
 		// get finder to try and execute it
-			if	(null != parent_frame && parent_frame instanceof PortalFrame)
-				((PortalFrame) parent_frame).openURL(urlstring);
+			if	(null != parent_frame && parent_frame instanceof PlatoFrame)
+				((PlatoFrame) parent_frame).openURL(urlstring);
 			SendEcho(0);
 		}
 		catch (java.io.IOException e1)
@@ -8452,7 +8452,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 					wi.lastmodified = check.lastModified();
 				}
 			}
-			if	(change && PortalConsts.is_debugging) System.out.println("change detected on: "+wi.filespec);
+			if	(change && PlatoConsts.is_debugging) System.out.println("change detected on: "+wi.filespec);
 		}
 
 		if	(change)
@@ -8469,8 +8469,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		try
 		{
-			if (null != parent_frame && parent_frame instanceof PortalFrame)
-				((PortalFrame) parent_frame).openURL(filename.substring(local_os_cmdp));
+			if (null != parent_frame && parent_frame instanceof PlatoFrame)
+				((PlatoFrame) parent_frame).openURL(filename.substring(local_os_cmdp));
 			SendEcho(0);
 		}
 		catch (java.io.IOException e1)
@@ -8498,7 +8498,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	void SoundOne()
 	{
-		if	(PortalConsts.is_debugging)	System.out.println("soundone!!");
+		if	(PlatoConsts.is_debugging)	System.out.println("soundone!!");
 
 		if (disable_file_operations && !using_resource_server)
 		{
@@ -8568,7 +8568,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	void SoundFive()
 	{
-		if	(PortalConsts.is_debugging)	System.out.println("soundfive; urs="+using_resource_server);
+		if	(PlatoConsts.is_debugging)	System.out.println("soundfive; urs="+using_resource_server);
 		if (using_resource_server && jmf_player.hasJMF())
 			jmf_player.soundStart(sound_url);
 		else
@@ -8732,7 +8732,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			fontbold == local_fb &&
 			fontitalic == local_fi)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("WARNING: font select inefficiency");
+			if	(PlatoConsts.is_debugging)	System.out.println("WARNING: font select inefficiency");
 			return;
 		}
 
@@ -8801,7 +8801,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				fontsize = (2*fontsize)/3;
 				break;
 			default:
-				if	(PortalConsts.is_debugging)	System.out.println("selected invalid font = "+fontfamily);
+				if	(PlatoConsts.is_debugging)	System.out.println("selected invalid font = "+fontfamily);
 				DropLocalFont();
 				return;
 		}
@@ -8821,12 +8821,12 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				}
 				else
 				{
-					if	(PortalConsts.is_debugging)	System.out.println("ERROR - FNT NOT FOUND");
+					if	(PlatoConsts.is_debugging)	System.out.println("ERROR - FNT NOT FOUND");
 				}
 			}
 			catch (java.lang.Exception ioe1)
 			{
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 				{
 					System.out.println("ERROR - FNT IO Exception"+ioe1);
 					ioe1.printStackTrace();
@@ -8864,7 +8864,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		if (null == local_font && null == local_fnt)
 		{
-			if	(PortalConsts.is_debugging)	System.out.println("fontchecksum with null localfont");
+			if	(PlatoConsts.is_debugging)	System.out.println("fontchecksum with null localfont");
 			SendPixRes(0,0,0777777,0);
 		}
 		else
@@ -9475,7 +9475,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	String swabFile(String fname)
 	{
-		if	(!PortalConsts.is_windows)
+		if	(!PlatoConsts.is_windows)
 		{
 		StringBuffer	result = new StringBuffer(fname);
 		int				i,pos=0;
@@ -9486,7 +9486,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				result.replace(i,i+1,"/");
 			}
 
-		if	(PortalConsts.is_debugging)	System.out.println("swabfile: result="+result);
+		if	(PlatoConsts.is_debugging)	System.out.println("swabfile: result="+result);
 			return result.toString();
 		}
 		else
@@ -9530,7 +9530,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 	File result = null;
 
-		if	(PortalConsts.is_debugging)	System.out.println("createfile of: "+filename);
+		if	(PlatoConsts.is_debugging)	System.out.println("createfile of: "+filename);
 		if ('#' == filename.charAt(0))
 		{
 		String	nname = swabFile(filename.substring(1));
@@ -9549,7 +9549,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			if (!result.exists())
 			{
-				if	(PortalConsts.is_debugging)	System.out.println("File not found: "+result.getCanonicalPath());
+				if	(PlatoConsts.is_debugging)	System.out.println("File not found: "+result.getCanonicalPath());
 			}
 		}
 		catch (IOException e1)
@@ -9570,7 +9570,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		String rs_host,
 		String process_id)
 	{
-		if (PortalConsts.is_debugging) System.out.println("setResourceServer("+rs_host+","+process_id+")");
+		if (PlatoConsts.is_debugging) System.out.println("setResourceServer("+rs_host+","+process_id+")");
 		using_resource_server = null != rs_host;
 
 		if (using_resource_server)
@@ -9623,7 +9623,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 				result.setCharAt(i,'/');
 		}
 
-		if	(PortalConsts.is_debugging) System.out.println("createurl->"+result.toString());
+		if	(PlatoConsts.is_debugging) System.out.println("createurl->"+result.toString());
 	// return a string:
 		return result.toString();
 	}
@@ -9846,17 +9846,17 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	String	osv;
 	int		osid = 0;
 
-		if	(!PortalConsts.is_applet)
+		if	(!PlatoConsts.is_applet)
 		{
 			osv = System.getProperty("os.version");
 			// 6 is win vista
 			// 10.1.x thru 10.5.x for OSX
-			if	(PortalConsts.is_macintosh)
+			if	(PlatoConsts.is_macintosh)
 			{
 			String	subv = osv.substring(3,4);
 
 				osid = Integer.parseInt(subv);
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 					System.out.println("subv="+subv);
 			}
 		}
@@ -9884,7 +9884,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	void CloseMsg()
 	{
 		end_parse = true;
-		if	(PortalConsts.is_debugging)	System.out.println("Connected closed!");
+		if	(PlatoConsts.is_debugging)	System.out.println("Connected closed!");
 
 		((LevelOnePanel)levelone_container).closeSession(filename.toString());
 	}
@@ -10558,7 +10558,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	private void lightWeightNote()
 	{
 		//!! todo: forward note back across resource network here
-		if	(PortalConsts.is_debugging)	System.out.println("note: "+translateNote());
+		if	(PlatoConsts.is_debugging)	System.out.println("note: "+translateNote());
 		String[] parameters = new String[]{translateNote()};
 //!!maybe we should give process id also.
 		boolean is_successful = invokeStaticMethod(
@@ -10572,7 +10572,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	private void lightWeightComment()
 	{
-		if	(PortalConsts.is_debugging)	System.out.println("comment: "+translateNote());
+		if	(PlatoConsts.is_debugging)	System.out.println("comment: "+translateNote());
 		
 		String[] parameters = new String[]{process_id, translateNote()};
 	
@@ -10587,7 +10587,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	private void lightWeightDump()
 	{
-		if	(PortalConsts.is_debugging)	System.out.println("dump: length is "+buffered_count+" of "+buffered_data.length);
+		if	(PlatoConsts.is_debugging)	System.out.println("dump: length is "+buffered_count+" of "+buffered_data.length);
 		Object[] parameters = new Object[]{buffered_data};
 //!!maybe we should give process id also.
 		boolean is_successful = invokeStaticMethod(
@@ -10641,7 +10641,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	 */
 	private void lightWeightLogout()
 	{
-		if (PortalConsts.is_debugging) System.out.println("lw logout data init len="+signout_data.length);
+		if (PlatoConsts.is_debugging) System.out.println("lw logout data init len="+signout_data.length);
 		/*
 		 * Clear student context information.
 		 */
@@ -10673,7 +10673,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			 * Extract information from the basic record.
 			 */
 			long[] basic_record_data = extract(signout_data, 1, 64);
-			if (PortalConsts.is_debugging)
+			if (PlatoConsts.is_debugging)
 			{
 				System.out.println(Sixbit.displayToSixBitAscii(basic_record_data[0]));
 				for (int j=0; j<64;j++)
@@ -10683,7 +10683,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			rstartl = basic_record_data[3];
 			rstartu = basic_record_data[4];
 			lstatus = basic_record_data[6];
-			if (PortalConsts.is_debugging) System.out.println("lstatus: "+Long.toOctalString(lstatus));
+			if (PlatoConsts.is_debugging) System.out.println("lstatus: "+Long.toOctalString(lstatus));
 
 			long ldone_lscore_long = basic_record_data[31];
 			int basic_record_ldone = (int)((ldone_lscore_long >> 55) & 0x1f);
@@ -10713,27 +10713,27 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			lscore = lscore > 128 ? lscore-256 : lscore;
 			if	(signout_data.length > 128)
 				student_variables = extract(signout_data, 129, 150);
-			if (PortalConsts.is_debugging) System.out.println("lscore:"+lscore+" ldone:"+ldone);
+			if (PlatoConsts.is_debugging) System.out.println("lscore:"+lscore+" ldone:"+ldone);
 
 			// do scorm stuff..
 			switch (signout_data_class)
 			{
 				case 0x34:	// score
-					JPortal.global_jportal.scorminterface.setScore(lscore);
+					PlatoAccess.global_jportal.scorminterface.setScore(lscore);
 					break;
 				case 0x35:	// status
-					JPortal.global_jportal.scorminterface.setStatus(basic_record_data[6]);
+					PlatoAccess.global_jportal.scorminterface.setStatus(basic_record_data[6]);
 					break;
 				case 0x36:	// lesson(ldone mod)
-					JPortal.global_jportal.scorminterface.setLdone(ldone);
+					PlatoAccess.global_jportal.scorminterface.setLdone(ldone);
 					break;
 				case 0x37:	// restart
-					JPortal.global_jportal.scorminterface.setRestart(basic_record_data[3],basic_record_data[4]);
+					PlatoAccess.global_jportal.scorminterface.setRestart(basic_record_data[3],basic_record_data[4]);
 					break;
 				case 0x38:	// signout (bye!)
-					JPortal.global_jportal.scorminterface.setStatus(basic_record_data[6]);
-					JPortal.global_jportal.scorminterface.setStudentVariables(student_variables);
-					JPortal.global_jportal.scorminterface.signout();
+					PlatoAccess.global_jportal.scorminterface.setStatus(basic_record_data[6]);
+					PlatoAccess.global_jportal.scorminterface.setStudentVariables(student_variables);
+					PlatoAccess.global_jportal.scorminterface.signout();
 					break;
 			}
 
@@ -10779,7 +10779,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		long[] router_vars_data = new long[64];
 		long[] student_vars_data;
 
-		if	(PortalConsts.is_debugging)	System.out.println("system requested lw data");
+		if	(PlatoConsts.is_debugging)	System.out.println("system requested lw data");
 
 		/*
 		 * Pack group information.
@@ -10876,7 +10876,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		 * Send packed student data bank over to the system.
 		 */
 		//!!remove after debug.
-		if	(PortalConsts.is_debugging)	System.out.println("begin send lightweight-login");
+		if	(PlatoConsts.is_debugging)	System.out.println("begin send lightweight-login");
 		// Send miscellaneous portion of the student data bank.
 		for (int index = 0; index < misc_data.length; index++)
 			SendDataKey(misc_data[index]);
@@ -10892,7 +10892,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		// Send student variable portion of the student data bank.
 		if	(student_vars_data.length != 150)
 		{
-			if	(PortalConsts.is_debugging)	System.err.println("incorrect student variable buffer size!: "+student_vars_data.length);
+			if	(PlatoConsts.is_debugging)	System.err.println("incorrect student variable buffer size!: "+student_vars_data.length);
 		}
 		else
 		{
@@ -10902,14 +10902,14 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 		lw_suppress = false;
 		//!!remove after debug.
-		if	(PortalConsts.is_debugging)	System.out.println("done send lightweight-login");
+		if	(PlatoConsts.is_debugging)	System.out.println("done send lightweight-login");
 	}
 
 	private void DoAutoLogin()
 	{
 	int  	namel=0,groupl=0,passl=0,i;
 
-		if	(PortalConsts.is_debugging)	System.out.println("doautologin");
+		if	(PlatoConsts.is_debugging)	System.out.println("doautologin");
 		if (autoname != null)
 			namel = autoname.length();
 		if (autogroup != null)

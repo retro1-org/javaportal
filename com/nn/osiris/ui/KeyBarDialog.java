@@ -26,7 +26,7 @@ public class KeyBarDialog
 	 */
 	private static final long serialVersionUID = -131L;
 
-	PortalFrame	frame;
+	PlatoFrame	frame;
 
 	/** Display names of keys for the button labels */
 	String	bstrings[] = {"ACCESS","ANS","BACK","COPY","DATA","EDIT","ERASE",
@@ -71,7 +71,7 @@ public class KeyBarDialog
 	/**
 	 * Constructor, takes parent frame as an argument.
 	 */
-	public KeyBarDialog(PortalFrame parent)
+	public KeyBarDialog(PlatoFrame parent)
 	{
 		super(parent, "Key Bar", false);
 		this.frame = parent;

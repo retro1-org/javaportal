@@ -51,7 +51,7 @@ class JMFImplementer extends JMFInterface implements ControllerListener
 
 			if ((sound_player = Manager.createRealizedPlayer(url)) != null)
 			{
-				if	(PortalConsts.is_debugging)
+				if	(PlatoConsts.is_debugging)
 					System.out.println("created soundplayer");
 				sound_player.addControllerListener(this);
 				sound_player.start();

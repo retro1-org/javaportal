@@ -12,7 +12,7 @@ package com.nn.osiris.ui;
  * instance of the portal, but they may be set during
  * application startup.
  */
-class PortalConsts
+class PlatoConsts
 {
 	
 	static final public String	theName = "PlatoAccess";
