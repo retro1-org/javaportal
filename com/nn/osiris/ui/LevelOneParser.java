@@ -2193,7 +2193,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			b = buffer[offset + (i++)] & 0xff;
 			c = b & 0x7f;
-		
+			//if	(PlatoConsts.is_debugging)	System.out.println("Parse: "+c);
 			if (cpu != null && cpu.mtutor_waiting() && !cpu.in_r_exec)
 			{
 				return 1;
@@ -2476,7 +2476,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		
 	
 		
-		//if	(PortalConsts.is_debugging)	System.out.println("Data="+ " 0x" + String.format("%x", c) + " : " + c + " : " + (char)c);
+		//if	(PortalConsts.is_debugging)	
+			System.out.println("Data="+ " 0x" + String.format("%x", c) + " : " + c + " : " + (char)c);
 		
 		if (c >= 0x20 && is_quick_text_on)
 		{
@@ -3634,6 +3635,11 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		}
 	}
 
+	private int xfontnum = 0;
+	private int xfontsize = 0;
+	private int xfontopt = 0;
+	private int fspecs = 0;
+	
 	/**
 	 *
 	 * ExtProc()
@@ -3644,11 +3650,67 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	void ExtProc()
 	{
-//~~ Is this commented out c++ code needed?		
-	/*
-		win->ExtData ( ExtractWord(0) >> 8);
-		win->ExtData ( ExtractWord(0) & 0xff);
-	*/
+/*
+		int val = ExtractWord(0);
+		if (val >= 0xa00 && val <= 0xa3f)
+		{
+			xfontnum = val - 0xa00;
+		}
+		else if (val >= 0xa40 && val <= 0xa7f)
+		{
+			xfontsize = val - 0xa40;
+		}
+		else if ( val >= 0xa80 && val <= 0xabf)
+		{
+			xfontopt = val - 0xa80;
+
+			if	(PlatoConsts.is_debugging)	
+			{
+				System.out.println("fontnum: " + xfontnum);
+				System.out.println("fontsize: " + xfontsize);
+				System.out.println("fontopt: " + xfontopt);
+			}
+			
+			fspecs = 0;
+			
+			switch( xfontnum)
+			{
+			case 0:
+			case 1:
+				break;
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				fspecs = 22 << 12;
+				break;
+			case 17:
+				fspecs = 20 << 12;
+				break;
+//			case 18:
+//				fspecs = 26 << 12;
+//				break;
+//			case 19:
+//				fspecs = 24 << 12;
+//				break;
+			case 16:
+			default:
+				fspecs = 21 << 12;
+				break;
+			}
+			
+			fspecs |= xfontsize;
+			if ( (xfontopt & 2) == 2)
+				fspecs |= 0x800;
+			
+			if ( (xfontopt & 1) == 1)
+				fspecs |= 0x400;
+			
+			this.FontSelect2(fspecs, false);
+		}
+		
+*/
 	}
 
 	/**
@@ -7092,6 +7154,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		win->ExtData ( ExtractWord(0) >> 8);
 		win->ExtData ( ExtractWord(0) & 0xff);
 	*/
+		
 	}
 
 	/**
@@ -8701,10 +8764,10 @@ public class LevelOneParser implements java.awt.event.ActionListener
 
 	void FontSelect()
 	{
-		FontSelect2(ExtractLWord(0));
+		FontSelect2(ExtractLWord(0), true);
 	}
 	
-	public void FontSelect2(int 	fontspec)
+	public void FontSelect2(int fontspec, boolean nat)
 	{
 	int 	fontfamily,fontsize;
 	String fontname;
@@ -8739,6 +8802,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	// store the newly selected font
 		local_ff = fontfamily;
 		local_fs = fontsize;
+		
 		local_fb = fontbold;
 		local_fi = fontitalic;
 
@@ -8887,7 +8951,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 			SendPixRes (0,crc & 0xffff,0,0);
 		}
 	}
-
+	
 	/**
 	 *
 	 * ExtData
@@ -10266,6 +10330,8 @@ public class LevelOneParser implements java.awt.event.ActionListener
 	{
 		g.setXORMode(Color.white);
 
+		x1 = x1 << 1;
+		y1 = (y1 << 1) - 7;
 		switch (cursor_style)
 		{
 			case 0:	// underline
@@ -10298,6 +10364,7 @@ public class LevelOneParser implements java.awt.event.ActionListener
 		{
 			cursor_x = xlatX(current_x+center_x);
 			cursor_y = xlatY(current_y+center_y);
+
 			PlotCursor(g,cursor_x,cursor_y);
 		}
 	}
